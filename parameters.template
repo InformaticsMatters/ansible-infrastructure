@@ -1,0 +1,39 @@
+---
+# Infrastructure parameter template file.
+# Tune accordingly and replace all "SetMe" values with something meaningful.
+
+# Cert-Manager installation ---------------------------------------------------
+
+cm_state: present
+cm_letsencrypt_email: SetMe
+
+# Postgres installation -------------------------------------------------------
+
+# The Persistent Volume storage class and size of the database volume.
+# On minikube the volume class is likely to be 'standard'
+pg_vol_storageclass: gp2
+pg_vol_size_g: 10
+
+# AWX installation ------------------------------------------------------------
+
+ax_state: present
+# The Kubernetes context of the cluster we're deploying to.
+# This is typically the control plane of our cluster.
+ax_kubernetes_context: SetMe
+# The certificate issuer is either 'staging' or 'production'
+# 'staging' certificates are 'fake' ands are not rate-limited.
+# 'production' certificates are 'real' but rate-limited.
+ax_cert_issuer: staging
+
+# The AWX console admin user credentials...
+ax_admin: admin
+ax_admin_password: SetMe
+
+# The hostname that routes to the server that will host AWX,
+# devoid of the protocol (i.e. 'https://' assumed so just 'example.com')
+ax_ingress_hostname: SetMe
+
+# Keycloak installation -------------------------------------------------------
+
+kc_state: present
+kc_cert_issuer: staging

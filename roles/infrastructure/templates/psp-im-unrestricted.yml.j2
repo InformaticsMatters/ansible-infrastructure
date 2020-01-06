@@ -1,0 +1,26 @@
+---
+kind: PodSecurityPolicy
+apiVersion: policy/v1beta1
+metadata:
+  name: im-unrestricted
+spec:
+  privileged: yes
+  allowPrivilegeEscalation: yes
+  allowedCapabilities:
+  - '*'
+  hostIPC: yes
+  hostNetwork: yes
+  hostPID: yes
+  hostPorts:
+  - min: 0
+    max: 65535
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  volumes:
+  - '*'

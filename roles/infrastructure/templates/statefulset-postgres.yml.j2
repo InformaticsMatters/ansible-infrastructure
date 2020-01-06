@@ -1,0 +1,137 @@
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: database
+  namespace: {{ infra_namespace }}
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: database
+  serviceName: database
+  template:
+    metadata:
+      name: database
+      labels:
+        app: database
+    spec:
+      serviceAccountName: {{ infra_namespace_service_account }}
+
+      # A 'preferred' (not guaranteed)
+      # node selection affinity...
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: purpose
+                operator: In
+                values:
+                - {{ infra_node_purpose }}
+
+      # To access the mounted database volume
+      # we set the security context's fsGroup
+      # to the group that will be using the volume
+      # In this case it's the postgres group in the container
+      # (obtained empirically)
+      securityContext:
+        fsGroup: 26
+
+      containers:
+      - name: database
+        image: postgres:{{ pg_version }}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5432
+        resources:
+          limits:
+            cpu: {{ pg_cpu_limit }}
+            memory: {{ pg_mem_limit }}
+          requests:
+            cpu: {{ pg_cpu_request }}
+            memory: {{ pg_mem_request }}
+        readinessProbe:
+          # Wait 30 seconds
+          # then fail after more than 2 minutes of failures...
+          initialDelaySeconds: 30
+          failureThreshold: 9
+          periodSeconds: 15
+          timeoutSeconds: 2
+          exec:
+            command:
+            - "/bin/sh"
+            - "-i"
+            - "-c"
+            - pg_isready -h 127.0.0.1 -p 5432 -U {{ pg_user }} -q
+        livenessProbe:
+          # Wait 30 seconds
+          # then fail after more than 2 minutes of failures...
+          initialDelaySeconds: 30
+          failureThreshold: 9
+          periodSeconds: 15
+          timeoutSeconds: 2
+          exec:
+            command:
+            - "/bin/sh"
+            - "-i"
+            - "-c"
+            - pg_isready -h 127.0.0.1 -p 5432 -U {{ pg_user }} -q
+        volumeMounts:
+        # Database initialisation scripts
+        # It's here we create additional - 'out-of-the-box' users and databases
+        - mountPath: /docker-entrypoint-initdb.d/01-init.sh
+          name: postgres-init
+          subPath: 01-init.sh
+          readOnly: true
+        # Postgres configuration
+        - mountPath: /etc/postgresql/postgresql.conf
+          name: postgres-conf
+          subPath: postgresql.conf
+          readOnly: true
+        # Persistent volume for data
+        - mountPath: /var/lib/postgresql/data
+          name: postgres-pvc
+        env:
+        # PGDATA - the location of persisted database files.
+        # Normally a sub-directory of '/var/lib/postgresql/data'.
+        # The PVC is mounted at '/var/lib/postgresql' and we use
+        # PGDATA to identify a sub-directory in the mount.
+        # If we don't postres fails to start with the error: -
+        #
+        #   initdb: directory "/var/lib/postgresql/data" exists but is not empty
+        #   It contains a lost+found directory, perhaps due to it being a mount point.
+        #   Using a mount point directly as the data directory is not recommended.
+        #   Create a subdirectory under the mount point.
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        # Admin/superuser name and password
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: im-postgres
+              key: database_admin_user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: im-postgres
+              key: database_admin_user_password
+        # The default database that is created
+        # when the image is first started
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: im-postgres
+              key: database_name
+
+      volumes:
+      - name: postgres-init
+        configMap:
+          name: postgres-init
+      - name: postgres-conf
+        configMap:
+          name: postgres-conf
+      - name: postgres-pvc
+        persistentVolumeClaim:
+          claimName: pg-pvc

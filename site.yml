@@ -1,0 +1,7 @@
+---
+
+- hosts: infra_server
+  roles:
+  - role: informaticsmatters.cert_manager
+    when: cm_state|string == 'present'
+  - role: infrastructure

@@ -1,0 +1,49 @@
+---
+
+# Deploy (or un-deploy)?
+# One of 'present' or 'absent'.
+# If we un-deploy the entire infrastructure deployment is removed -
+# the namespace, database, PSPs etc.
+infra_state: present
+
+# The namespace of the deployment,
+# our 'infrastructure'. We anticipate
+# deploying postgres, the AWX server and Keycloak here.
+infra_namespace: im-infra
+infra_namespace_service_account: im-infra
+# The node 'purpose' for workload deployments.
+# The database, AWX server and keycloak deployments will try to deploy
+# workloads to nodes that contain the label "purpose={{ node_purpose }}".
+infra_node_purpose: application
+
+# Database (postgres) ---------------------------------------------------------
+
+# there is no 'state' variablehere.
+# The database is _always_ deployed.
+
+# The database volume size (Gi).
+pg_vol_size_g: 10
+# The StorageClass of the postgres persistent volume.
+pg_storageclass: gp2
+
+# Keycloak --------------------------------------------------------------------
+
+# Deploy (or un-deploy)?
+# One of 'present' or 'absent'.
+#
+# During the infrastructure deployment stage keycloak database credentials
+# and a database will be setup in the infrastructure database regardless -
+# the Keycloak DB is (at the moment) part of the core database installation.
+kc_state: present
+kc_cert_issuer: production
+
+# AWX -------------------------------------------------------------------------
+
+# Deploy (or un-deploy)?
+# One of 'present' or 'absent'.
+#
+# During the infrastructure deployment stage AWX database credentials
+# and a database will be setup in the infrastructure database regardless -
+# the AWX DB is (at the moment) part of the core database installation.
+ax_state: present
+ax_cert_issuer: production

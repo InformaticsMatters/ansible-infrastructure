@@ -1,0 +1,17 @@
+---
+
+# Basic pre-playbook prerequisites.
+# We need the openshift/kubernetes module amongst other things...
+
+- name: Install prerequisite Python modules
+  pip:
+    name:
+    - openshift==0.10.0
+    extra_args: --user
+
+# Go...
+
+- include_tasks: deploy.yml
+  when: infra_state|string == 'present'
+- include_tasks: undeploy.yml
+  when: infra_state|string == 'absent'

@@ -1,0 +1,27 @@
+---
+
+# We're about to trash the infrastructure installation.
+# Just check that the user's happy to do this...
+
+- name: Delete infrastucture?
+  pause:
+    prompt: |-
+      Delete the infratsucture?
+      Press return to continue and delete.
+      Or hit ctrl-c and then "a" if you've chnaged your mind
+
+# Go...
+
+- name: Deleting namespace '{{ infra_namespace }}'
+  k8s:
+    state: absent
+    definition: "{{ lookup('template', 'namespace-im-infra.yml.j2') }}"
+    wait: yes
+
+- name: Deleting Pod Security Policies
+  k8s:
+    state: absent
+    definition: "{{ lookup('template', '{{ item }}.yml.j2') }}"
+    wait: yes
+  loop:
+  - psp-im-unrestricted

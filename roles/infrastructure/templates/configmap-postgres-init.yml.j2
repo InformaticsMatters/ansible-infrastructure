@@ -1,0 +1,22 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: postgres-init
+  namespace: {{ infra_namespace }}
+data:
+  01-init.sh: |
+    #!/bin/bash
+    set -e
+    psql -v ON_ERROR_STOP=1 --username "{{ pg_user_fact }}" --dbname "{{ pg_database_fact }}" <<-EOSQL
+        -- Configure a user and database for Keycloak
+        CREATE USER {{ kc_user_fact }};
+        ALTER USER {{ kc_user_fact }} WITH PASSWORD '{{ kc_user_password_fact }}';
+        CREATE DATABASE {{ kc_database_fact }};
+        GRANT ALL PRIVILEGES ON DATABASE {{ kc_database_fact }} TO {{ kc_user_fact }};
+        -- Configure a user and database for AWX
+        CREATE USER {{ ax_user_fact }};
+        ALTER USER {{ ax_user_fact }} WITH PASSWORD '{{ ax_user_password_fact }}';
+        CREATE DATABASE {{ ax_database_fact }};
+        GRANT ALL PRIVILEGES ON DATABASE {{ ax_database_fact }} TO {{ ax_user_fact }};
+    EOSQL

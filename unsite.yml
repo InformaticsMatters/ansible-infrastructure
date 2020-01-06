@@ -1,0 +1,6 @@
+---
+
+- hosts: infra_server
+  roles:
+  - { role: infrastructure, infra_state: absent }
+  - { role: informaticsmatters.cert_manager, cm_state: absent }

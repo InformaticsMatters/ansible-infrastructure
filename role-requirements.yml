@@ -1,0 +1,4 @@
+---
+
+- src: informaticsmatters.cert_manager
+  version: 0.12.0

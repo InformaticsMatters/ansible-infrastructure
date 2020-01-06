@@ -1,0 +1,12 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: database
+  namespace: {{ infra_namespace }}
+spec:
+  selector:
+    app: database
+  ports:
+  - port: 5432
+    targetPort: 5432
