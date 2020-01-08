@@ -1,4 +1,5 @@
 ---
+
 # Infrastructure parameter template file.
 # Tune accordingly and replace all "SetMe" values with something meaningful.
 
@@ -6,6 +7,13 @@
 
 cm_state: present
 cm_letsencrypt_email: SetMe
+
+# EFS installation ------------------------------------------------------------
+
+efs_state: present
+# The symbolic name of cluster EFS.
+# This needs to be unique for a given region.
+efs_name: im-efs
 
 # Postgres installation -------------------------------------------------------
 

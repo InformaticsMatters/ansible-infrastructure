@@ -25,3 +25,34 @@
     wait: yes
   loop:
   - psp-im-unrestricted
+
+# Delete EFS
+
+- name: Get cluster nodes
+  k8s_info:
+    kind: Node
+  register: cluster_result
+
+- name: Check node result
+  assert:
+    that: cluster_result.resources|length > 0
+
+- name: Get cluster Region (from first node)
+  set_fact:
+    cluster_region: "{{ cluster_result.resources[0].metadata.labels['failure-domain.beta.kubernetes.io/region'] }}"
+
+- name: Delete EFS objects
+  k8s:
+    state: absent
+    definition: "{{ lookup('template', '{{ item }}.yml.j2') }}"
+    wait: yes
+  loop:
+  - storageclass-efs
+  - clusterrolebinding-efs-provisioner
+  - clusterrole-efs-provisioner
+
+- name: Delete EFS volume
+  efs:
+    state: absent
+    region: "{{ cluster_region }}"
+    name: "{{ efs_name }}"

@@ -17,6 +17,11 @@
     wait: yes
   when: cm_state|string == 'present'
 
+# EFS -------------------------------------------------------------------------
+
+- include_tasks: deploy-efs.yml
+  when: efs_state|string == 'present'
+
 # Secrets (database) ----------------------------------------------------------
 
 - name: Check databse (postgres) secrets
@@ -153,7 +158,7 @@
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yml.j2') }}"
     wait: yes
-    wait_timeout: 600
+    wait_timeout: "{{ wait_timeout }}"
   loop:
   - configmap-postgres-conf
   - configmap-postgres-init
@@ -169,7 +174,7 @@
     k8s:
       definition: "{{ lookup('template', '{{ item }}.yml.j2') }}"
       wait: yes
-      wait_timeout: 600
+      wait_timeout: "{{ wait_timeout }}"
     loop:
     - deployment-keycloak
     - service-keycloak

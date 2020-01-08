@@ -1,0 +1,61 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: efs-provisioner
+  namespace: {{ infra_namespace }}
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: efs-provisioner
+  template:
+    metadata:
+      name: efs-provisioner
+      labels:
+        app: efs-provisioner
+    spec:
+      serviceAccountName: efs-provisioner
+
+      # A 'preferred' (not guaranteed)
+      # node selection affinity...
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: purpose
+                operator: In
+                values:
+                - {{ infra_node_purpose }}
+
+      containers:
+      - name: efs-provisioner
+        image: quay.io/external_storage/efs-provisioner:{{ efs_provisioner_tag }}
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: FILE_SYSTEM_ID
+          valueFrom:
+            configMapKeyRef:
+              name: efs-provisioner
+              key: file_system_id
+        - name: AWS_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: efs-provisioner
+              key: aws_region
+        - name: PROVISIONER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: efs-provisioner
+              key: provisioner_name
+        volumeMounts:
+        - name: pv-volume
+          mountPath: /persistentvolumes
+      volumes:
+      - name: pv-volume
+        nfs:
+          server: {{ cluster_efs_address }}
+          path: /

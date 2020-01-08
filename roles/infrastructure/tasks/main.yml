@@ -9,6 +9,14 @@
     - openshift==0.10.0
     extra_args: --user
 
+# Check we're able to continue...
+
+- name: Pre-flight checks
+  assert:
+    that:
+    - aws_access_key|length > 0
+    - awx_secret_key|length > 0
+
 # Go...
 
 - include_tasks: deploy.yml

@@ -1,0 +1,122 @@
+---
+
+# EFS support
+
+# We need the region, subnet and security group of the cluster nodes.
+# We do this by getting the cluster nodes, picking the first one
+# and then getting its information from AWS.
+#
+# Implemented using the following online guide: -
+#   https://medium.com/@while1eq1/using-amazon-efs-in-a-multiaz-kubernetes-setup-57922e032776
+# And: -
+#   https://github.com/kubernetes-incubator/external-storage/issues/1209
+
+- name: Get cluster nodes
+  k8s_info:
+    kind: Node
+  register: cluster_result
+
+- name: Check node result
+  assert:
+    that: cluster_result.resources|length > 0
+
+- name: Set cluster facts (from first node)
+  set_fact:
+    cluster_region: "{{ cluster_result.resources[0].metadata.labels['failure-domain.beta.kubernetes.io/region'] }}"
+    cluster_instance: "{{ cluster_result.resources[0].spec.providerID.split('/')[-1] }}"
+
+- name: Get EC2 Info (of first node)
+  ec2_instance_info:
+    region: "{{ cluster_region }}"
+    instance_ids:
+    - "{{ cluster_instance }}"
+  register: ec2_result
+
+- name: Check EC2 result
+  assert:
+    that: ec2_result.instances|length == 1
+
+- name: Set EC2 facts
+  set_fact:
+    cluster_vpc_id: "{{ ec2_result.instances[0].vpc_id }}"
+    cluster_security_group: "{{ ec2_result.instances[0].security_groups[0].group_id }}"
+    cluster_subnet_id: "{{ ec2_result.instances[0].subnet_id }}"
+
+# As EFS is essentially an NFS mechanism the security group
+# needs to permit NFS connections between instances.
+# Here we make sure appropriate rules are present.
+
+- name: Get Security Groups
+  ec2_group_info:
+    region: "{{ cluster_region }}"
+  register: sg_result
+
+- name: Get Security Group content ({{ cluster_security_group }})
+  set_fact:
+    sg_name: "{{ sg_result|json_query(n_query)|first }}"
+    sg_description: "{{ sg_result|json_query(d_query)|first }}"
+  vars:
+    n_query: "security_groups[?group_id=='{{ cluster_security_group }}'].group_name"
+    d_query: "security_groups[?group_id=='{{ cluster_security_group }}'].description"
+
+- name: Ensure security group has NFS inbound rules ({{ cluster_security_group }})
+  ec2_group:
+    name: "{{ sg_name }}"
+    description: "{{ sg_description }}"
+    vpc_id: "{{ cluster_vpc_id }}"
+    region: "{{ cluster_region }}"
+    rules:
+    - proto: tcp
+      ports:
+      - 2049
+      cidr_ip: 0.0.0.0/0
+      rule_desc: NFS
+    - proto: tcp
+      ports:
+      - 2049
+      cidr_ipv6: ::/0
+      rule_desc: NFS
+    purge_tags: no
+    purge_rules: no
+
+# Now that NFS is available in the cluster's security group
+# we can create an EFS 'root' volume (the EFS provisioner will
+# allocated volumes from this)...
+
+- name: Create EFS ({{ cluster_region }})
+  efs:
+    region: "{{ cluster_region }}"
+    name: "{{ efs_name }}"
+    targets:
+    - subnet_id: "{{ cluster_subnet_id }}"
+      security_groups:
+      - "{{ cluster_security_group }}"
+  register: efs_result
+
+- name: Set EFS facts
+  set_fact:
+    cluster_efs_address: "{{ efs_result.efs.filesystem_address.split(':')[0] }}"
+    cluster_efs_id: "{{ efs_result.efs.file_system_id }}"
+
+- name: Display key EFS variables
+  debug:
+    msg: addr={{ cluster_efs_address }} subnet={{ cluster_subnet_id }} sg={{ cluster_security_group }}
+
+# EFS has been created.
+# We now need to install an EFS provisioner and create a StorageClass
+
+- name: Deploy
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yml.j2') }}"
+    wait: yes
+    wait_timeout: "{{ wait_timeout }}"
+  loop:
+  - serviceaccount-efs-provisioner
+  - clusterrole-efs-provisioner
+  - clusterrolebinding-efs-provisioner
+  - configmap-efs-provisioner
+  - deployment-efs-provisioner
+  - storageclass-efs
+
+- assert:
+    that: 1 == 2
