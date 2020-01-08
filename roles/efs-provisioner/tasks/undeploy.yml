@@ -38,4 +38,4 @@
   efs:
     state: absent
     region: "{{ cluster_region }}"
-    name: "{{ efs_name }}"
+    name: "{{ efs_backing_volume_name }}"

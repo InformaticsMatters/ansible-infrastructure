@@ -2,5 +2,5 @@
 kind: StorageClass
 apiVersion: storage.k8s.io/v1beta1
 metadata:
-  name: efs
+  name: {{ efs_storage_class_name }}
 provisioner: {{ efs_provisioner_name }}

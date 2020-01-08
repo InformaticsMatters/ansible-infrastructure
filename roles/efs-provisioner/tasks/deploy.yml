@@ -84,7 +84,7 @@
 - name: Create EFS ({{ cluster_region }})
   efs:
     region: "{{ cluster_region }}"
-    name: "{{ efs_name }}"
+    name: "{{ efs_backing_volume_name }}"
     targets:
     - subnet_id: "{{ cluster_subnet_id }}"
       security_groups:
