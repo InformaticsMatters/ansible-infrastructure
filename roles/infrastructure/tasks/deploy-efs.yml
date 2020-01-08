@@ -117,6 +117,3 @@
   - configmap-efs-provisioner
   - deployment-efs-provisioner
   - storageclass-efs
-
-- assert:
-    that: 1 == 2
