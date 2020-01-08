@@ -1,10 +1,8 @@
 ---
 
-# EFS support
-
 # We need the region, subnet and security group of the cluster nodes.
 # We do this by getting the cluster nodes, picking the first one
-# and then getting its information from AWS.
+# and then getting information about it from AWS.
 #
 # Implemented using the following online guide: -
 #   https://medium.com/@while1eq1/using-amazon-efs-in-a-multiaz-kubernetes-setup-57922e032776
@@ -111,9 +109,10 @@
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
   loop:
-  - serviceaccount-efs-provisioner
-  - clusterrole-efs-provisioner
-  - clusterrolebinding-efs-provisioner
-  - configmap-efs-provisioner
-  - deployment-efs-provisioner
-  - storageclass-efs
+  - namespace
+  - serviceaccount
+  - clusterrole
+  - clusterrolebinding
+  - configmap
+  - deployment
+  - storageclass

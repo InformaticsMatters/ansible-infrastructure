@@ -7,7 +7,6 @@
   loop:
   - namespace-im-infra
   - serviceaccount-im-infra
-  - psp-im-unrestricted
   - role-im-psp-unrestricted
   - rolebinding-im-infra-sa
 
@@ -16,11 +15,6 @@
     definition: "{{ lookup('template', 'rolebinding-default-sa.yml.j2') }}"
     wait: yes
   when: cm_state|string == 'present'
-
-# EFS -------------------------------------------------------------------------
-
-- include_tasks: deploy-efs.yml
-  when: efs_state|string == 'present'
 
 # Secrets (database) ----------------------------------------------------------
 

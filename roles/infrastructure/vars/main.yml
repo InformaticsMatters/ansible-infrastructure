@@ -67,8 +67,3 @@ kc_admin: admin
 kc_admin_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters') }}"
 
 kc_ingress_hostname: SetMe
-
-# AWS EFS ---------------------------------------------------------------------
-
-efs_provisioner_tag: v2.4.0
-efs_provisioner_name: informaticsmatters.com/efs

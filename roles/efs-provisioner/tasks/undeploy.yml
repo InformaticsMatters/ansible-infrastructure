@@ -1,0 +1,41 @@
+---
+
+# Deleting the namespace deletes a lot of stuff for us...
+
+- name: Deleting namespace '{{ efs_namespace }}'
+  k8s:
+    state: absent
+    definition: "{{ lookup('template', 'namespace.yml.j2') }}"
+    wait: yes
+
+# Now we just have to delete non-namespace EFS objects.
+# And we start by querying the AWS nodes (simply to get the EFS Region)...
+
+- name: Get cluster nodes
+  k8s_info:
+    kind: Node
+  register: cluster_result
+
+- name: Check node result
+  assert:
+    that: cluster_result.resources|length > 0
+
+- name: Get cluster Region (from first node)
+  set_fact:
+    cluster_region: "{{ cluster_result.resources[0].metadata.labels['failure-domain.beta.kubernetes.io/region'] }}"
+
+- name: Delete EFS objects
+  k8s:
+    state: absent
+    definition: "{{ lookup('template', '{{ item }}.yml.j2') }}"
+    wait: yes
+  loop:
+  - storageclass
+  - clusterrolebinding
+  - clusterrole
+
+- name: Delete EFS volume
+  efs:
+    state: absent
+    region: "{{ cluster_region }}"
+    name: "{{ efs_name }}"

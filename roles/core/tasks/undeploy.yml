@@ -1,0 +1,9 @@
+---
+
+- name: Remove PodSecurityPolicies
+  k8s:
+    state: absent
+    definition: "{{ lookup('template', '{{ item }}.yml.j2') }}"
+    wait: yes
+  loop:
+  - psp-im-unrestricted

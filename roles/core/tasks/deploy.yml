@@ -1,0 +1,8 @@
+---
+
+- name: Install PodSecurityPolicies
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yml.j2') }}"
+    wait: yes
+  loop:
+  - psp-im-core-unrestricted

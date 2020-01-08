@@ -1,0 +1,22 @@
+---
+
+# The EFS provisioner container image tag.
+# One from quay.io/external_storage/efs-provisioner
+efs_provisioner_tag: v2.4.0
+# A symbolic name for the provisioner deployment,
+# used to direct the storage-class to the provisioner Pod.
+efs_provisioner_name: informaticsmatters.com/efs
+# The node 'purpose' for workload deployments.
+# The EFS provisioner will try to deploy
+# workloads to nodes that contain the label "purpose={{ efs_node_purpose }}".
+efs_node_purpose: application
+
+# General timeout, generally used within the k8s module,
+# for wait duration
+wait_timeout: 600
+
+# Provisioner Pod Requests/Limits
+efs_cpu_limit: 200m
+efs_mem_limit: 128Mi
+efs_cpu_request: 100m
+efs_mem_request: 128Mi

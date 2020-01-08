@@ -3,7 +3,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: efs-provisioner
-  namespace: {{ infra_namespace }}
+  namespace: {{ efs_namespace }}
 data:
   file_system_id: {{ cluster_efs_id }}
   aws_region: {{ cluster_region }}

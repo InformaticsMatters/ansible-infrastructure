@@ -1,0 +1,14 @@
+---
+
+# Install EFS (or un-deploy)?
+# One of 'present' or 'absent'.
+efs_state: present
+# The symbolic name of the 'root' cluster EFS volume.
+# This needs to be unique for a given region.
+efs_name: im-efs
+# Namespace for the workload deployment
+efs_namespace: efs-provisioner
+
+# AWS credentials
+aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+awx_secret_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"

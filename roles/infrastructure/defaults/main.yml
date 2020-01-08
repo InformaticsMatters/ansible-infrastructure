@@ -16,20 +16,6 @@ infra_namespace_service_account: im-infra
 # workloads to nodes that contain the label "purpose={{ node_purpose }}".
 infra_node_purpose: application
 
-# AWS -------------------------------------------------------------------------
-
-aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
-awx_secret_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
-
-# AWS EFS ---------------------------------------------------------------------
-
-# Install EFS (or un-deploy)?
-# One of 'present' or 'absent'.
-efs_state: present
-# The symbolic name of cluster EFS.
-# This needs to be unique for a given region.
-efs_name: im-efs
-
 # Database (postgres) ---------------------------------------------------------
 
 # there is no 'state' variable here.

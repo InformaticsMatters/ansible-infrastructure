@@ -1,0 +1,5 @@
+---
+
+# Install Core components (or remove)?
+# One of 'present' or 'absent'.
+core_state: present

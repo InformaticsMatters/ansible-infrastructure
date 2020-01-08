@@ -3,4 +3,6 @@
 - hosts: infra_server
   roles:
   - { role: infrastructure, infra_state: absent }
+  - { role: efs-provisioner, efs_state: absent }
+  - { role: core, core_state: absent }
   - { role: informaticsmatters.cert_manager, cm_state: absent }
