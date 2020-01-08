@@ -1,5 +1,15 @@
 ---
 
+# In order to use this Role it is likely that the AWS IAM Role used to create
+# the cluster needs elasticfilesystem:DescribeFileSystems permission for EFS.
+# It wil be clear from the initial provisioner Pod log content whether this
+# your setup is problematic. Be sure to assigne the right policies to the
+# AWS role i.e. it'll need the 'AmazonElasticFileSystemFullAccess' policy.
+#
+# In our clusters the 'rancher' IAM role has the following: -
+#  - AmazonEC2FullAccess
+#  - AmazonElasticFileSystemFullAccess
+
 # Install EFS (or un-deploy)?
 # One of 'present' or 'absent'.
 efs_state: present
