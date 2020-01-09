@@ -8,13 +8,25 @@ infra_state: present
 
 # Database (postgres) ---------------------------------------------------------
 
-# there is no 'state' variable here.
+# There is no 'state' variable here.
 # The database is _always_ deployed.
 
 # The database volume size (Gi).
 pg_vol_size_g: 10
 # The StorageClass of the postgres persistent volume.
 pg_storageclass: gp2
+
+# Database (backups) ----------------------------------------------------------
+
+# Deploy backup strategy?
+# One of 'present' or 'absent'
+pg_bu_state: absent
+# The database backup volume size (Gi).
+pg_bu_vol_size_g: 25
+# The backup volume StorageClass.
+# This must accommodate the ReadWriteMany access mode.
+# Set this if not use S3 as a backup destination.
+pg_bu_storageclass: efs
 
 # Keycloak --------------------------------------------------------------------
 

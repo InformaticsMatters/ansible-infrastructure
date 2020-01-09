@@ -160,6 +160,36 @@
   - service-postgres
   - statefulset-postgres
 
+# Database (backups) ----------------------------------------------------------
+
+- name: Database backup
+  block:
+
+  - name: Get {{ pg_bu_storageclass }} StorageClass
+    k8s_info:
+      kind: StorageClass
+      name: "{{ pg_bu_storageclass }}"
+    register: sc_result
+
+  - name: Assert {{ pg_bu_storageclass }} StorageClass
+    assert:
+      that: sc_result.resources|length == 1
+      fail_msg: The {{ pg_bu_storageclass }} StorageClass must be available on the cluster
+
+  - name: Create postgres backup volume claim ({{ pg_bu_storageclass }})
+    k8s:
+      definition: "{{ lookup('template', 'pvc-postgres-backup.yml.j2') }}"
+      wait: yes
+      wait_timeout: "{{ wait_timeout }}"
+
+  - name: Deploy hourly backup
+    k8s:
+      definition: "{{ lookup('template', 'cronjob-postgres-backup.yml.j2') }}"
+      wait: yes
+      wait_timeout: "{{ wait_timeout }}"
+
+  when: pg_bu_state|string == 'present'
+
 # Keycloak --------------------------------------------------------------------
 
 - name: Deploy Keycloak

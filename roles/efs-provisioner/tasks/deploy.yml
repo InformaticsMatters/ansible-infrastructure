@@ -81,7 +81,7 @@
 # we can create an EFS 'root' volume (the EFS provisioner will
 # allocated volumes from this)...
 
-- name: Create EFS ({{ cluster_region }})
+- name: Create EFS ({{ cluster_region }}/{{ efs_backing_volume_name }})
   efs:
     region: "{{ cluster_region }}"
     name: "{{ efs_backing_volume_name }}"
@@ -96,7 +96,7 @@
     cluster_efs_address: "{{ efs_result.efs.filesystem_address.split(':')[0] }}"
     cluster_efs_id: "{{ efs_result.efs.file_system_id }}"
 
-- name: Display key EFS variables
+- name: Display key EFS facts
   debug:
     msg: addr={{ cluster_efs_address }} subnet={{ cluster_subnet_id }} sg={{ cluster_security_group }}
 

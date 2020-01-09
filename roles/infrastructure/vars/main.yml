@@ -38,6 +38,15 @@ pg_mem_limit: 500Mi
 
 # Backup ----------------------------------------------------------------------
 
+# Backups run as a CronJob.
+# Set the schedule (and the number of hourly backups to keep) here.
+pg_bu_hourly_schedule: '7 * * * *'
+pg_bu_hourly_history: 24
+# The backup container image tag.
+pg_bu_image_tag: stable
+# The image pull policy for the backup container image.
+pg_bu_imagepullpolicy: IfNotPresent
+
 # AWX -------------------------------------------------------------------------
 
 # The AWX server version.
