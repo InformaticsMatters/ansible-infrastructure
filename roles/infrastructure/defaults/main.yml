@@ -47,7 +47,7 @@ kc_admin_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_lette
 # the AWX DB is (at the moment) part of the core database installation.
 ax_state: present
 # The AWX kubernetes context
-# Required when ax_platform is 'kubernetes'
+# This is typically the control-plane content name
 ax_kubernetes_context: minikube
 
 # The hostname of the server that will host AWX,

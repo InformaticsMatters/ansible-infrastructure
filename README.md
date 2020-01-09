@@ -46,6 +46,12 @@ And then, using the parameter file, deploy the infrastructure: -
 
     $ ansible-playbook -e "@parameters" site.yml
 
+If your parameters are encrypted you can use them directly, without
+needing to decrypt them: -
+
+    $ ansible-playbook -e "@site-im-main-parameters.vault" site.yml \
+        --vault-password-file vault-pass.txt
+
 ## Deleting the infrastructure
 Be careful here, you'll delete the infrastructure namespace, its database,
 the AWX server and the certificate manager (if deployed): -
