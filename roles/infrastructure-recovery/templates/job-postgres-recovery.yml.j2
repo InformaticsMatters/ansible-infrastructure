@@ -31,6 +31,13 @@ spec:
       - image: informaticsmatters/sql-recovery:{{ recovery_image_tag }}
         name: postgres-recovery
         imagePullPolicy: {{ recovery_imagepullpolicy }}
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 500m
+            memory: 128Mi
         env:
         - name: FROM_BACKUP
           value: {{ recovery_from_backup }}
