@@ -4,11 +4,26 @@
 # for wait duration
 wait_timeout: 600
 
+# The valid ingress certificate issuer values
+cert_issuer_set:
+- staging
+- production
+
+# The namespace of the deployment,
+# our 'infrastructure'. We anticipate
+# deploying postgres, the AWX server and Keycloak here.
+infra_namespace: im-infra
+infra_namespace_service_account: im-infra
+# The node 'purpose' for workload deployments.
+# The database, AWX server and keycloak deployments will try to deploy
+# workloads to nodes that contain the label "purpose={{ node_purpose }}".
+infra_node_purpose: application
+
 # Postgres --------------------------------------------------------------------
 
 # The infrastructure database version.
 # For AWX the minimum version is 9.6+
-pg_version: '12-alpine'
+pg_version: '12.1-alpine'
 
 # Postgres superuser details
 pg_user: governor
@@ -25,16 +40,19 @@ pg_mem_limit: 500Mi
 
 # AWX -------------------------------------------------------------------------
 
+# The AWX server version.
+# A tag for the AWX github repo (See https://github.com/ansible/awx)
 ax_version: '9.1.0'
+
+# The directory (on the client) where the AWX repo
+# (including the built-in installation playbook)
+# will be cloned. AWX will be adjusted and installed from here.
 ax_clone_dir: /tmp
 
 # The AWX platform.
 # Typically 'kubernetes' or 'openshift' where supported.
 # A deploy-{{ ax-platform }}-awx-{{ ax_version }}.yml file must exist
 ax_platform: kubernetes
-# The AWX kubernetes context
-# Required when ax_platform is 'kubernetes'
-ax_kubernetes_context: minikube
 # The AWX task_cpu_request. This controls the CPU requests
 # for all the containers in the AWX Pod. This (for 9.1.0) is 1500 (1.5 cores).
 # Reduce this for compact deployments or minikube experiments.
@@ -45,16 +63,6 @@ ax_user: awx
 ax_user_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_letters,digits') }}"
 ax_database: awx
 
-# The password to assign to the admin user of our AWX server.
-# This is not the admin user of the host environment
-# (it is not the OpenShift password it is for the 'admin' user on AWX)
-ax_admin_password: "{{ lookup('password', '/dev/null length=14 chars=ascii_letters,digits') }}"
-ax_admin: admin
-
-# The hostname of the server that will host AWX,
-# devoid of the protocol (i.e. 'https://' assumed so just 'example.com')
-ax_ingress_hostname: SetMe
-
 # Keycloak --------------------------------------------------------------------
 
 kc_version: '8.0.1'
@@ -63,7 +71,8 @@ kc_user: keycloak
 kc_user_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_letters') }}"
 kc_database: keycloak
 
-kc_admin: admin
-kc_admin_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters') }}"
-
-kc_ingress_hostname: SetMe
+# CPU and Memory requests and limits
+kc_cpu_request: 250m
+kc_cpu_limit: 250m
+kc_mem_request: 1024Mi
+kc_mem_limit: 1024Mi

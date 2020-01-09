@@ -147,6 +147,7 @@
   k8s:
     definition: "{{ lookup('template', 'pvc-postgres.yml.j2') }}"
     wait: yes
+    wait_timeout: "{{ wait_timeout }}"
 
 - name: Postgres
   k8s:
@@ -164,23 +165,27 @@
 - name: Deploy Keycloak
   block:
 
+  - name: Keycloak assertions
+    assert:
+      that:
+      - kc_cert_issuer in cert_issuer_set
+
   - name: Keycloak
     k8s:
       definition: "{{ lookup('template', '{{ item }}.yml.j2') }}"
       wait: yes
       wait_timeout: "{{ wait_timeout }}"
     loop:
-    - deployment-keycloak
     - service-keycloak
+    - statefulset-keycloak
 
   - name: Keycloak ingress
     k8s:
       definition: "{{ lookup('template', 'ingress-keycloak.yml.j2') }}"
-      wait: yes
     when:
-    - kc_ingress_hostname is defined
-    - kc_ingress_hostname|string|length > 0
-    - kc_ingress_hostname|string != 'SetMe'
+    - kc_hostname is defined
+    - kc_hostname|string|length > 0
+    - kc_hostname|string != 'SetMe'
 
   when: kc_state|string == 'present'
 
@@ -191,6 +196,11 @@
 
 - name: Deploy AWX
   block:
+
+  - name: AWX assertions
+    assert:
+      that:
+      - ax_cert_issuer in cert_issuer_set
 
   - name: Check AWX stateful set
     k8s_info:

@@ -11,10 +11,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - {{ kc_ingress_hostname }}
+    - {{ kc_hostname }}
     secretName: im-keycloak-tls
   rules:
-  - host: {{ kc_ingress_hostname }}
+  - host: {{ kc_hostname }}
     http:
       paths:
       - path: /

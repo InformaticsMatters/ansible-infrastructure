@@ -63,7 +63,7 @@
     lineinfile:
       path: "{{ inventory_file }}"
       regexp: "^kubernetes_ingress_hostname="
-      line: kubernetes_ingress_hostname={{ ax_ingress_hostname }}
+      line: kubernetes_ingress_hostname={{ ax_hostname }}
 
   - name: Set inventory kubernetes_ingress_tls_secret
     lineinfile:
@@ -82,9 +82,9 @@
       antn_issuer: "'cert-manager.io/cluster-issuer': 'letsencrypt-nginx-{{ ax_cert_issuer|lower }}'"
 
   when:
-  - ax_ingress_hostname is defined
-  - ax_ingress_hostname|string|length > 0
-  - ax_ingress_hostname|string != 'SetMe'
+  - ax_hostname is defined
+  - ax_hostname|string|length > 0
+  - ax_hostname|string != 'SetMe'
 
 - name: Set inventory task_cpu_request (if not default)
   lineinfile:

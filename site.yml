@@ -5,4 +5,5 @@
   - role: informaticsmatters.cert_manager
     when: cm_state|string == 'present'
   - role: efs-provisioner
+    when: efs_state|string == 'present'
   - role: infrastructure
