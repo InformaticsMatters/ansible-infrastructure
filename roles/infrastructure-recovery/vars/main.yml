@@ -1,0 +1,10 @@
+---
+
+# The recovery container image tag.
+recovery_image_tag: '2020.2'
+# The pull policy for the container image.
+recovery_imagepullpolicy: IfNotPresent
+
+# Timeout for recovery Job,
+# used if 'recovery_wait_for_success' is 'yes'.
+recovery_timeout: 600

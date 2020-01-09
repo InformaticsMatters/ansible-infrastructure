@@ -1,0 +1,57 @@
+---
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: postgres-recovery
+  namespace: {{ infra_namespace }}
+spec:
+  selector:
+    name: postgres-recovery
+  template:
+    metadata:
+      labels:
+        name: postgres-recovery
+    spec:
+      serviceAccountName: {{ infra_namespace_service_account }}
+
+      # A 'preferred' (not guaranteed)
+      # node selection affinity...
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: purpose
+                operator: In
+                values:
+                - {{ infra_node_purpose }}
+
+      containers:
+      - image: informaticsmatters/sql-recovery:{{ recovery_image_tag }}
+        name: postgres-recovery
+        imagePullPolicy: {{ recovery_imagepullpolicy }}
+        env:
+        - name: FROM_BACKUP
+          value: {{ recovery_from_backup }}
+        - name: PGHOST
+          value: database
+        - name: PGUSER
+          valueFrom:
+            secretKeyRef:
+              name: im-postgres
+              key: database_admin_user
+        - name: PGADMINPASS
+          valueFrom:
+            secretKeyRef:
+              name: im-postgres
+              key: database_admin_user_password
+        volumeMounts:
+        - name: backup-data
+          mountPath: /backup
+
+      volumes:
+      - name: backup-data
+        persistentVolumeClaim:
+          claimName: pg-bu-pvc
+      restartPolicy: Never

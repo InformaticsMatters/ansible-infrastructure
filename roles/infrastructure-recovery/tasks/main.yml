@@ -1,0 +1,43 @@
+---
+
+# A role to recovery the infrastructure database
+# from an existing backup. Ensure that backups
+# do not run during the recovery process.
+
+- name: Remove any existing recovery Job
+  k8s:
+    state: absent
+    definition: "{{ lookup('template', 'job-postgres-recovery.yml.j2') }}"
+    wait: yes
+    wait_timeout: "{{ recovery_timeout }}"
+
+- name: Launch new recovery Job
+  k8s:
+    definition: "{{ lookup('template', 'job-postgres-recovery.yml.j2') }}"
+    wait: yes
+    wait_timeout: "{{ recovery_timeout }}"
+
+# If we wait for success
+# then first wait for 'completionTime' to be defined
+# and then insist on success!
+
+- name: Wait for success
+  block:
+
+  - name: Wait for completion
+    k8s_info:
+      kind: Job
+      namespace: "{{ infra_namespace }}"
+      name: postgres-recovery
+    register: result
+    until: result.resources[0].status.completionTime is defined
+    delay: 20
+    retries: "{{ (recovery_timeout|int / 20)|int }}"
+
+  - name: Assert success
+    assert:
+      that:
+      - result.resources[0].status.succeeded is defined
+      - result.resources[0].status.succeeded == 1
+
+  when: recovery_wait_for_success|bool

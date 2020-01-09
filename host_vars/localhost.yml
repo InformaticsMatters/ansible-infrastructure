@@ -1,0 +1,11 @@
+---
+
+# The namespace of the deployment,
+# our 'infrastructure'. We anticipate
+# deploying postgres, the AWX server and Keycloak here.
+infra_namespace: im-infra
+infra_namespace_service_account: im-infra
+# The node 'purpose' for workload deployments.
+# The database, AWX server and keycloak deployments will try to deploy
+# workloads to nodes that contain the label "purpose={{ node_purpose }}".
+infra_node_purpose: application

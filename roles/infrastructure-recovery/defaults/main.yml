@@ -1,0 +1,21 @@
+---
+
+# The backup to recover from.
+#
+# This can be the ISO-8601 portion of
+# the original backup filename, 'NONE' or 'LATEST'.
+# The provided string is converted to upper-case.
+# If 'none' the recovery module simply displays
+# all the backups on the backup volume.
+# If 'latest' then the latest backup file on the volume
+# is used to recover the database from. If
+# a time is used the file whose name matches the
+# provided time will be used as a source of the recovery.
+#
+# For details refer to: -
+# https://github.com/InformaticsMatters/bandr/blob/master/sql-recovery/recovery.py
+recovery_from_backup: none
+
+# Set the following to 'no' to avoid waiting until the
+# recovery job is complete.
+recovery_wait_for_success: yes

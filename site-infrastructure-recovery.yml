@@ -1,0 +1,11 @@
+---
+
+# Applies the recovery role.
+# The database backup to recover should be
+# passed-in via the 'recovery_from_backup' variable.
+
+- hosts: infra_server
+  roles:
+  - role: infrastructure-recovery
+    vars:
+      recovery_from_backup: none
