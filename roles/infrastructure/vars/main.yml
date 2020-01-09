@@ -43,7 +43,7 @@ pg_mem_limit: 500Mi
 pg_bu_hourly_schedule: '7 * * * *'
 pg_bu_hourly_history: 24
 # The backup container image tag.
-pg_bu_image_tag: stable
+pg_bu_image_tag: '2020.1'
 # The image pull policy for the backup container image.
 pg_bu_imagepullpolicy: IfNotPresent
 
