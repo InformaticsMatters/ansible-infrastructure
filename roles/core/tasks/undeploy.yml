@@ -6,4 +6,4 @@
     definition: "{{ lookup('template', '{{ item }}.yml.j2') }}"
     wait: yes
   loop:
-  - psp-im-unrestricted
+  - psp-im-core-unrestricted
