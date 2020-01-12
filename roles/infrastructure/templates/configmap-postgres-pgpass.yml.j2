@@ -1,0 +1,9 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: postgres-pgpass
+  namespace: {{ infra_namespace }}
+data:
+  .pgpass: |
+    *:*:*:*:{{ pg_user_password_fact }}

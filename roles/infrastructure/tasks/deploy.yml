@@ -157,6 +157,7 @@
   loop:
   - configmap-postgres-conf
   - configmap-postgres-init
+  - configmap-postgres-pgpass
   - service-postgres
   - statefulset-postgres
 
