@@ -1,0 +1,8 @@
+language: python
+python:
+- '3.8'
+install:
+- pip install -r build-requirements.txt
+script:
+- yamllint .
+- find . -type f -iname '*.j2' -exec yamllint {} \;
