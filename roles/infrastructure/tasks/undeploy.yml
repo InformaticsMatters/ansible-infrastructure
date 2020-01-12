@@ -1,5 +1,14 @@
 ---
 
+# Are you sure?
+
+- name: Delete the Infrastructure?
+  pause:
+    prompt: |-
+      Are you sure you wanrt to delete the infrastructure?
+      Hit return to delete it.
+      Hit Ctrl+c and then "a" if you've changed your mind
+
 # Go...
 
 - name: Deleting namespace '{{ infra_namespace }}'

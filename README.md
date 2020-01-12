@@ -28,7 +28,7 @@ Your cluster will need: -
 1.  A **StorageClass** for the infrastructure database (postgres).
     You will define the name of the cluster's storage class
     in parameters you pass to the playbook
-    (see the **Deploying** section below).
+    (see the **Creating** section below).
 1.  To help organise Pod deployment you should have nodes
     with the label `purpose=application`. This is not mandatory,
     but recommended.
@@ -49,15 +49,22 @@ And then, using the parameter file, deploy the infrastructure: -
 
     $ ansible-playbook -e "@parameters" site.yml
 
-If your parameters are encrypted you can use them directly, without
-needing to decrypt them: -
+If your parameters are encrypted with Ansible [vault] you can use them
+directly, without needing to decrypt them: -
 
     $ ansible-playbook -e "@site-im-main-parameters.vault" site.yml \
         --vault-password-file vault-pass.txt
 
+### Plays
+The following plays are supported, captured in corresponding `site-*.yml`
+playbook files: -
+
+-   `site` (for infrastructure deployment)
+-   `site-infrastructure-recovery` (to recover database content from a backup)
+
 ## Deleting the infrastructure
-Be careful here, you'll delete the infrastructure namespace, its database,
-the AWX server and the certificate manager (if deployed): -
+Be careful here, you'll delete the entire infrastructure; its namespace,
+database, the AWX server and the certificate manager (if deployed): -
 
     $ ansible-playbook -e "@parameters" unsite.yml
 
@@ -66,6 +73,10 @@ Site parameter files can be stored in `.vault` files. These will be written
 to revision control but their un-encrypted versions will not. This only works
 if your sensitive (unencrypted) parameter files end with the word `parameters`.
 
+>   You can deploy directly without having to decrypt the encrypted parameter
+    file.
+
 ---
 
 [kubernetes]: https://kubernetes.io
+[vault]: https://docs.ansible.com/ansible/latest/user_guide/vault.html
