@@ -32,7 +32,7 @@
 
 - name: Extract assigned user ID
   set_fact:
-   kc_manager_user_id: >-
+    kc_manager_user_id: >-
       {{ manager_resp
          |json_query('location')
          |urlsplit('path')
