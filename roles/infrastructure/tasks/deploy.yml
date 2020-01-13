@@ -94,7 +94,7 @@
 
 # Secrets (Keycloak database) -------------------------------------------------
 
-- name: Check Keycloak database secrets
+- name: Check Keycloak secrets
   k8s_info:
     kind: Secret
     api_version: v1
@@ -102,7 +102,7 @@
     name: im-keycloak
   register: kc_s_result
 
-- name: Set Keycloak database secret facts
+- name: Set Keycloak secret facts
   set_fact:
     kc_user_fact: "{{ kc_user }}"
     kc_user_password_fact: "{{ kc_user_password }}"
@@ -111,7 +111,7 @@
     kc_admin_password_fact: "{{ kc_admin_password }}"
   when: kc_s_result.resources|length == 0
 
-- name: Set Keycloak database secret facts (pre-deployed secrets)
+- name: Set Keycloak secret facts (pre-deployed secrets)
   set_fact:
     kc_user_fact: "{{ kc_s_result.resources[0].data.database_user|b64decode }}"
     kc_user_password_fact: "{{ kc_s_result.resources[0].data.database_user_password|b64decode }}"
@@ -120,7 +120,7 @@
     kc_admin_password_fact: "{{ kc_s_result.resources[0].data.keycloak_admin_user_password|b64decode }}"
   when: kc_s_result.resources|length == 1
 
-- name: Write Keycloak database secrets
+- name: Write Keycloak secrets
   k8s:
     definition: "{{ lookup('template', 'secrets-keycloak.yml.j2') }}"
     wait: yes
@@ -129,6 +129,40 @@
 - name: Display Keycloak database password
   debug:
     var: kc_user_password_fact
+
+- name: Display Keycloak admin password
+  debug:
+    var: kc_admin_password_fact
+
+- name: Check Keycloak manager secrets
+  k8s_info:
+    kind: Secret
+    api_version: v1
+    namespace: "{{ infra_namespace }}"
+    name: im-keycloak-manager
+  register: kc_m_s_result
+
+- name: Set Keycloak manager secret facts
+  set_fact:
+    kc_manager_fact: "{{ kc_manager }}"
+    kc_manager_password_fact: "{{ kc_manager_password }}"
+  when: kc_m_s_result.resources|length == 0
+
+- name: Set Keycloak manager secret facts (pre-deployed secrets)
+  set_fact:
+    kc_manager_fact: "{{ kc_m_s_result.resources[0].data.keycloak_manager_user|b64decode }}"
+    kc_manager_password_fact: "{{ kc_m_s_result.resources[0].data.keycloak_manager_user_password|b64decode }}"
+  when: kc_m_s_result.resources|length == 1
+
+- name: Write Keycloak manager secrets
+  k8s:
+    definition: "{{ lookup('template', 'secrets-keycloak-manager.yml.j2') }}"
+    wait: yes
+  when: kc_m_s_result.resources|length == 0
+
+- name: Display Keycloak manager password
+  debug:
+    var: kc_manager_password_fact
 
 # Database (postgres) ---------------------------------------------------------
 
@@ -262,10 +296,62 @@
   - name: Keycloak ingress
     k8s:
       definition: "{{ lookup('template', 'ingress-keycloak.yml.j2') }}"
+
+  # Add our Keycloak realm.
+  # The steps here are: -
+  #
+  # - Get a list of realms
+  # - Add the realm if it's not known
+
+  - name: Get Keycloak token
+    import_tasks: get-keycloak-token.yml
+    vars:
+      realm: master
+      realm_user: "{{ kc_admin_fact }}"
+      realm_user_password: "{{ kc_admin_password_fact }}"
+
+  - name: Get exisiting Realms
+    uri:
+      url: https://{{ kc_hostname }}/auth/admin/realms
+      headers:
+        Authorization: bearer {{ kc_token }}
+    register: realms
+    changed_when: False
+
+  # The above 'query' results in a 'realms' variable. A structure
+  # with each query represented as an element in the 'json' array.
+  # i.e.
+  #
+  #  "json": [{
+  #     "realm": "master"
+  #
+  # To simplify further processing, we'd like a nice flat list.
+  - name: Collect known Realms
+    set_fact:
+      known_realms: "{{ realms|json_query('json[*].realm')|flatten }}"
+
+  # Now, add all the realms we need...
+
+  - name: Add Realm (if it does not exist)
+    uri:
+      url: https://{{ kc_hostname }}/auth/admin/realms
+      method: POST
+      body: >-
+        {"realm": "{{ kc_realm }}",
+         "enabled": "true"}
+      body_format: json
+      status_code: 201
+      headers:
+        Authorization: bearer {{ kc_token }}
     when:
-    - kc_hostname is defined
-    - kc_hostname|string|length > 0
-    - kc_hostname|string != 'SetMe'
+    - kc_realm not in known_realms
+
+  # And then add the realm manager and realm roles...
+
+  - name: Add keycloak realm manager
+    import_tasks: add-keycloak-realm-manager.yml
+  - name: Add keycloak realm roles
+    import_tasks: add-keycloak-realm-roles.yml
 
   when: kc_state|string == 'present'
 
