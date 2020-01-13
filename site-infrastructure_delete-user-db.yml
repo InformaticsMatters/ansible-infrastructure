@@ -1,0 +1,10 @@
+---
+
+- hosts: infra_server
+  tasks:
+  - include_role:
+      name: infrastructure
+      tasks_from: delete-user-db.yml
+    vars:
+      db: blob
+      db_user: blob

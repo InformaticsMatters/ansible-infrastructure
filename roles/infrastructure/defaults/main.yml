@@ -17,6 +17,16 @@ pg_vol_size_g: 10
 # An blank class implied the cluster default.
 pg_vol_storageclass: " "
 
+# User database variables
+# required by the 'create-user-db' play
+# and normally set by the user.
+#
+# The user is required to define the variables 'db'
+# and 'db_user_namespace' to define the name fo the database
+# and the namespace from where it wil be used.
+db_user: "{{ lookup('password', '/dev/null length=6 chars=ascii_letters') }}"
+db_user_password: "{{ lookup('password', '/dev/null length=8 chars=ascii_letters,digits') }}"
+
 # Database (backups) ----------------------------------------------------------
 
 # Deploy backup strategy?

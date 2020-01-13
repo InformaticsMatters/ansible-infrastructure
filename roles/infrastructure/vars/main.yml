@@ -28,6 +28,9 @@ pg_cpu_limit: 1000m
 pg_mem_request: 100Mi
 pg_mem_limit: 500Mi
 
+# Image tag of the SQL client image
+pg_sql_client_tag: '2020.1'
+
 # Backup ----------------------------------------------------------------------
 
 # Backups run as a CronJob.

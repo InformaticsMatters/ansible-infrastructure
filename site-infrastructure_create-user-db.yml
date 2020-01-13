@@ -1,0 +1,11 @@
+---
+
+- hosts: infra_server
+  tasks:
+  - include_role:
+      name: infrastructure
+      tasks_from: create-user-db.yml
+    vars:
+      db: blob
+      db_user: blob
+      db_user_namespace: blob

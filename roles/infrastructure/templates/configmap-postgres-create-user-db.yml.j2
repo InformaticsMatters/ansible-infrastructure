@@ -1,0 +1,32 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: create-user-db-script
+  namespace: {{ infra_namespace }}
+data:
+  script.sh: |
+    #!/bin/sh
+
+    export PGUSER={{ pg_user_fact }}
+    export PGPASSWORD={{ pg_user_password_fact }}
+    export PGHOST=database.{{ infra_namespace }}.svc
+
+    echo "# Creating user (${DB_USER})..."
+    psql --command "CREATE USER ${DB_USER}"
+    psql --command "ALTER USER ${DB_USER} WITH PASSWORD '${DB_USER_PASSWORD}'"
+    echo "# Created user (${DB_USER})"
+
+    echo "# Creating database (${DB})..."
+    psql --command "CREATE DATABASE ${DB} OWNER ${DB_USER}"
+    echo "# Created database (${DB})"
+
+    echo "# Configuring database (${DB})..."
+    psql --command "GRANT CONNECT ON DATABASE ${DB} to ${DB_USER}"
+    psql -d ${DB} --command "CREATE SCHEMA users AUTHORIZATION ${DB_USER}"
+    psql -d ${DB} --command "GRANT USAGE ON SCHEMA users TO ${DB_USER}"
+    psql -d ${DB} --command "CREATE SCHEMA notebooks AUTHORIZATION ${DB_USER}"
+    psql -d ${DB} --command "GRANT USAGE ON SCHEMA notebooks TO ${DB_USER}"
+    echo "# Configured"
+
+    echo "# Create complete"
