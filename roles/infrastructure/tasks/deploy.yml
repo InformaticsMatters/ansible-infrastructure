@@ -172,6 +172,7 @@
   loop:
   - configmap-postgres-conf
   - configmap-postgres-init
+  - configmap-postgres-alter-user-password
   - configmap-postgres-create-user-db
   - configmap-postgres-delete-user-db
   - service-postgres

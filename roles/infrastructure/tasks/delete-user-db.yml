@@ -11,8 +11,10 @@
     that:
     - db is defined
     - db|string|length > 0
+    - db != 'SetMe'
     - db_user is defined
     - db_user|string|length > 0
+    - db_user != 'SetMe'
 
 # Looks like we're ready to go...
 

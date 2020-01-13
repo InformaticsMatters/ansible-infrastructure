@@ -6,5 +6,5 @@
       name: infrastructure
       tasks_from: delete-user-db.yml
     vars:
-      db: blob
-      db_user: blob
+      db: SetMe
+      db_user: SetMe

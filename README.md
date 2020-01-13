@@ -56,10 +56,13 @@ directly, without needing to decrypt them: -
         --vault-password-file vault-pass.txt
 
 ### Plays
-The following plays are supported, captured in corresponding `site-*.yml`
+The following plays are supported, captured in corresponding `site*.yml`
 playbook files: -
 
 -   `site` (for infrastructure deployment)
+-   `site-infrastructure_create-user-db` (to create a database user and database)
+-   `site-infrastructure_alter-user-password` (to change a database user password)
+-   `site-infrastructure_delete-user-db` (to delete a database user and database)
 -   `site-infrastructure-recovery` (to recover database content from a backup)
 
 ## Deleting the infrastructure
