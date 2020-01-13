@@ -20,8 +20,8 @@ pg_vol_storageclass: gp2
 pg_vol_size_g: 10
 
 pg_bu_state: absent
-pg_bu_vol_size_g: 25
 pg_bu_storageclass: efs
+pg_bu_vol_size_g: 25
 
 # Keycloak installation -------------------------------------------------------
 

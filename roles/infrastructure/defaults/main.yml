@@ -14,7 +14,8 @@ infra_state: present
 # The database volume size (Gi).
 pg_vol_size_g: 10
 # The StorageClass of the postgres persistent volume.
-pg_storageclass: gp2
+# An blank class implied the cluster default.
+pg_storageclass: " "
 
 # Database (backups) ----------------------------------------------------------
 
@@ -25,8 +26,8 @@ pg_bu_state: absent
 pg_bu_vol_size_g: 25
 # The backup volume StorageClass.
 # This must accommodate the ReadWriteMany access mode.
-# Set this if not use S3 as a backup destination.
-pg_bu_storageclass: efs
+# An blank class implied the cluster default.
+pg_bu_storageclass: " "
 
 # Keycloak --------------------------------------------------------------------
 

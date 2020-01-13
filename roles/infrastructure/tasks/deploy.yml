@@ -137,11 +137,13 @@
     kind: StorageClass
     name: "{{ pg_storageclass }}"
   register: sc_result
+  when: pg_storageclass != " "
 
 - name: Assert {{ pg_storageclass }} StorageClass
   assert:
     that: sc_result.resources|length == 1
     fail_msg: The {{ pg_storageclass }} StorageClass must be available on the cluster
+  when: pg_storageclass != " "
 
 - name: Create postgres volume claim ({{ pg_storageclass }})
   k8s:
@@ -171,11 +173,13 @@
       kind: StorageClass
       name: "{{ pg_bu_storageclass }}"
     register: sc_result
+    when: pg_bu_storageclass != " "
 
   - name: Assert {{ pg_bu_storageclass }} StorageClass
     assert:
       that: sc_result.resources|length == 1
       fail_msg: The {{ pg_bu_storageclass }} StorageClass must be available on the cluster
+    when: pg_bu_storageclass != " "
 
   - name: Create postgres backup volume claim ({{ pg_bu_storageclass }})
     k8s:
