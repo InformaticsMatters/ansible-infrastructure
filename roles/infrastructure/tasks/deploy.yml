@@ -132,24 +132,37 @@
 
 # Database (postgres) ---------------------------------------------------------
 
-- name: Get {{ pg_storageclass }} StorageClass
+- name: Get {{ pg_vol_storageclass }} StorageClass
   k8s_info:
     kind: StorageClass
-    name: "{{ pg_storageclass }}"
+    name: "{{ pg_vol_storageclass }}"
   register: sc_result
-  when: pg_storageclass != " "
+  when: pg_vol_storageclass != " "
 
-- name: Assert {{ pg_storageclass }} StorageClass
+- name: Assert {{ pg_vol_storageclass }} StorageClass
   assert:
     that: sc_result.resources|length == 1
-    fail_msg: The {{ pg_storageclass }} StorageClass must be available on the cluster
-  when: pg_storageclass != " "
+    fail_msg: The {{ pg_vol_storageclass }} StorageClass must be available on the cluster
+  when: pg_vol_storageclass != " "
 
-- name: Create postgres volume claim ({{ pg_storageclass }})
+- name: Create postgres volume claim ({{ pg_vol_storageclass }})
   k8s:
     definition: "{{ lookup('template', 'pvc-postgres.yml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
+
+# Best practice ... wait for the PVC to bind.
+# e.g. wait until resources[0].status.phase == Bound (initially Pending)
+
+- name: Wait for postgres volume claim to bind
+  k8s_info:
+    kind: PersistentVolumeClaim
+    name: pg-pvc
+    namespace: "{{ infra_namespace }}"
+  register: pg_pvc_result
+  until: pg_pvc_result.resources[0].status.phase == 'Bound'
+  delay: 5
+  retries: "{{ (bind_timeout|int / 5)|int }}"
 
 - name: Postgres
   k8s:
@@ -163,29 +176,49 @@
   - service-postgres
   - statefulset-postgres
 
+- name: Wait for postgres to become running
+  k8s_info:
+    kind: Pod
+    name: database-0
+    namespace: "{{ infra_namespace }}"
+  register: database_result
+  until: database_result.resources|length == 1 and database_result.resources[0].status.phase == 'Running'
+  delay: 10
+  retries: "{{ (wait_timeout|int / 10)|int }}"
+
 # Database (backups) ----------------------------------------------------------
 
 - name: Database backup
   block:
 
-  - name: Get {{ pg_bu_storageclass }} StorageClass
+  - name: Get {{ pg_bu_vol_storageclass }} StorageClass
     k8s_info:
       kind: StorageClass
-      name: "{{ pg_bu_storageclass }}"
+      name: "{{ pg_bu_vol_storageclass }}"
     register: sc_result
-    when: pg_bu_storageclass != " "
+    when: pg_bu_vol_storageclass != " "
 
-  - name: Assert {{ pg_bu_storageclass }} StorageClass
+  - name: Assert {{ pg_bu_vol_storageclass }} StorageClass
     assert:
       that: sc_result.resources|length == 1
-      fail_msg: The {{ pg_bu_storageclass }} StorageClass must be available on the cluster
-    when: pg_bu_storageclass != " "
+      fail_msg: The {{ pg_bu_vol_storageclass }} StorageClass must be available on the cluster
+    when: pg_bu_vol_storageclass != " "
 
-  - name: Create postgres backup volume claim ({{ pg_bu_storageclass }})
+  - name: Create postgres backup volume claim ({{ pg_bu_vol_storageclass }})
     k8s:
       definition: "{{ lookup('template', 'pvc-postgres-backup.yml.j2') }}"
       wait: yes
       wait_timeout: "{{ wait_timeout }}"
+
+  - name: Wait for postgres backup volume claim to bind
+    k8s_info:
+      kind: PersistentVolumeClaim
+      name: pg-bu-pvc
+      namespace: "{{ infra_namespace }}"
+    register: pg_bu_pvc_result
+    until: pg_bu_pvc_result.resources[0].status.phase == 'Bound'
+    delay: 5
+    retries: "{{ (bind_timeout|int / 5)|int }}"
 
   - name: Deploy hourly backup
     k8s:
@@ -213,6 +246,16 @@
     loop:
     - service-keycloak
     - statefulset-keycloak
+
+  - name: Wait for keycloak to become running
+    k8s_info:
+      kind: Pod
+      name: keycloak-0
+      namespace: "{{ infra_namespace }}"
+    register: keycloak_result
+    until: keycloak_result.resources|length == 1 and keycloak_result.resources[0].status.phase == 'Running'
+    delay: 10
+    retries: "{{ (wait_timeout|int / 10)|int }}"
 
   - name: Keycloak ingress
     k8s:

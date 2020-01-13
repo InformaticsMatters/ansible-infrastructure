@@ -3,6 +3,8 @@
 # General timeout, generally used within the k8s module,
 # for wait duration
 wait_timeout: 600
+# Volume binding timeout (seconds)
+bind_timeout: 120
 
 # The valid ingress certificate issuer values
 cert_issuer_set:
