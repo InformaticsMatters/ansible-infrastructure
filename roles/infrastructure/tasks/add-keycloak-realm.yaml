@@ -7,7 +7,7 @@
 # - Add the realm if it's not known
 
 - name: Get Keycloak token
-  import_tasks: get-keycloak-token.yml
+  import_tasks: get-keycloak-token.yaml
   vars:
     realm: master
     realm_user: "{{ kc_admin_fact }}"

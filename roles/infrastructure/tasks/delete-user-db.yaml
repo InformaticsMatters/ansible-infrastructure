@@ -21,13 +21,13 @@
 - name: Remove any existing delete Job
   k8s:
     state: absent
-    definition: "{{ lookup('template', 'job-delete-user-db.yml.j2') }}"
+    definition: "{{ lookup('template', 'job-delete-user-db.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
 
 - name: Launch new delete Job
   k8s:
-    definition: "{{ lookup('template', 'job-delete-user-db.yml.j2') }}"
+    definition: "{{ lookup('template', 'job-delete-user-db.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
 

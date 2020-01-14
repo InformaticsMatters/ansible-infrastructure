@@ -52,13 +52,13 @@
 - name: Remove any existing create Job
   k8s:
     state: absent
-    definition: "{{ lookup('template', 'job-create-user-db.yml.j2') }}"
+    definition: "{{ lookup('template', 'job-create-user-db.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
 
 - name: Launch new create Job
   k8s:
-    definition: "{{ lookup('template', 'job-create-user-db.yml.j2') }}"
+    definition: "{{ lookup('template', 'job-create-user-db.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
 
@@ -83,5 +83,5 @@
 
 - name: Write database secrets (to {{ db_user_namespace }} namepsace)
   k8s:
-    definition: "{{ lookup('template', 'secrets-postgres-user-db.yml.j2') }}"
+    definition: "{{ lookup('template', 'secrets-postgres-user-db.yaml.j2') }}"
     wait: yes

@@ -1,0 +1,14 @@
+---
+
+galaxy_info:
+  role_name: efs_provisioner
+  description: A storage provisioner for AWS EFS volumes
+  author: Informatics Matters
+  license: Apache
+  min_ansible_version: 2.9.0
+  platforms:
+  - name: Kubernetes
+    versions: 1.16
+
+dependencies:
+- role: core

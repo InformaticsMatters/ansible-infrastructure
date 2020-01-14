@@ -137,7 +137,7 @@
 
 - name: Set kubernetes/main file fact
   set_fact:
-    k_main_file: "{{ ax_clone_dir }}/awx/installer/roles/kubernetes/tasks/main.yml"
+    k_main_file: "{{ ax_clone_dir }}/awx/installer/roles/kubernetes/tasks/main.yaml"
 
 - name: Remove 'Get kube version from api server' task
   replace:

@@ -55,7 +55,7 @@ ax_clone_dir: /tmp
 
 # The AWX platform.
 # Typically 'kubernetes' or 'openshift' where supported.
-# A deploy-{{ ax-platform }}-awx-{{ ax_version }}.yml file must exist
+# A deploy-{{ ax-platform }}-awx-{{ ax_version }}.yaml file must exist
 ax_platform: kubernetes
 # The AWX task_cpu_request. This controls the CPU requests
 # for all the containers in the AWX Pod. This (for 9.1.0) is 1500 (1.5 cores).

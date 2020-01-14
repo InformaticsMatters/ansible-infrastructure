@@ -105,7 +105,7 @@
 
 - name: Deploy
   k8s:
-    definition: "{{ lookup('template', '{{ item }}.yml.j2') }}"
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
   loop:

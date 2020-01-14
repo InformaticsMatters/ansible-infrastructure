@@ -4,7 +4,7 @@
   tasks:
   - include_role:
       name: infrastructure
-      tasks_from: delete-user-db.yml
+      tasks_from: delete-user-db.yaml
     vars:
       db: SetMe
       db_user: SetMe

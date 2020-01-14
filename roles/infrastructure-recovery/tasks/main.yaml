@@ -7,13 +7,13 @@
 - name: Remove any existing recovery Job
   k8s:
     state: absent
-    definition: "{{ lookup('template', 'job-postgres-recovery.yml.j2') }}"
+    definition: "{{ lookup('template', 'job-postgres-recovery.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ recovery_timeout }}"
 
 - name: Launch new recovery Job
   k8s:
-    definition: "{{ lookup('template', 'job-postgres-recovery.yml.j2') }}"
+    definition: "{{ lookup('template', 'job-postgres-recovery.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ recovery_timeout }}"
 

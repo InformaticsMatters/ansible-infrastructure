@@ -4,7 +4,8 @@
   tasks:
   - include_role:
       name: infrastructure
-      tasks_from: alter-user-password.yml
+      tasks_from: create-user-db.yaml
     vars:
+      db: SetMe
       db_user: SetMe
       db_user_namespace: SetMe

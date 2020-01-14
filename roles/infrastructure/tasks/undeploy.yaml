@@ -14,5 +14,5 @@
 - name: Deleting namespace '{{ infra_namespace }}'
   k8s:
     state: absent
-    definition: "{{ lookup('template', 'namespace-im-infra.yml.j2') }}"
+    definition: "{{ lookup('template', 'namespace-im-infra.yaml.j2') }}"
     wait: yes

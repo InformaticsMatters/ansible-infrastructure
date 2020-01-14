@@ -30,7 +30,7 @@
 # The actions for getting the KeyCloak token
 # are located in an infra role playbook.
 
-- include_tasks: get-keycloak-token.yml
+- include_tasks: get-keycloak-token.yaml
 
 # Adding users and passwords.
 # The steps here are: -

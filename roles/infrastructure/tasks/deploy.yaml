@@ -2,7 +2,7 @@
 
 - name: Creating namespace '{{ infra_namespace }}'
   k8s:
-    definition: "{{ lookup('template', '{{ item }}.yml.j2') }}"
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes
   loop:
   - namespace-im-infra
@@ -12,7 +12,7 @@
 
 - name: Relax {{ infra_namespace }} 'default' service account (for cert-manager)
   k8s:
-    definition: "{{ lookup('template', 'rolebinding-default-sa.yml.j2') }}"
+    definition: "{{ lookup('template', 'rolebinding-default-sa.yaml.j2') }}"
     wait: yes
   when: cm_state|string == 'present'
 
@@ -42,7 +42,7 @@
 
 - name: Write Database secrets
   k8s:
-    definition: "{{ lookup('template', 'secrets-postgres.yml.j2') }}"
+    definition: "{{ lookup('template', 'secrets-postgres.yaml.j2') }}"
     wait: yes
   when: pg_s_result.resources|length == 0
 
@@ -80,7 +80,7 @@
 
 - name: Write AWX databse secrets
   k8s:
-    definition: "{{ lookup('template', 'secrets-awx.yml.j2') }}"
+    definition: "{{ lookup('template', 'secrets-awx.yaml.j2') }}"
     wait: yes
   when: awx_s_result.resources|length == 0
 
@@ -122,7 +122,7 @@
 
 - name: Write Keycloak secrets
   k8s:
-    definition: "{{ lookup('template', 'secrets-keycloak.yml.j2') }}"
+    definition: "{{ lookup('template', 'secrets-keycloak.yaml.j2') }}"
     wait: yes
   when: kc_s_result.resources|length == 0
 
@@ -156,7 +156,7 @@
 
 - name: Write Keycloak manager secrets
   k8s:
-    definition: "{{ lookup('template', 'secrets-keycloak-manager.yml.j2') }}"
+    definition: "{{ lookup('template', 'secrets-keycloak-manager.yaml.j2') }}"
     wait: yes
   when: kc_m_s_result.resources|length == 0
 
@@ -181,7 +181,7 @@
 
 - name: Create postgres volume claim ({{ pg_vol_storageclass }})
   k8s:
-    definition: "{{ lookup('template', 'pvc-postgres.yml.j2') }}"
+    definition: "{{ lookup('template', 'pvc-postgres.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
 
@@ -200,7 +200,7 @@
 
 - name: Postgres
   k8s:
-    definition: "{{ lookup('template', '{{ item }}.yml.j2') }}"
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
   loop:
@@ -245,7 +245,7 @@
 
   - name: Create postgres backup volume claim ({{ pg_bu_vol_storageclass }})
     k8s:
-      definition: "{{ lookup('template', 'pvc-postgres-backup.yml.j2') }}"
+      definition: "{{ lookup('template', 'pvc-postgres-backup.yaml.j2') }}"
       wait: yes
       wait_timeout: "{{ wait_timeout }}"
 
@@ -261,7 +261,7 @@
 
   - name: Deploy hourly backup
     k8s:
-      definition: "{{ lookup('template', 'cronjob-postgres-backup.yml.j2') }}"
+      definition: "{{ lookup('template', 'cronjob-postgres-backup.yaml.j2') }}"
       wait: yes
       wait_timeout: "{{ wait_timeout }}"
 
@@ -279,7 +279,7 @@
 
   - name: Keycloak
     k8s:
-      definition: "{{ lookup('template', '{{ item }}.yml.j2') }}"
+      definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
       wait: yes
       wait_timeout: "{{ wait_timeout }}"
     loop:
@@ -301,14 +301,14 @@
 
   - name: Keycloak ingress
     k8s:
-      definition: "{{ lookup('template', 'ingress-keycloak.yml.j2') }}"
+      definition: "{{ lookup('template', 'ingress-keycloak.yaml.j2') }}"
 
   # Add our Keycloak realm.
   # And then add the realm manager and realm roles...
 
-  - import_tasks: add-keycloak-realm.yml
-  - import_tasks: add-keycloak-realm-manager.yml
-  - import_tasks: add-keycloak-realm-roles.yml
+  - import_tasks: add-keycloak-realm.yaml
+  - import_tasks: add-keycloak-realm-manager.yaml
+  - import_tasks: add-keycloak-realm-roles.yaml
 
   when: kc_state|string == 'present'
 
@@ -371,7 +371,7 @@
     when:
     - ax_ss_result.resources|length == 0
 
-  - import_tasks: render-awx-{{ ax_version }}-{{ ax_platform }}.yml
+  - import_tasks: render-awx-{{ ax_version }}-{{ ax_platform }}.yaml
     when:
     - ax_ss_result.resources|length == 0
 
@@ -384,11 +384,11 @@
 
   - name: Relax {{ infra_namespace }} 'awx' service account
     k8s:
-      definition: "{{ lookup('template', 'rolebinding-awx-sa.yml.j2') }}"
+      definition: "{{ lookup('template', 'rolebinding-awx-sa.yaml.j2') }}"
       wait: yes
 
   - name: Deploy AWX (into {{ infra_namespace }})
-    shell: ansible-playbook -i inventory install.yml
+    shell: ansible-playbook -i inventory install.yaml   # noqa 305
     args:
       chdir: "{{ ax_clone_dir }}/awx/installer"
     async: "{{ 15 * 60 }}"

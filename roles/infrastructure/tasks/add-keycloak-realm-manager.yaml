@@ -21,7 +21,7 @@
 # The realm is assumed to exist,
 # it's created by a prior play.
 
-- include_tasks: get-keycloak-token.yml
+- include_tasks: get-keycloak-token.yaml
   vars:
     realm: master
     realm_user: "{{ kc_admin_fact }}"
@@ -54,7 +54,7 @@
 
 # Create the manager account if it does not exist...
 
-- include_tasks: add-keycloak-realm-manager-user.yml
+- include_tasks: add-keycloak-realm-manager-user.yaml
   when:
   - kc_manager_user_id|length == 0
   - kc_manager_password_fact is defined

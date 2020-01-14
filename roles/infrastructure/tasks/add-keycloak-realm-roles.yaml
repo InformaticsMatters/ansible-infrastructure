@@ -3,7 +3,7 @@
 # Get a keycloak token (sets the fact 'kc_token').
 # Remember that the login user may have changed to admin.
 
-- include_tasks: get-keycloak-token.yml
+- include_tasks: get-keycloak-token.yaml
   vars:
     realm: "{{ kc_realm }}"
     realm_user: "{{ kc_manager_fact }}"

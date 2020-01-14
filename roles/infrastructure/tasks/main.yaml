@@ -2,7 +2,7 @@
 
 # Go...
 
-- include_tasks: deploy.yml
+- include_tasks: deploy.yaml
   when: infra_state|string == 'present'
-- include_tasks: undeploy.yml
+- include_tasks: undeploy.yaml
   when: infra_state|string == 'absent'

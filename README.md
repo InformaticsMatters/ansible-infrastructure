@@ -10,8 +10,8 @@ the required modules, roles and collections: -
 
     $ conda activate ansible-infrastructure
     $ pip install -r requirements.txt
-    $ ansible-galaxy install -r role-requirements.yml
-    $ ansible-galaxy collection install -r collection-requirements.yml
+    $ ansible-galaxy install -r role-requirements.yaml
+    $ ansible-galaxy collection install -r collection-requirements.yaml
 
 ## Kubernetes preparation
 You should be in possession of a Kubernetes configuration file. This is often
@@ -47,16 +47,16 @@ as an example: -
 
 And then, using the parameter file, deploy the infrastructure: -
 
-    $ ansible-playbook -e "@parameters" site.yml
+    $ ansible-playbook -e "@parameters" site.yaml
 
 If your parameters are encrypted with Ansible [vault] you can use them
 directly, without needing to decrypt them: -
 
-    $ ansible-playbook -e "@site-im-main-parameters.vault" site.yml \
+    $ ansible-playbook -e "@site-im-main-parameters.vault" site.yaml \
         --vault-password-file vault-pass.txt
 
 ### Plays
-The following plays are supported, captured in corresponding `site*.yml`
+The following plays are supported, captured in corresponding `site*.yaml`
 playbook files: -
 
 -   `site` (for infrastructure deployment)
@@ -69,7 +69,7 @@ playbook files: -
 Be careful here, you'll delete the entire infrastructure; its namespace,
 database, the AWX server and the certificate manager (if deployed): -
 
-    $ ansible-playbook -e "@parameters" unsite.yml
+    $ ansible-playbook -e "@parameters" unsite.yaml
 
 ## Using Ansible Vault to preserve parameters
 Site parameter files can be stored in `.vault` files. These will be written
