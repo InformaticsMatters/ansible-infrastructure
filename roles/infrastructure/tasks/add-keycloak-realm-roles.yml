@@ -18,6 +18,10 @@
 # 3. Get user identities for all the users in the users_file
 # 4. Set (reset) passwords for all the users that were added in step 2.
 
+- name: Set API endpoint
+  set_fact:
+    keycloak_endpoint: https://{{ kc_hostname }}/auth/admin/realms/{{ kc_realm }}
+
 #####
 # 1 #
 #####
@@ -26,7 +30,7 @@
 
 - name: Get exisiting Realm Roles ({{ kc_realm }})
   uri:
-    url: https://{{ kc_hostname }}/auth/admin/realms/{{ kc_realm }}/roles
+    url: "{{ keycloak_endpoint }}/roles"
     headers:
       Authorization: bearer {{ kc_token }}
   register: realm_roles
@@ -53,7 +57,7 @@
 
 - name: Add Roles (that do not exist)
   uri:
-    url: https://{{ kc_hostname }}/auth/admin/realms/{{ kc_realm }}/roles
+    url: "{{ keycloak_endpoint }}/roles"
     method: POST
     body: >-
       {"name": "{{ item }}"}
@@ -81,9 +85,9 @@
 
 - name: Get the top-level Realm Representation
   uri:
-    url: https://{{ kc_hostname }}/auth/admin/realms/{{ kc_realm }}
+    url: "{{ keycloak_endpoint }}"
     headers:
-      Authorization: bearer {{ keycloak_token }}
+      Authorization: bearer {{ kc_token }}
   register: realm_representation
   changed_when: False
 
@@ -102,11 +106,11 @@
 
 - name: Update Realm Representation
   uri:
-    url: https://{{ oc_hostname }}/admin/realms/{{ kc_realm }}
+    url: "{{ keycloak_endpoint }}"
     method: PUT
     body: >-
       {"defaultRoles": {{ known_default_roles }}}
     body_format: json
     status_code: 204
     headers:
-      Authorization: bearer {{ keycloak_token }}
+      Authorization: bearer {{ kc_token }}

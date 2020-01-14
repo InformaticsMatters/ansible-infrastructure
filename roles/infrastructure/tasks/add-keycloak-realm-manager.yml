@@ -32,13 +32,13 @@
 
 - name: Set API endpoint
   set_fact:
-    kc_endpoint: https://{{ kc_hostname }}/auth/admin/realms/{{ kc_realm }}
+    keycloak_endpoint: https://{{ kc_hostname }}/auth/admin/realms/{{ kc_realm }}
 
 # Check and create the manager (in the kc_realm)...
 
 - name: Query manager account
   uri:
-    url: "{{ kc_endpoint }}/users?username={{ kc_manager_fact }}"
+    url: "{{ keycloak_endpoint }}/users?username={{ kc_manager_fact }}"
     headers:
       Authorization: bearer {{ kc_token }}
   register: manager_user
@@ -46,20 +46,24 @@
 
 - name: Get manager user ID
   set_fact:
-    kc_manager_id: "{{ manager_user|json_query('json[0].id') }}"
+    kc_manager_user_id: "{{ manager_user|json_query('json[0].id') }}"
+
+- name: Display manager user ID
+  debug:
+    var: kc_manager_user_id
+
+# Create the manager account if it does not exist...
 
 - include_tasks: add-keycloak-realm-manager-user.yml
   when:
-  - kc_manager_id|length == 0
+  - kc_manager_user_id|length == 0
   - kc_manager_password_fact is defined
-
-# Create the manager account if it does not exist...
 
 - name: Assert user ID
   assert:
     that:
-    - kc_manager_id is defined
-    - kc_manager_id|string|length > 0
+    - kc_manager_user_id is defined
+    - kc_manager_user_id|string|length > 0
 
 # Now get the 'realm-management' client ID
 # so we can lookup the available roles it provides...
@@ -68,7 +72,7 @@
 
 - name: Get realm-management client ID
   uri:
-    url: "{{ kc_endpoint }}/clients?clientId=realm-management"
+    url: "{{ keycloak_endpoint }}/clients?clientId=realm-management"
     headers:
       Authorization: bearer {{ kc_token }}
   register: rm_client_id
@@ -82,12 +86,12 @@
 
 - name: Get available realm-management roles
   uri:
-    url: "{{ kc_endpoint }}/{{ method }}"
+    url: "{{ keycloak_endpoint }}/{{ method }}"
     headers:
       Authorization: bearer {{ kc_token }}
   register: rm_roles
   vars:
-    method: users/{{ kc_manager_id }}/role-mappings/clients/{{ client_id }}/available
+    method: users/{{ kc_manager_user_id }}/role-mappings/clients/{{ client_id }}/available
 
 # 'realm-admin' might not be in the 'available' list.
 # It isn't if the role's already assigned,
@@ -110,7 +114,7 @@
 
 - name: Assign realm-management/realm-admin role to user
   uri:
-    url: "{{ kc_endpoint }}/{{ method }}"
+    url: "{{ keycloak_endpoint }}/{{ method }}"
     method: POST
     body: >-
       [{"clientRole": "true",
@@ -122,6 +126,6 @@
     headers:
       Authorization: bearer {{ kc_token }}
   vars:
-    method: users/{{ kc_manager_id }}/role-mappings/clients/{{ client_id }}
+    method: users/{{ kc_manager_user_id }}/role-mappings/clients/{{ client_id }}
   when:
   - realm_admin_id is defined

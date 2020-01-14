@@ -212,13 +212,16 @@
   - service-postgres
   - statefulset-postgres
 
-- name: Wait for postgres to become running
+- name: Wait for postgres to become Ready
   k8s_info:
     kind: Pod
     name: database-0
     namespace: "{{ infra_namespace }}"
   register: database_result
-  until: database_result.resources|length == 1 and database_result.resources[0].status.phase == 'Running'
+  until: >-
+    database_result.resources|length == 1
+    and database_result.resources[0].status.containerStatuses|length == 1
+    and database_result.resources[0].status.containerStatuses[0].ready
   delay: 10
   retries: "{{ (wait_timeout|int / 10)|int }}"
 
@@ -283,13 +286,16 @@
     - service-keycloak
     - statefulset-keycloak
 
-  - name: Wait for keycloak to become running
+  - name: Wait for keycloak to become Ready
     k8s_info:
       kind: Pod
       name: keycloak-0
       namespace: "{{ infra_namespace }}"
     register: keycloak_result
-    until: keycloak_result.resources|length == 1 and keycloak_result.resources[0].status.phase == 'Running'
+    until: >-
+      keycloak_result.resources|length == 1
+      and keycloak_result.resources[0].status.containerStatuses|length == 1
+      and keycloak_result.resources[0].status.containerStatuses[0].ready
     delay: 10
     retries: "{{ (wait_timeout|int / 10)|int }}"
 
@@ -298,60 +304,11 @@
       definition: "{{ lookup('template', 'ingress-keycloak.yml.j2') }}"
 
   # Add our Keycloak realm.
-  # The steps here are: -
-  #
-  # - Get a list of realms
-  # - Add the realm if it's not known
-
-  - name: Get Keycloak token
-    import_tasks: get-keycloak-token.yml
-    vars:
-      realm: master
-      realm_user: "{{ kc_admin_fact }}"
-      realm_user_password: "{{ kc_admin_password_fact }}"
-
-  - name: Get exisiting Realms
-    uri:
-      url: https://{{ kc_hostname }}/auth/admin/realms
-      headers:
-        Authorization: bearer {{ kc_token }}
-    register: realms
-    changed_when: False
-
-  # The above 'query' results in a 'realms' variable. A structure
-  # with each query represented as an element in the 'json' array.
-  # i.e.
-  #
-  #  "json": [{
-  #     "realm": "master"
-  #
-  # To simplify further processing, we'd like a nice flat list.
-  - name: Collect known Realms
-    set_fact:
-      known_realms: "{{ realms|json_query('json[*].realm')|flatten }}"
-
-  # Now, add all the realms we need...
-
-  - name: Add Realm (if it does not exist)
-    uri:
-      url: https://{{ kc_hostname }}/auth/admin/realms
-      method: POST
-      body: >-
-        {"realm": "{{ kc_realm }}",
-         "enabled": "true"}
-      body_format: json
-      status_code: 201
-      headers:
-        Authorization: bearer {{ kc_token }}
-    when:
-    - kc_realm not in known_realms
-
   # And then add the realm manager and realm roles...
 
-  - name: Add keycloak realm manager
-    import_tasks: add-keycloak-realm-manager.yml
-  - name: Add keycloak realm roles
-    import_tasks: add-keycloak-realm-roles.yml
+  - import_tasks: add-keycloak-realm.yml
+  - import_tasks: add-keycloak-realm-manager.yml
+  - import_tasks: add-keycloak-realm-roles.yml
 
   when: kc_state|string == 'present'
 

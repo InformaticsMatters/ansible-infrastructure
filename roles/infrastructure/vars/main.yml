@@ -63,6 +63,8 @@ ax_platform: kubernetes
 # The value (expected to be a number) is used if not 'default'.
 ax_task_cpu_request: default
 
+# AWX database credentials.
+# This is _not_ the AWX console admin user.
 ax_user: awx
 ax_user_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_letters,digits') }}"
 ax_database: awx
@@ -71,14 +73,17 @@ ax_database: awx
 
 kc_version: '8.0.1'
 
+# Keycloak database credentials.
+# This is _not_ the keycloak console admin user.
 kc_user: keycloak
 kc_user_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_letters') }}"
 kc_database: keycloak
 
+# The Keycloak realm for our deployment
 kc_realm: im
 
-# The list of keycloak default roles
-# that'll be added to the 'kc_realm'
+# The list of keycloak default roles.
+# These will be added to the 'kc_realm'.
 kc_default_roles:
 - standard-user
 
