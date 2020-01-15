@@ -13,15 +13,6 @@ the required modules, roles and collections: -
     $ ansible-galaxy install -r role-requirements.yaml
     $ ansible-galaxy collection install -r collection-requirements.yaml
 
-## Kubernetes preparation
-You should be in possession of a Kubernetes configuration file. This is often
-the content of the `config` file in your `~/.kube` directory. You can place the
-configuration file anywhere, and you would place it somewhere else if you
-want to preserve your existing `~/.kube/config`. If you're not using
-`~/.kube/config` set the `KUBECONFIG` environment variable to its path: -
-
-    $ export KUBECONFIG=/Users/abc/infra-config
-
 ## Cluster pre-requisites
 Your cluster will need: -
 
@@ -37,6 +28,30 @@ Your cluster will need: -
     resolvable domain names for infrastructure components that will be deployed
     (e.g. domains for the **AWX** and **Keycloak** services).
  
+## Cluster credentials
+You should be in possession of a Kubernetes configuration file. This is often
+the content of the `config` file in your `~/.kube` directory. When run from
+AWX, AWX will inject the following environment variables: -
+
+-   `K8S_AUTH_HOST`
+-   `K8S_AUTH_API_KEY`
+-   `K8S_AUTH_VERIFY_SSL`
+
+When running outside of AWX you need to provide values for these
+where the `HOST` is the **cluster -> server** value of your control plane from
+the config file and `API_KEY` is the **user-> token** value.
+
+    $ export K8S_AUTH_HOST=https://1.2.3.4:6443
+    $ export K8S_AUTH_API_KEY=kubeconfig-user-abc:00000000
+    $ export K8S_AUTH_VERIFY_SSL=no
+
+>   If you intend to use `kubectl` you will need to set `KUBECONFIG` variable
+    to point to a local copy of the cluster config file. You can safely place
+    the config in the root of a clone of this repository as the file
+    `kubeconfig` as this is part fo the project ignore set.
+
+    $ export KUBECONFIG=./kubeconfig
+
 ## Creating
 You may need to adjust some deployment parameters to suit you needs.
 Do this by creating a `parameters` file using `parameters.template`
