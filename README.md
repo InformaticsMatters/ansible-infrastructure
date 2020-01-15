@@ -75,9 +75,6 @@ The following plays are supported, captured in corresponding `site*.yaml`
 playbook files: -
 
 -   `site` (for infrastructure deployment)
--   `site-infrastructure_create-user-db` (to create a database user and database)
--   `site-infrastructure_alter-user-password` (to change a database user password)
--   `site-infrastructure_delete-user-db` (to delete a database user and database)
 -   `site-infrastructure-recovery` (to recover database content from a backup)
 
 ## Deleting the infrastructure
