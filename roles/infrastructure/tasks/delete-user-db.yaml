@@ -32,7 +32,7 @@
     wait_timeout: "{{ wait_timeout }}"
 
 - name: Wait for delete completion
-  k8s_info:
+  k8s_facts:
     kind: Job
     namespace: "{{ infra_namespace }}"
     name: delete-user-db

@@ -10,7 +10,7 @@
 #   https://github.com/kubernetes-incubator/external-storage/issues/1209
 
 - name: Get cluster nodes
-  k8s_info:
+  k8s_facts:
     kind: Node
   register: cluster_result
 

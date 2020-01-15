@@ -19,7 +19,7 @@
 # Secrets (database) ----------------------------------------------------------
 
 - name: Check databse (postgres) secrets
-  k8s_info:
+  k8s_facts:
     kind: Secret
     api_version: v1
     namespace: "{{ infra_namespace }}"
@@ -53,7 +53,7 @@
 # Secrets (AWX database) ------------------------------------------------------
 
 - name: Check AWX databse secrets
-  k8s_info:
+  k8s_facts:
     kind: Secret
     api_version: v1
     namespace: "{{ infra_namespace }}"
@@ -95,7 +95,7 @@
 # Secrets (Keycloak database) -------------------------------------------------
 
 - name: Check Keycloak secrets
-  k8s_info:
+  k8s_facts:
     kind: Secret
     api_version: v1
     namespace: "{{ infra_namespace }}"
@@ -135,7 +135,7 @@
     var: kc_admin_password_fact
 
 - name: Check Keycloak manager secrets
-  k8s_info:
+  k8s_facts:
     kind: Secret
     api_version: v1
     namespace: "{{ infra_namespace }}"
@@ -167,7 +167,7 @@
 # Database (postgres) ---------------------------------------------------------
 
 - name: Get {{ pg_vol_storageclass }} StorageClass
-  k8s_info:
+  k8s_facts:
     kind: StorageClass
     name: "{{ pg_vol_storageclass }}"
   register: sc_result
@@ -189,7 +189,7 @@
 # e.g. wait until resources[0].status.phase == Bound (initially Pending)
 
 - name: Wait for postgres volume claim to bind
-  k8s_info:
+  k8s_facts:
     kind: PersistentVolumeClaim
     name: pg-pvc
     namespace: "{{ infra_namespace }}"
@@ -213,7 +213,7 @@
   - statefulset-postgres
 
 - name: Wait for postgres to become Ready
-  k8s_info:
+  k8s_facts:
     kind: Pod
     name: database-0
     namespace: "{{ infra_namespace }}"
@@ -231,7 +231,7 @@
   block:
 
   - name: Get {{ pg_bu_vol_storageclass }} StorageClass
-    k8s_info:
+    k8s_facts:
       kind: StorageClass
       name: "{{ pg_bu_vol_storageclass }}"
     register: sc_result
@@ -250,7 +250,7 @@
       wait_timeout: "{{ wait_timeout }}"
 
   - name: Wait for postgres backup volume claim to bind
-    k8s_info:
+    k8s_facts:
       kind: PersistentVolumeClaim
       name: pg-bu-pvc
       namespace: "{{ infra_namespace }}"
@@ -287,7 +287,7 @@
     - statefulset-keycloak
 
   - name: Wait for keycloak to become Ready
-    k8s_info:
+    k8s_facts:
       kind: Pod
       name: keycloak-0
       namespace: "{{ infra_namespace }}"
@@ -326,7 +326,7 @@
       - ax_cert_issuer in cert_issuer_set
 
   - name: Check AWX stateful set
-    k8s_info:
+    k8s_facts:
       kind: StatefulSet
       namespace: "{{ infra_namespace }}"
       name: awx

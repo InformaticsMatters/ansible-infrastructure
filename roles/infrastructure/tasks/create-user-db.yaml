@@ -25,7 +25,7 @@
     - db_user_namespace != 'SetMe'
 
 - name: Get user namespace
-  k8s_info:
+  k8s_facts:
     kind: Namespace
     name: "{{ db_user_namespace }}"
   register: ns_result
@@ -36,7 +36,7 @@
     fail_msg: User namespace does not exist
 
 - name: Get secrets (from {{ db_user_namespace }} namepsace)
-  k8s_info:
+  k8s_facts:
     kind: Secret
     name: database-secrets
     namespace: "{{ db_user_namespace }}"
@@ -63,7 +63,7 @@
     wait_timeout: "{{ wait_timeout }}"
 
 - name: Wait for create completion
-  k8s_info:
+  k8s_facts:
     kind: Job
     namespace: "{{ infra_namespace }}"
     name: create-user-db
