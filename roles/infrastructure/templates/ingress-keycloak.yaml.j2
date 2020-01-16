@@ -2,7 +2,7 @@
 kind: Ingress
 apiVersion: networking.k8s.io/v1beta1
 metadata:
-  name: im-keycloak-ingress
+  name: keycloak
   namespace: {{ infra_namespace }}
   annotations:
     ingress.kubernetes.io/rewrite-target: /
