@@ -1,23 +1,16 @@
 ---
 
 # A general play that can operate outside of the main deployment.
-# It gets the Keycloak admin user and password (from the well-known secrets)
-# and then gets an API token from the server.
 #
 # This play expects the following: -
 #
-# - The realm variable to be set (i.e. 'master' or some such)
-# - a Valid realm_user and realm_user_password (for the realm)
-# - The kc_hostname variable to be set (i.e. 'example.com')
-# - Keycloak Secrets to exist in the infrastructure namespace
+# - realm to be set (i.e. 'master' or some such)
+# - realm_user and realm_user_password (for the realm)
+# - kc_hostname to be set (i.e. 'example.com')
 #
-# In return, this play sets three facts: -
+# In return, this play sets the fact: -
 #
 # - kc_token
-
-- name: Display token variables
-  debug:
-    msg: hostname={{ kc_hostname }} realm={{ realm }} user={{ realm_user }} password={{ realm_user_password }}
 
 - name: Get Keycloak API token ({{ realm }} realm)
   uri:
