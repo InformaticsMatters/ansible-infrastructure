@@ -1,6 +1,7 @@
 # Ansible Infrastructure
 
 [![Build Status](https://travis-ci.com/InformaticsMatters/ansible-infrastructure.svg?branch=master)](https://travis-ci.com/InformaticsMatters/ansible-infrastructure)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/informaticsmatters/ansible-infrastructure)
 
 An Ansible role to deploy Informatics Matters infrastructure components
 (a database, keycloak and AWX) to [Kubernetes].
