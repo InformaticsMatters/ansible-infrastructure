@@ -92,7 +92,7 @@
   debug:
     msg: AWX console admin user - {{ ax_admin_fact }}/{{ ax_admin_password_fact }}
 
-# Secrets (Keycloak database) -------------------------------------------------
+# Secrets (Keycloak) ----------------------------------------------------------
 
 - name: Check Keycloak secrets
   k8s_facts:
@@ -107,6 +107,7 @@
     kc_user_fact: "{{ kc_user }}"
     kc_user_password_fact: "{{ kc_user_password }}"
     kc_database_fact: "{{ kc_database }}"
+    kc_hostanme_fact: "{{ kc_hostname }}"
     kc_admin_fact: "{{ kc_admin }}"
     kc_admin_password_fact: "{{ kc_admin_password }}"
   when: kc_s_result.resources|length == 0
@@ -116,6 +117,7 @@
     kc_user_fact: "{{ kc_s_result.resources[0].data.database_user|b64decode }}"
     kc_user_password_fact: "{{ kc_s_result.resources[0].data.database_user_password|b64decode }}"
     kc_database_fact: "{{ kc_s_result.resources[0].data.database_name|b64decode }}"
+    kc_hostname_fact: "{{ kc_s_result.resources[0].data.keycloak_hostname|b64decode }}"
     kc_admin_fact: "{{ kc_s_result.resources[0].data.keycloak_admin_user|b64decode }}"
     kc_admin_password_fact: "{{ kc_s_result.resources[0].data.keycloak_admin_user_password|b64decode }}"
   when: kc_s_result.resources|length == 1
