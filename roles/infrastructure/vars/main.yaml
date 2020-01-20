@@ -42,8 +42,13 @@ pg_bu_imagepullpolicy: IfNotPresent
 # AWX -------------------------------------------------------------------------
 
 # The AWX server version.
-# A tag for the AWX github repo (See https://github.com/ansible/awx)
-ax_version: '9.1.0'
+# A tag for the AWX github repo (See https://github.com/ansible/awx).
+#
+# NOTE: You MUST ensure that a play exists to render the AWX playbook that
+#       will be downloaded for the version you define here. The play is should
+#       be located in 'infrastructure/tasks'  and MUST be called
+#       'render-awx-{{ ax_version }}-{{ ax_platform }}.yaml'
+ax_version: '9.1.1'
 
 # The directory (on the client) where the AWX repo
 # (including the built-in installation playbook)
@@ -55,7 +60,7 @@ ax_clone_dir: /tmp
 # A deploy-{{ ax-platform }}-awx-{{ ax_version }}.yaml file must exist
 ax_platform: kubernetes
 # The AWX task_cpu_request. This controls the CPU requests
-# for all the containers in the AWX Pod. This (for 9.1.0) is 1500 (1.5 cores).
+# for all the containers in the AWX Pod. This (for 9.1.1) is 1500 (1.5 cores).
 # Reduce this for compact deployments or minikube experiments.
 # The value (expected to be a number) is used if not 'default'.
 ax_task_cpu_request: default
@@ -75,6 +80,10 @@ kc_version: '8.0.1'
 kc_user: keycloak
 kc_user_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_letters') }}"
 kc_database: keycloak
+
+# Timeout (seconds) to wait for
+# a keycloak token
+kc_token_timeout: 120
 
 # The Keycloak realm for our deployment
 kc_realm: im

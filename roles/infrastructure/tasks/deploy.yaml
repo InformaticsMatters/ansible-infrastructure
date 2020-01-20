@@ -18,7 +18,7 @@
 
 # Secrets (database) ----------------------------------------------------------
 
-- name: Check databse (postgres) secrets
+- name: Check database (postgres) secrets
   k8s_facts:
     kind: Secret
     api_version: v1
@@ -52,7 +52,7 @@
 
 # Secrets (AWX database) ------------------------------------------------------
 
-- name: Check AWX databse secrets
+- name: Check AWX database secrets
   k8s_facts:
     kind: Secret
     api_version: v1
@@ -60,7 +60,7 @@
     name: im-awx
   register: awx_s_result
 
-- name: Set AWX databse secret facts
+- name: Set AWX database secret facts
   set_fact:
     ax_user_fact: "{{ ax_user }}"
     ax_user_password_fact: "{{ ax_user_password }}"
@@ -69,7 +69,7 @@
     ax_admin_password_fact: "{{ ax_admin_password }}"
   when: awx_s_result.resources|length == 0
 
-- name: Set AWX databse secret facts (pre-deployed secrets)
+- name: Set AWX database secret facts (pre-deployed secrets)
   set_fact:
     ax_user_fact: "{{ awx_s_result.resources[0].data.database_user|b64decode }}"
     ax_user_password_fact: "{{ awx_s_result.resources[0].data.database_user_password|b64decode }}"
@@ -78,7 +78,7 @@
     ax_admin_password_fact: "{{ awx_s_result.resources[0].data.ax_admin_password|b64decode }}"
   when: awx_s_result.resources|length == 1
 
-- name: Write AWX databse secrets
+- name: Write AWX database secrets
   k8s:
     definition: "{{ lookup('template', 'secret-awx.yaml.j2') }}"
     wait: yes
@@ -293,8 +293,8 @@
       keycloak_result.resources|length == 1
       and keycloak_result.resources[0].status.containerStatuses|length == 1
       and keycloak_result.resources[0].status.containerStatuses[0].ready
-    delay: 10
-    retries: "{{ (wait_timeout|int / 10)|int }}"
+    delay: 30
+    retries: "{{ (wait_timeout|int / 30)|int }}"
 
   - name: Keycloak ingress
     k8s:
@@ -385,7 +385,7 @@
       wait: yes
 
   - name: Deploy AWX (into {{ infra_namespace }})
-    shell: ansible-playbook -i inventory install.yaml   # noqa 305
+    command: ansible-playbook -i inventory install.yml
     args:
       chdir: "{{ ax_clone_dir }}/awx/installer"
     async: "{{ 15 * 60 }}"

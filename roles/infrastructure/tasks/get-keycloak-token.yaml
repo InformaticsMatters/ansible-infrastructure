@@ -11,6 +11,10 @@
 # In return, this play sets the fact: -
 #
 # - kc_token
+#
+# As we're used soon after the Keycloak Route/Ingress is created
+# we need to re-attempt extraction of the Keycloak token a few times
+# at least until the route's certificate has been generated.
 
 - name: Get Keycloak API token ({{ realm }} realm)
   uri:
@@ -22,6 +26,11 @@
   register: token_result
   vars:
     credentials: username={{ realm_user }}&password={{ realm_user_password }}
+  until: >-
+    token_result.json is defined
+    and token_result.json.access_token is defined
+  delay: 4
+  retries: "{{ (kc_token_timeout|int / 4)|int }}"
   changed_when: False
 
 - name: Set Keycloak API token fact

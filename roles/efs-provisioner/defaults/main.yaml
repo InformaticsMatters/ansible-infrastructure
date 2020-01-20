@@ -18,7 +18,7 @@ efs_state: present
 # This value needs to be unique for a given region.
 efs_backing_volume_name: im-efs
 # Namespace for the workload deployment
-efs_namespace: efs-provisioner
+efs_namespace: im-efs-provisioner
 
 # AWS credentials
 aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"

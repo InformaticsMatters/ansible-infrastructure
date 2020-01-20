@@ -6,13 +6,13 @@
 An Ansible role to deploy Informatics Matters infrastructure components
 (a database, keycloak and AWX) to [Kubernetes].
 
-Ideally you'll start from a Python 3 virtual environment and then install
+Ideally you'll start from a Python 3.8 virtual environment and then install
 the required modules, roles and collections: -
 
     $ conda activate ansible-infrastructure
     $ pip install -r requirements.txt
-    $ ansible-galaxy install -r role-requirements.yaml
-    $ ansible-galaxy collection install -r collection-requirements.yaml
+    $ ansible-galaxy install -r role-requirements.yaml --force-with-deps
+    $ ansible-galaxy collection install -r collection-requirements.yaml --force-with-deps
 
 ## Cluster pre-requisites
 Your cluster will need: -
@@ -30,17 +30,18 @@ Your cluster will need: -
     (e.g. domains for the **AWX** and **Keycloak** services).
  
 ## Cluster credentials
-You should be in possession of a Kubernetes configuration file. This is often
-the content of the `config` file in your `~/.kube` directory. When run from
-AWX, AWX will inject the following environment variables: -
+You should be in possession of a Kubernetes configuration file. Plays run
+from within AWX benefit from the automatic injection of Kubernetes variables.
+Once installed our AWX will inject the following environment variables: -
 
 -   `K8S_AUTH_HOST`
 -   `K8S_AUTH_API_KEY`
 -   `K8S_AUTH_VERIFY_SSL`
 
-When running outside of AWX you need to provide values for these
-where the `HOST` is the **cluster -> server** value of your control plane from
-the config file and `API_KEY` is the **user-> token** value.
+As we're deploying the infrastructure components (from outside AWX)
+we need to provide values for these. The `HOST` is the **cluster -> server**
+value of your control plane from the config file and `API_KEY` is the
+**user-> token** value: -
 
     $ export K8S_AUTH_HOST=https://1.2.3.4:6443
     $ export K8S_AUTH_API_KEY=kubeconfig-user-abc:00000000
@@ -53,6 +54,12 @@ the config file and `API_KEY` is the **user-> token** value.
 
     $ export KUBECONFIG=./kubeconfig
 
+You will need to provide standard AWS credentials for the cluster you're
+configuring via the environment for some of the Roles to properly function: -
+
+    $ export AWS_ACCESS_KEY_ID=xxxxxxxxxxxx
+    $ export AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxx
+    
 ## Creating
 You may need to adjust some deployment parameters to suit you needs.
 Do this by creating a `parameters` file using `parameters.template`
@@ -82,7 +89,8 @@ playbook files: -
 Be careful here, you'll delete the entire infrastructure; its namespace,
 database, the AWX server and the certificate manager (if deployed): -
 
-    $ ansible-playbook -e "@parameters" unsite.yaml
+    $ ansible-playbook -e "@unsite-im-main-parameters.vault" unsite.yaml \
+        --vault-password-file vault-pass.txt
 
 ## Using Ansible Vault to preserve parameters
 Site parameter files can be stored in `.vault` files. These will be written
