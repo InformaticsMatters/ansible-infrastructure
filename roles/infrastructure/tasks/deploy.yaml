@@ -107,7 +107,7 @@
     kc_user_fact: "{{ kc_user }}"
     kc_user_password_fact: "{{ kc_user_password }}"
     kc_database_fact: "{{ kc_database }}"
-    kc_hostanme_fact: "{{ kc_hostname }}"
+    kc_hostname_fact: "{{ kc_hostname }}"
     kc_admin_fact: "{{ kc_admin }}"
     kc_admin_password_fact: "{{ kc_admin_password }}"
   when: kc_s_result.resources|length == 0
