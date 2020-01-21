@@ -81,18 +81,6 @@ kc_user: keycloak
 kc_user_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_letters') }}"
 kc_database: keycloak
 
-# Timeout (seconds) to wait for
-# a keycloak token
-kc_token_timeout: 120
-
-# The Keycloak realm for our deployment
-kc_realm: im
-
-# The list of keycloak default roles.
-# These will be added to the 'kc_realm'.
-kc_default_roles:
-- standard-user
-
 # CPU and Memory requests and limits
 kc_cpu_request: 250m
 kc_cpu_limit: 250m

@@ -60,10 +60,6 @@ kc_cert_issuer: production
 kc_admin: admin
 kc_admin_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters') }}"
 
-# The keycloak manager account
-kc_manager: manager
-kc_manager_password: "{{ lookup('password', '/dev/null length=14 chars=ascii_letters') }}"
-
 # AWX -------------------------------------------------------------------------
 
 # Deploy (or un-deploy)?

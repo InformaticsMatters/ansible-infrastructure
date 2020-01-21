@@ -136,36 +136,6 @@
   debug:
     var: kc_admin_password_fact
 
-- name: Check Keycloak manager secrets
-  k8s_facts:
-    kind: Secret
-    api_version: v1
-    namespace: "{{ infra_namespace }}"
-    name: im-keycloak-manager
-  register: kc_m_s_result
-
-- name: Set Keycloak manager secret facts
-  set_fact:
-    kc_manager_fact: "{{ kc_manager }}"
-    kc_manager_password_fact: "{{ kc_manager_password }}"
-  when: kc_m_s_result.resources|length == 0
-
-- name: Set Keycloak manager secret facts (pre-deployed secrets)
-  set_fact:
-    kc_manager_fact: "{{ kc_m_s_result.resources[0].data.keycloak_manager_user|b64decode }}"
-    kc_manager_password_fact: "{{ kc_m_s_result.resources[0].data.keycloak_manager_user_password|b64decode }}"
-  when: kc_m_s_result.resources|length == 1
-
-- name: Write Keycloak manager secrets
-  k8s:
-    definition: "{{ lookup('template', 'secret-keycloak-manager.yaml.j2') }}"
-    wait: yes
-  when: kc_m_s_result.resources|length == 0
-
-- name: Display Keycloak manager password
-  debug:
-    var: kc_manager_password_fact
-
 # Database (postgres) ---------------------------------------------------------
 
 - name: Get {{ pg_vol_storageclass }} StorageClass
@@ -301,13 +271,6 @@
   - name: Keycloak ingress
     k8s:
       definition: "{{ lookup('template', 'ingress-keycloak.yaml.j2') }}"
-
-  # Add our Keycloak realm.
-  # And then add the realm manager and realm roles...
-
-  - import_tasks: add-keycloak-realm.yaml
-  - import_tasks: add-keycloak-realm-manager.yaml
-  - import_tasks: add-keycloak-realm-roles.yaml
 
   when: kc_state|string == 'present'
 
