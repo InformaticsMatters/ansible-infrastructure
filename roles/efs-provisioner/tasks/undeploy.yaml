@@ -12,7 +12,7 @@
 # And we start by querying the AWS nodes (simply to get the EFS Region)...
 
 - name: Get cluster nodes
-  k8s_facts:
+  k8s_info:
     kind: Node
   register: cluster_result
 

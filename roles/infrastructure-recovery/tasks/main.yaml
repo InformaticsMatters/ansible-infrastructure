@@ -25,7 +25,7 @@
   block:
 
   - name: Wait for completion
-    k8s_facts:
+    k8s_info:
       kind: Job
       namespace: "{{ infra_namespace }}"
       name: postgres-recovery

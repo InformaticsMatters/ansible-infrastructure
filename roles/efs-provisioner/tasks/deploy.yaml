@@ -10,7 +10,7 @@
 #   https://github.com/kubernetes-incubator/external-storage/issues/1209
 
 - name: Get cluster nodes
-  k8s_facts:
+  k8s_info:
     kind: Node
   register: cluster_result
 
@@ -24,7 +24,7 @@
     cluster_instance: "{{ cluster_result.resources[0].spec.providerID.split('/')[-1] }}"
 
 - name: Get EC2 Info (of first node)
-  ec2_instance_facts:
+  ec2_instance_info:
     region: "{{ cluster_region }}"
     instance_ids:
     - "{{ cluster_instance }}"
@@ -45,7 +45,7 @@
 # Here we make sure appropriate rules are present.
 
 - name: Get Security Groups
-  ec2_group_facts:
+  ec2_group_info:
     region: "{{ cluster_region }}"
   register: sg_result
 
