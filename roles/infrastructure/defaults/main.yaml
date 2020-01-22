@@ -31,7 +31,7 @@ db_user_password: "{{ lookup('password', '/dev/null length=8 chars=ascii_letters
 
 # Deploy backup strategy?
 # One of 'present' or 'absent'
-pg_bu_state: absent
+pg_bu_state: present
 # The database backup volume size (Gi).
 pg_bu_vol_size_g: 25
 # The backup volume StorageClass.

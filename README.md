@@ -89,7 +89,7 @@ playbook files: -
 Be careful here, you'll delete the entire infrastructure; its namespace,
 database, the AWX server and the certificate manager (if deployed): -
 
-    $ ansible-playbook -e "@unsite-im-main-parameters.vault" unsite.yaml \
+    $ ansible-playbook -e "@site-im-main-parameters.vault" unsite.yaml \
         --vault-password-file vault-pass.txt
 
 ## Using Ansible Vault to preserve parameters
