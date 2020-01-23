@@ -54,7 +54,7 @@ value of your control plane from the config file and `API_KEY` is the
 
     $ export KUBECONFIG=./kubeconfig
 
-You will need to provide standard AWS credentials for the cluster you're
+You will also need to provide standard AWS credentials for the cluster you're
 configuring via the environment for some of the Roles to properly function: -
 
     $ export AWS_ACCESS_KEY_ID=xxxxxxxxxxxx

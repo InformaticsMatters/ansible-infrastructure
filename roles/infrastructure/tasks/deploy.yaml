@@ -191,8 +191,8 @@
     database_result.resources|length == 1
     and database_result.resources[0].status.containerStatuses|length == 1
     and database_result.resources[0].status.containerStatuses[0].ready
-  delay: 10
-  retries: "{{ (wait_timeout|int / 10)|int }}"
+  delay: 30
+  retries: "{{ (wait_timeout|int / 30)|int }}"
 
 # Database (backups) ----------------------------------------------------------
 
