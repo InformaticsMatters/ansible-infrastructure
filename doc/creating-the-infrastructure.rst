@@ -3,27 +3,16 @@ Creating the Infrastructure
 ***************************
 
 Parameters (vault files)
-========================
+------------------------
 
 Assuming you've followed the :doc:`getting-started` section, creating the
 cluster infrastructure relies on using or creating a set of *parameters* that
 define the infrastructure for a given cluster.
 
-All official parameter files (basically Ansible variables) are encrypted as
-``.vault`` files in the root of this repository using `Ansible Vault`_.
-
-You will find a set of parameters for our *im-main* site in the file
-``site-im-main-parameters.vault``.
-
-Parameter files contain sensitive vales and are encrypted  The vault
-password
-
-vault-pass.txt
---------------
-
-Find the vault password for this project's repository (normally found in
-our **KeePass** application. And place it in a file called ``vault-pass.txt``
-in the root of this directory.
+*   All official parameter files (basically Ansible variables) are encrypted as
+    ``.vault`` files in the root of this repository using `Ansible Vault`_.
+*   You will find a set of parameters for our *im-main* site in the file
+    ``site-im-main-parameters.vault``.
 
 Editing parameter files
 -----------------------
@@ -35,7 +24,7 @@ using ``ansible-vault``::
         --vault-password-file vault-pass.txt
 
 Creating
-========
+--------
 
 Using an appropriate parameter file, create (deploy) the **im-main**
 infrastructure using the root-level ansible playbook ``site.yaml``.

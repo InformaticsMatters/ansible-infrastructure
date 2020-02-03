@@ -20,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = u'Informatics Matters Infrastructure'
-copyright = u'2020, Informatics Matters'
+copyright = u'2020, Informatics Matters Ltd'
 author = u'Alan Christie'
 
 # The short X.Y version

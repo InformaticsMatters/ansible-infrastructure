@@ -76,6 +76,13 @@ configuring via the environment for some of the Roles to properly function::
     $ export AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxx
 
 
+vault-pass.txt
+--------------
+
+Find the vault password for this project's repository (normally found in
+our **KeePass** application). And place it in a file called ``vault-pass.txt``
+in the root of this directory.
+
 .. _Ansible: https://pypi.org/project/ansible/
 .. _Ansible Galaxy: https://galaxy.ansible.com
 .. _Ansible Vault: https://docs.ansible.com/ansible/latest/user_guide/vault.html
