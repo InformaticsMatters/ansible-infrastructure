@@ -81,7 +81,7 @@ vault-pass.txt
 
 Find the vault password for this project's repository (normally found in
 our **KeePass** application). And place it in a file called ``vault-pass.txt``
-in the root of this directory.
+in the root of this project.
 
 .. _Ansible: https://pypi.org/project/ansible/
 .. _Ansible Galaxy: https://galaxy.ansible.com
