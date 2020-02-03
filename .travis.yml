@@ -8,3 +8,5 @@ script:
 - yamllint .
 - find . -type f -iname '*.j2' -exec yamllint {} \;
 - ansible-lint
+- cd doc
+- sphinx-build -b html . build
