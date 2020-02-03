@@ -3,4 +3,6 @@
 kubeconfig
 *parameters
 
+doc/build/
+
 vault-pass.txt
