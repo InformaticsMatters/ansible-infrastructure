@@ -287,16 +287,6 @@
       that:
       - ax_cert_issuer in cert_issuer_set
 
-  - name: AWX pre-flight check
-    assert:
-      that:
-      - ax_admin|length > 0
-      - ax_admin != 'SetMe'
-      - ax_admin_password|length > 0
-      - ax_admin_password != 'SetMe'
-    when:
-    - ax_force|bool or ax_ss_result.resources|length == 0
-
   # Extract current AWX version.
   # If it's different then force a re-deploy,
   # otherwise skip the AWX stage.
@@ -331,6 +321,14 @@
 
   - name: AWX installation block
     block:
+
+    - name: AWX pre-flight check
+      assert:
+        that:
+        - ax_admin|length > 0
+        - ax_admin != 'SetMe'
+        - ax_admin_password|length > 0
+        - ax_admin_password != 'SetMe'
 
     - name: Ensure AWX clone directory
       file:
