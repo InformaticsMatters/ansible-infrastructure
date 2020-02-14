@@ -287,13 +287,6 @@
       that:
       - ax_cert_issuer in cert_issuer_set
 
-  - name: Check AWX stateful set
-    k8s_info:
-      kind: StatefulSet
-      namespace: "{{ infra_namespace }}"
-      name: awx
-    register: ax_ss_result
-
   - name: AWX pre-flight check
     assert:
       that:
@@ -302,59 +295,84 @@
       - ax_admin_password|length > 0
       - ax_admin_password != 'SetMe'
     when:
-    - ax_ss_result.resources|length == 0
+    - ax_force|bool or ax_ss_result.resources|length == 0
 
-  - name: Ensure AWX clone directory
-    file:
-      path: "{{ ax_clone_dir }}"
-      state: directory
-    when:
-    - ax_ss_result.resources|length == 0
+  # Extract current AWX version.
+  # If it's different then force a re-deploy,
+  # otherwise skip the AWX stage.
 
-  - name: Remove existing AWX clone directory
-    file:
-      path: "{{ ax_clone_dir }}/awx"
-      state: absent
-    when:
-    - ax_ss_result.resources|length == 0
+  - name: Check AWX stateful set
+    k8s_info:
+      kind: StatefulSet
+      namespace: "{{ infra_namespace }}"
+      name: awx
+    register: ax_ss_result
 
-  - name: Clone AWX {{ ax_version }} (into {{ ax_clone_dir }})
-    git:
-      repo: https://github.com/ansible/awx.git
-      dest: "{{ ax_clone_dir }}/awx"
-      version: "{{ ax_version }}"
-      force: yes
-    when:
-    - ax_ss_result.resources|length == 0
-
-  - name: Set AWX inventory file fact
+  - name: Get awx-web image string
     set_fact:
-      inventory_file: "{{ ax_clone_dir }}/awx/installer/inventory"
+      awx_data: "{{ ax_ss_result.resources[0]|json_query(query) }}"
+    vars:
+      query: spec.template.spec.containers[?name=='awx-web'].image
+
+  - name: Extract awx-web version
+    set_fact:
+      current_awx_version: "{{ awx_data[0].split(':')[1] }}"
     when:
-    - ax_ss_result.resources|length == 0
+    - awx_data|length == 1
+    - awx_data[0]|string|length > 0
 
-  - import_tasks: render-awx-{{ ax_version }}-{{ ax_platform }}.yaml
-    when:
-    - ax_ss_result.resources|length == 0
+  - name: Check for AWX version change
+    set_fact:
+      awx_version_change: >-
+        {{ not current_awx_version is defined
+        or ax_version != current_awx_version }}
 
-  # Now that the cloned installation has been rendered
-  # for the chosen AWX version and platform, run the installer (asynchronously),
-  # giving it up to 15 minutes to complete...
+  # Installation block (if there's a version change)
 
-  # We need to provide ability for AWX service account
-  # to act in the infrastructure namespace.
+  - name: AWX installation block
+    block:
 
-  - name: Relax {{ infra_namespace }} 'awx' service account
-    k8s:
-      definition: "{{ lookup('template', 'rolebinding-awx-sa.yaml.j2') }}"
-      wait: yes
+    - name: Ensure AWX clone directory
+      file:
+        path: "{{ ax_clone_dir }}"
+        state: directory
 
-  - name: Deploy AWX (into {{ infra_namespace }})
-    command: ansible-playbook -i inventory install.yml
-    args:
-      chdir: "{{ ax_clone_dir }}/awx/installer"
-    async: "{{ 15 * 60 }}"
-    when:
-    - ax_ss_result.resources|length == 0
+    - name: Remove existing AWX clone directory
+      file:
+        path: "{{ ax_clone_dir }}/awx"
+        state: absent
+
+    - name: Clone AWX {{ ax_version }} (into {{ ax_clone_dir }})
+      git:
+        repo: https://github.com/ansible/awx.git
+        dest: "{{ ax_clone_dir }}/awx"
+        version: "{{ ax_version }}"
+        force: yes
+
+    - name: Set AWX inventory file fact
+      set_fact:
+        inventory_file: "{{ ax_clone_dir }}/awx/installer/inventory"
+
+    - import_tasks: render-awx-{{ ax_version }}-{{ ax_platform }}.yaml
+
+    # Now that the cloned installation has been rendered
+    # for the chosen AWX version and platform, run the installer (asynchronously),
+    # giving it up to 15 minutes to complete...
+
+    # We need to provide ability for AWX service account
+    # to act in the infrastructure namespace.
+
+    - name: Relax {{ infra_namespace }} 'awx' service account
+      k8s:
+        definition: "{{ lookup('template', 'rolebinding-awx-sa.yaml.j2') }}"
+        wait: yes
+
+    - name: Deploy AWX (into {{ infra_namespace }})
+      command: ansible-playbook -i inventory install.yml
+      args:
+        chdir: "{{ ax_clone_dir }}/awx/installer"
+      async: "{{ 15 * 60 }}"
+
+    when: awx_version_change|bool
 
   when: ax_state|string == 'present'

@@ -18,8 +18,7 @@ the build requirements and then move to the `doc` directory and execute
 `sphinx-build`: -
 
     $ pip install -r build-requirements.txt
-    $ cd doc
-    $ sphinx-build -b html . build
+    $ sphinx-build -b html doc doc/build
 
 The resultant index page will be called `build/html/index.html`.
 
