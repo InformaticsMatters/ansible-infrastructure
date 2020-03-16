@@ -48,7 +48,7 @@ pg_bu_imagepullpolicy: IfNotPresent
 #       will be downloaded for the version you define here. The play is should
 #       be located in 'infrastructure/tasks'  and MUST be called
 #       'render-awx-{{ ax_version }}-{{ ax_platform }}.yaml'
-ax_version: '9.2.0'
+ax_version: '9.3.0'
 
 # The directory (on the client) where the AWX repo
 # (including the built-in installation playbook)

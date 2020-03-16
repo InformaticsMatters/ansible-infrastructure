@@ -1,6 +1,6 @@
 ---
 
-# Rendering logic for AWX 9.1.0 on Kubernetes.
+# Rendering logic for AWX 9.2.0 on Kubernetes.
 # This play renders the AWX inventory file (and patches other AWX files)
 # for our Kubernetes cluster.
 #
