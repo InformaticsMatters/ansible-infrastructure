@@ -61,8 +61,8 @@ value of your control plane from the config file and ``API_KEY`` is the
     $ export K8S_AUTH_API_KEY=kubeconfig-user-abc:00000000
     $ export K8S_AUTH_VERIFY_SSL=no
 
-If you intend to use **kubectl** you will need to set ``KUBECONFIG`` variable
-to point to a local copy of the cluster config file. You can safely place
+You will also need a copy of your kubeconfig file and will need to set the
+``KUBECONFIG`` environment variable to point to your copy. You can safely place
 the config in the root of a clone of this repository as the file
 ``kubeconfig`` as this is part fo the project ignore set::
 
