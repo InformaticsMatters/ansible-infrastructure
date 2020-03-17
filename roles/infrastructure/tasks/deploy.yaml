@@ -303,11 +303,14 @@
       awx_data: "{{ ax_ss_result.resources[0]|json_query(query) }}"
     vars:
       query: spec.template.spec.containers[?name=='awx-web'].image
+    when:
+    - ax_ss_result.resources|length == 1
 
   - name: Extract awx-web version
     set_fact:
       current_awx_version: "{{ awx_data[0].split(':')[1] }}"
     when:
+    - awx_data is defined
     - awx_data|length == 1
     - awx_data[0]|string|length > 0
 
