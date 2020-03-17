@@ -15,7 +15,7 @@ cert_issuer_set:
 
 # The infrastructure database version.
 # For AWX the minimum version is 9.6+
-pg_version: '12.1-alpine'
+pg_version: '12.2-alpine'
 
 # Postgres superuser details
 pg_user: governor
