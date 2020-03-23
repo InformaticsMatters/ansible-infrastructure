@@ -20,8 +20,7 @@ Editing parameter files
 Parameter files can be (and should be) viewed and edited *in situ*
 using ``ansible-vault``::
 
-    $ ansible-vault edit site-im-main-parameters.vault \
-        --vault-password-file vault-pass.txt
+    $ ansible-vault edit site-im-main-parameters.vault
 
 Creating
 --------
@@ -30,8 +29,10 @@ Using an appropriate parameter file, create (deploy) the **im-main**
 infrastructure using the root-level ansible playbook ``site.yaml``.
 It's the same playbook regardless of cluster::
 
-    $ ansible-playbook -e "@site-im-main-parameters.vault" site.yaml \
-        --vault-password-file vault-pass.txt
-
+    $ ansible-playbook \
+        -e "@site-im-main-parameters.vault" \
+        -e ax_kubernetes_context=im-main \
+        site.yaml \
+        --ask-vault-pass
 
 .. _Ansible Vault: https://docs.ansible.com/ansible/latest/user_guide/vault.html

@@ -36,7 +36,6 @@ kc_cert_issuer: production
 # AWX installation ------------------------------------------------------------
 
 ax_state: present
-ax_kubernetes_context: SetMe
 
 ax_admin: admin
 ax_admin_password: SetMe
