@@ -48,8 +48,10 @@ spec:
             cpu: {{ kc_cpu_request }}
             memory: {{ kc_mem_request }}
         readinessProbe:
-          initialDelaySeconds: 30
-          timeoutSeconds: 1
+          initialDelaySeconds: 60
+          periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 6
           httpGet:
             path: /auth/realms/master
             port: http
