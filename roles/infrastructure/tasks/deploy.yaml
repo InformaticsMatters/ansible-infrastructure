@@ -169,6 +169,7 @@
   until: pg_pvc_result.resources[0].status.phase == 'Bound'
   delay: 5
   retries: "{{ (bind_timeout|int / 5)|int }}"
+  when: wait_for_bind|bool
 
 - name: Postgres
   k8s:
@@ -227,6 +228,7 @@
     until: pg_bu_pvc_result.resources[0].status.phase == 'Bound'
     delay: 5
     retries: "{{ (bind_timeout|int / 5)|int }}"
+    when: wait_for_bind|bool
 
   - name: Deploy hourly backup
     k8s:
