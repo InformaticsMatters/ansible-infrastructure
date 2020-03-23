@@ -190,6 +190,8 @@
   register: database_result
   until: >-
     database_result.resources|length == 1
+    and database_result.resources[0].status is defined
+    and database_result.resources[0].status.containerStatuses is defined
     and database_result.resources[0].status.containerStatuses|length == 1
     and database_result.resources[0].status.containerStatuses[0].ready
   delay: 30
@@ -265,6 +267,8 @@
     register: keycloak_result
     until: >-
       keycloak_result.resources|length == 1
+      and database_result.resources[0].status is defined
+      and database_result.resources[0].status.containerStatuses is defined
       and keycloak_result.resources[0].status.containerStatuses|length == 1
       and keycloak_result.resources[0].status.containerStatuses[0].ready
     delay: 30
