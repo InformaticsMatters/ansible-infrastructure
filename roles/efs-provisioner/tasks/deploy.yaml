@@ -23,7 +23,11 @@
     cluster_region: "{{ cluster_result.resources[0].metadata.labels['failure-domain.beta.kubernetes.io/region'] }}"
     cluster_instance: "{{ cluster_result.resources[0].spec.providerID.split('/')[-1] }}"
 
-- name: Get EC2 Info (of first node)
+- name: Display cluster facts
+  debug:
+    msg: region={{ cluster_region }} instance={{ cluster_instance }}
+
+- name: Get EC2 info (for first node)
   ec2_instance_info:
     region: "{{ cluster_region }}"
     instance_ids:
@@ -39,6 +43,10 @@
     cluster_vpc_id: "{{ ec2_result.instances[0].vpc_id }}"
     cluster_security_group: "{{ ec2_result.instances[0].security_groups[0].group_id }}"
     cluster_subnet_id: "{{ ec2_result.instances[0].subnet_id }}"
+
+- name: Display EC2 facts
+  debug:
+    msg: vpc_id={{ cluster_vpc_id }} security_group={{ cluster_security_group }} subnet_id={{ cluster_subnet_id }}
 
 # As EFS is essentially an NFS mechanism the security group
 # needs to permit NFS connections between instances.
@@ -98,7 +106,7 @@
 
 - name: Display key EFS facts
   debug:
-    msg: addr={{ cluster_efs_address }} subnet={{ cluster_subnet_id }} sg={{ cluster_security_group }}
+    msg: addr={{ cluster_efs_address }} id={{ cluster_efs_id }} subnet={{ cluster_subnet_id }} sg={{ cluster_security_group }}
 
 # EFS has been created.
 # We now need to install an EFS provisioner and create a StorageClass
