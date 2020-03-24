@@ -1,0 +1,23 @@
+---
+
+# This simple role is based on the AWS blog article
+# “Using a Network Load Balancer with the NGINX Ingress Controller on Amazon EKS”
+# See...
+#
+# https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/
+#
+# The ingress-nginx namespace is present on an EC2 cluster,
+# but not on EKS and so the default behaviour is to
+# create the ingress controller (and a network load balancer)
+# in EKS clusters.
+
+# Install (or un-deploy)?
+# One of 'present' or 'absent'.
+ic_state: present
+
+# Deploy a layer-4 network load balancer?
+ic_include_lb: yes
+
+# AWS credentials
+aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+awx_secret_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"

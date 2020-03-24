@@ -1,0 +1,11 @@
+---
+
+# Go...
+
+- name: Deleting namespace
+  k8s:
+    state: absent
+    kind: Namespace
+    name: ingress-nginx
+    api_version: v1
+    wait: yes

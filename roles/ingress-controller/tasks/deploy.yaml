@@ -1,0 +1,40 @@
+---
+
+# The ingress controller
+
+- name: Get expected namespace
+  k8s_info:
+    kind: Namespace
+    name: ingress-nginx
+  register: namespace_info
+
+- name: Deploy ingress controller
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    wait: yes
+    wait_timeout: "{{ wait_timeout }}"
+  loop:
+  - ingress-nginx
+  when:
+  - namespace_info.resources|length == 0
+
+# The load balancer
+
+- name: Get expected load balancer service
+  k8s_info:
+    kind: Service
+    namespace: ingress-nginx
+    name: ingress-nginx
+  register: lb_service_info
+  when: ic_include_lb|bool
+
+- name: Deploy load balancer service
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    wait: yes
+    wait_timeout: "{{ wait_timeout }}"
+  loop:
+  - nlb-service
+  when:
+  - ic_include_lb|bool
+  - lb_service_info.resources|length == 0

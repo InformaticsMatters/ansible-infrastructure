@@ -2,6 +2,8 @@
 
 - hosts: infra_server
   roles:
+  - role: ingress-controller
+    when: ic_state|string == 'present'
   - role: informaticsmatters.cert_manager
     when: cm_state|string == 'present'
   - role: efs-provisioner
