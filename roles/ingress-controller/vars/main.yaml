@@ -1,0 +1,5 @@
+---
+
+# General timeout,
+# typically used within the k8s module for wait durations.
+wait_timeout: 600

@@ -9,3 +9,4 @@
     name: ingress-nginx
     api_version: v1
     wait: yes
+    wait_timeout: "{{ wait_timeout }}"
