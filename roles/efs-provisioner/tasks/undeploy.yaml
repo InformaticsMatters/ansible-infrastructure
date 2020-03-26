@@ -34,7 +34,7 @@
   - clusterrolebinding
   - clusterrole
 
-- name: Delete EFS volume
+- name: Delete EFS
   efs:
     state: absent
     region: "{{ cluster_region }}"

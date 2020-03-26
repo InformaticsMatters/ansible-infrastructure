@@ -5,8 +5,9 @@
 - name: Pre-flight checks
   assert:
     that:
-    - aws_access_key|length > 0
-    - awx_secret_key|length > 0
+    - aws_access_key|string|length > 0
+    - awx_secret_key|string|length > 0
+    - efs_backing_volume_name|string|length > 0
 
 # Go...
 

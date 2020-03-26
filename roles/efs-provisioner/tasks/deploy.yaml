@@ -120,7 +120,13 @@
   efs:
     region: "{{ cluster_region }}"
     name: "{{ efs_backing_volume_name }}"
+    tags:
+      name: "{{ efs_backing_volume_name }}"
+      purpose: "InformaticsMatters EFS Provisioner"
+    performance_mode: "{{ efs_performance_mode }}"
     targets: "{{ efs_targets }}"
+    wait: yes
+    wait_timeout: "{{ wait_timeout }}"
   register: efs_result
 
 - name: Set EFS facts

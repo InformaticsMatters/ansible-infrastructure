@@ -14,11 +14,14 @@
 # One of 'present' or 'absent'.
 efs_state: present
 # The symbolic name of the 'root' cluster EFS volume.
-# This provides the backing storgae for all volumes.
+# This provides the backing storage for all volumes.
 # This value needs to be unique for a given region.
-efs_backing_volume_name: im-efs
+efs_backing_volume_name: ''
 # Namespace for the workload deployment
 efs_namespace: im-efs-provisioner
+# Performance mode
+# One of 'general_purpose' or 'max_io'
+efs_performance_mode: general_purpose
 
 # AWS credentials
 aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
