@@ -10,6 +10,20 @@
 # but not on EKS and so the default behaviour is to
 # create the ingress controller (and a network load balancer)
 # in EKS clusters.
+#
+# The Load Balancer name that gets assigned is automatic
+# but it is printed in the Ansible log after it's been
+# created. You can see the load balancer in the 'ingress-nginx'
+# namespace with something line: -
+#
+#   kubectl describe service/ingress-nginx -n ingress-nginx
+#
+# Visit the Load Balancer that's created in the AWS console
+# and decide whether you want to set the the attributes: -
+#
+# - 'Deletion protection'
+# - 'Cross-Zone Load Balancing' - where you may also need to make sure
+#                                 all your zone subnets are covered
 
 # Install (or un-deploy)?
 # One of 'present' or 'absent'.
