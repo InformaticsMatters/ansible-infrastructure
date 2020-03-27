@@ -6,6 +6,10 @@
 #
 # https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/
 #
+# To route traffic to the provisioned NLB, read the AWS documentation...
+#
+# https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-to-elb-load-balancer.html
+#
 # The ingress-nginx namespace is present on an EC2 cluster,
 # but not on EKS and so the default behaviour is to
 # create the ingress controller (and a network load balancer)
