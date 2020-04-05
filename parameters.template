@@ -12,7 +12,7 @@ cm_letsencrypt_email: SetMe
 # EFS installation ------------------------------------------------------------
 
 efs_state: present
-efs_name: im-efs
+efs_backing_volume_name: im-efs
 
 # Postgres installation -------------------------------------------------------
 
