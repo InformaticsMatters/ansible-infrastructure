@@ -1,13 +1,6 @@
 ---
 
-# We need the region, subnet and security group of the cluster nodes.
-# We do this by getting the cluster nodes, picking the first one
-# and then getting information about it from AWS.
-#
-# Implemented using the following online guide: -
-#   https://medium.com/@while1eq1/using-amazon-efs-in-a-multiaz-kubernetes-setup-57922e032776
-# And: -
-#   https://github.com/kubernetes-incubator/external-storage/issues/1209
+# Get the region we're in (from the first node)
 
 - name: Get cluster nodes
   k8s_info:
@@ -27,118 +20,45 @@
   debug:
     msg: region={{ cluster_region }} instance={{ cluster_instance }}
 
-- name: Get EC2 info (for first node)
-  ec2_instance_info:
-    region: "{{ cluster_region }}"
-    instance_ids:
-    - "{{ cluster_instance }}"
-  register: ec2_result
+# Does an EFS exist?
 
-- name: Check EC2 result
-  assert:
-    that: ec2_result.instances|length == 1
-
-- name: Set EC2 facts
-  set_fact:
-    cluster_vpc_id: "{{ ec2_result.instances[0].vpc_id }}"
-    cluster_security_group: "{{ ec2_result.instances[0].security_groups[0].group_id }}"
-    cluster_subnet_id: "{{ ec2_result.instances[0].subnet_id }}"
-
-- name: Display EC2 facts
-  debug:
-    msg: vpc_id={{ cluster_vpc_id }} security_group={{ cluster_security_group }} subnet_id={{ cluster_subnet_id }}
-
-# Now get the VPC subnets,
-# used to create a target map for EFS
-
-- name: Get VPC subnets
-  ec2_vpc_subnet_info:
-    filters:
-      vpc-id: "{{ cluster_vpc_id }}"
-  register: vpc_subnet_info
-
-- name: Set VPC subnet fact
-  set_fact:
-    vpc_subnet_ids: "{{ vpc_subnet_info.subnets|map(attribute='id')|list }}"
-
-- name: Dislay VPC subnets
-  debug:
-    var: vpc_subnet_ids
-
-# As EFS is essentially an NFS mechanism the security group
-# needs to permit NFS connections between instances.
-# Here we make sure appropriate rules are present.
-
-- name: Get Security Groups
-  ec2_group_info:
-    region: "{{ cluster_region }}"
-  register: sg_result
-
-- name: Get Security Group content ({{ cluster_security_group }})
-  set_fact:
-    sg_name: "{{ sg_result|json_query(n_query)|first }}"
-    sg_description: "{{ sg_result|json_query(d_query)|first }}"
-  vars:
-    n_query: "security_groups[?group_id=='{{ cluster_security_group }}'].group_name"
-    d_query: "security_groups[?group_id=='{{ cluster_security_group }}'].description"
-
-- name: Ensure security group has NFS inbound rules ({{ cluster_security_group }})
-  ec2_group:
-    name: "{{ sg_name }}"
-    description: "{{ sg_description }}"
-    vpc_id: "{{ cluster_vpc_id }}"
-    region: "{{ cluster_region }}"
-    rules:
-    - proto: tcp
-      ports:
-      - 2049
-      cidr_ip: 0.0.0.0/0
-      rule_desc: NFS
-    - proto: tcp
-      ports:
-      - 2049
-      cidr_ipv6: ::/0
-      rule_desc: NFS
-    purge_tags: no
-    purge_rules: no
-
-# Now that NFS is available in the cluster's security group
-# we can create an EFS 'target' (for each subnet in the VPC).
-
-- name: Create EFS targets
-  set_fact:
-    efs_targets: >-
-      {{ efs_targets|default([])
-      + [{'subnet_id': item, 'security_groups': [cluster_security_group]}] }}
-  loop: "{{ vpc_subnet_ids }}"
-
-- name: Display EFS targets
-  debug:
-    var: efs_targets
-
-- name: Create EFS ({{ cluster_region }}/{{ efs_backing_volume_name }})
-  efs:
+- name: Get existing EFS info
+  efs_info:
     region: "{{ cluster_region }}"
     name: "{{ efs_backing_volume_name }}"
-    tags:
-      Name: "{{ efs_backing_volume_name }}"
-      purpose: "InformaticsMatters EFS Provisioner"
-    performance_mode: "{{ efs_performance_mode }}"
-    targets: "{{ efs_targets }}"
-    wait: yes
-    wait_timeout: "{{ wait_timeout }}"
-  register: efs_result
+  register: existing_efs_result
 
-- name: Set EFS facts
-  set_fact:
-    cluster_efs_address: "{{ efs_result.efs.filesystem_address.split(':')[0] }}"
-    cluster_efs_id: "{{ efs_result.efs.file_system_id }}"
+- block:
+
+  - include_tasks: deploy-efs.yaml
+
+  - name: Get new EFS info
+    efs_info:
+      region: "{{ cluster_region }}"
+      name: "{{ efs_backing_volume_name }}"
+    register: new_efs_result
+
+  - name: Set EFS facts from new
+    set_fact:
+      cluster_efs_address: "{{ new_efs_result.efs[0].filesystem_address.split(':')[0] }}"
+      cluster_efs_id: "{{ new_efs_result.efs[0].file_system_id }}"
+
+  when: existing_efs_result.efs|length == 0
+
+- block:
+
+  - name: Set EFS facts from existing
+    set_fact:
+      cluster_efs_address: "{{ existing_efs_result.efs[0].filesystem_address.split(':')[0] }}"
+      cluster_efs_id: "{{ existing_efs_result.efs[0].file_system_id }}"
+
+  when: existing_efs_result.efs|length == 1
 
 - name: Display key EFS facts
   debug:
-    msg: addr={{ cluster_efs_address }} id={{ cluster_efs_id }} subnet={{ cluster_subnet_id }} sg={{ cluster_security_group }}
+    msg: addr={{ cluster_efs_address }} id={{ cluster_efs_id }}
 
-# EFS has been created.
+# EFS has been created (or already exists).
 # We now need to install an EFS provisioner and create a StorageClass
 
 - name: Deploy

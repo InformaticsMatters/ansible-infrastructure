@@ -1,16 +1,28 @@
 ---
 
-# Check we're able to continue...
+- include_tasks: prep.yaml
 
-- name: Pre-flight checks
+# A kubernetes host and an API key must be set.
+# We will have set values for the K8S_AUTH_HOST and
+# K8S_AUTH_API_KEY environment variables expected by 'prep'
+# The ansible variables 'k8s_auth_host' and
+# 'k8s_auth_api_key' ,ust have been set.
+- name: Assert authentication
   assert:
     that:
-    - aws_access_key|length > 0
-    - awx_secret_key|length > 0
+    - k8s_auth_host|length > 0
+    - k8s_auth_api_key|length > 0
 
 # Go...
 
-- include_tasks: deploy.yaml
-  when: ic_state|string == 'present'
-- include_tasks: undeploy.yaml
-  when: ic_state|string == 'absent'
+- block:
+
+  - include_tasks: deploy.yaml
+    when: ic_state|string == 'present'
+  - include_tasks: undeploy.yaml
+    when: ic_state|string == 'absent'
+
+  module_defaults:
+    group/k8s:
+      host: "{{ k8s_auth_host }}"
+      api_key: "{{ k8s_auth_api_key }}"

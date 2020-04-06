@@ -4,6 +4,10 @@
 # Tune accordingly and replace all "SetMe" values with something meaningful
 # where the corresponding application is also set to 'present'.
 
+# General ---------------------------------------------------------------------
+
+wait_for_bind: no
+
 # Cert-Manager installation ---------------------------------------------------
 
 cm_state: present

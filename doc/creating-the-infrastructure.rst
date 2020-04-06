@@ -35,4 +35,9 @@ It's the same playbook regardless of cluster::
         site.yaml \
         --ask-vault-pass
 
+Caution, **DO NOT** delete the cluster before uninstall akk the resident
+applications. If you delete the cluster without removing services like EFS
+you may end up with VPCs and other services that cannot be deleted because
+infrastructure components still exist.
+
 .. _Ansible Vault: https://docs.ansible.com/ansible/latest/user_guide/vault.html
