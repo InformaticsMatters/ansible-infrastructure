@@ -1,6 +1,6 @@
 ---
 
-# Rendering logic for AWX 9.1.1 on Kubernetes.
+# Rendering logic for AWX 9.3.0 on Kubernetes.
 # This play renders the AWX inventory file (and patches other AWX files)
 # for our Kubernetes cluster.
 #
@@ -98,26 +98,6 @@
     path: "{{ inventory_file }}"
     regexp: "^create_preload_data="
     line: create_preload_data=False
-
-# Patch AWX 9.1.0 database migration.
-# We need to do this because AWX 9.1.0 suffers from a migration fault.
-# See https://github.com/ansible/awx/issues/5578
-#
-# The workaround/hack is to patch the AWX repo's credentials.py.j2 file
-# by replacing the line: -
-#   "localhost",
-# With: -
-#   "rabbitmq.{{ kubernetes_namespace }}.svc",
-
-- name: Set credential file fact
-  set_fact:
-    credentials_file: "{{ ax_clone_dir }}/awx/installer/roles/kubernetes/templates/credentials.py.j2"
-
-- name: Fix BROKER_URL (localhost -> rabbitmq.{{ kubernetes_namespace }}.svc)
-  lineinfile:
-    path: "{{ credentials_file }}"
-    regexp: "    \"localhost\",$"
-    line: "    \"rabbitmq.{{ '{{' }} kubernetes_namespace {{ '}}' }}.svc\","
 
 # Patch the setup of the 'kubernetes_statefulset_api_version' fact.
 #
