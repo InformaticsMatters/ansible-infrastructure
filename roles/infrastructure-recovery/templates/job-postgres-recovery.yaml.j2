@@ -31,6 +31,7 @@ spec:
       - image: informaticsmatters/sql-recovery:{{ recovery_image_tag }}
         name: postgres-recovery
         imagePullPolicy: {{ recovery_imagepullpolicy }}
+        terminationMessagePolicy: FallbackToLogsOnError
         resources:
           limits:
             cpu: 500m
