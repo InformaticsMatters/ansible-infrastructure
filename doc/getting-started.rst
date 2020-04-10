@@ -51,6 +51,7 @@ Once installed our AWX will inject the following environment variables: -
 -   ``K8S_AUTH_HOST``
 -   ``K8S_AUTH_API_KEY``
 -   ``K8S_AUTH_VERIFY_SSL``
+-   ``K8S_CONTEXT``
 
 As we're deploying the infrastructure components (from outside AWX)
 we need to provide values for these. The ``HOST`` is the **cluster -> server**
@@ -60,6 +61,7 @@ value of your control plane from the config file and ``API_KEY`` is the
     $ export K8S_AUTH_HOST=https://1.2.3.4:6443
     $ export K8S_AUTH_API_KEY=kubeconfig-user-abc:00000000
     $ export K8S_AUTH_VERIFY_SSL=no
+    $ export K8S_CONTEXT=im-main
 
 You will also need a copy of your kubeconfig file and will need to set the
 ``KUBECONFIG`` environment variable to point to your copy. You can safely place
