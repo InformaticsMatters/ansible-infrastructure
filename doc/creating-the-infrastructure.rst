@@ -30,8 +30,7 @@ infrastructure using the root-level ansible playbook ``site.yaml``.
 It's the same playbook regardless of cluster::
 
     $ ansible-playbook \
-        -e "@site-im-main-parameters.vault" \
-        -e ax_kubernetes_context=im-main \
+        -e @site-im-main-parameters.vault \
         site.yaml \
         --ask-vault-pass
 

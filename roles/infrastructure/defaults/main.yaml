@@ -71,7 +71,7 @@ kc_admin_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_lette
 ax_state: present
 # The AWX kubernetes context
 # This is typically the control-plane content name
-ax_kubernetes_context: minikube
+ax_kubernetes_context: "{{ lookup('env', 'K8S_CONTEXT') }}"
 
 # The hostname of the server that will host AWX,
 # devoid of the protocol (i.e. 'https://' assumed so just 'example.com')
