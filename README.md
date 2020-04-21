@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/InformaticsMatters/ansible-infrastructure.svg?branch=master)](https://travis-ci.com/InformaticsMatters/ansible-infrastructure)
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/informaticsmatters/ansible-infrastructure)
 
-A Ansible roles to deploy Informatics Matters infrastructure components
+Ansible roles to deploy Informatics Matters infrastructure components
 (a database, keycloak and AWX) to [Kubernetes].
 
 You'll find documentation written using [Sphinx] in the `doc` directory.
