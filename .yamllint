@@ -10,3 +10,4 @@ rules:
 ignore: |
   roles/ingress-controller/templates/ingress-nginx.yaml.j2
   roles/ingress-controller/templates/nlb-service.yaml.j2
+  roles/efs-provisioner/templates/storageclass.yaml.j2

@@ -22,6 +22,8 @@ efs_namespace: im-efs-provisioner
 # Performance mode
 # One of 'general_purpose' or 'max_io'
 efs_performance_mode: general_purpose
+# Is EFS the default storage class?
+efs_is_default: yes
 
 # AWS credentials
 aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
