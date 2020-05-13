@@ -2,3 +2,7 @@
 
 - src: informaticsmatters.cert_manager
   version: 0.12.0
+- src: geerlingguy.pip
+  version: 1.3.0
+- src: geerlingguy.docker
+  version: 2.7.0

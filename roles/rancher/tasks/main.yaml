@@ -1,0 +1,36 @@
+---
+
+- name: Create rancher user account
+  user:
+    name: "{{ rancher_user_account }}"
+    groups: docker
+    append: yes
+  become: yes
+
+- name: Create rancher etcd path
+  file:
+    path: /opt/rancher
+    state: directory
+    owner: "{{ rancher_user_account }}"
+    group: docker
+    mode: 0774
+  become: yes
+
+- name: Start rancher container
+  docker_container:
+    name: rancher
+    image: rancher/rancher:{{ rancher_container_tag }}
+    state: started
+    restart_policy: always
+    volumes:
+    - /opt/rancher:/var/lib/rancher
+    exposed_ports:
+    - '80:80'
+    - '443:443'
+    network_mode: host
+  become: yes
+  become_user: "{{ rancher_user_account }}"
+
+- name: Wait for rancher port
+  wait_for:
+    port: 80

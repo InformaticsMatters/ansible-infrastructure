@@ -3,11 +3,11 @@
 # Our inventory.
 
 all:
-  vars:
-    ansible_connection: local
-    ansible_python_interpreter: "/usr/bin/env python"
 
   children:
+    rancher:
+      hosts:
+        130.246.215.45
     infra_server:
       hosts:
         localhost:

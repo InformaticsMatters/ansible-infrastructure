@@ -1,0 +1,12 @@
+---
+
+- hosts: rancher[0]
+  vars:
+    pip_install_packages:
+    - name: docker
+  roles:
+  - role: geerlingguy.pip
+    become: yes
+  - role: geerlingguy.docker
+    become: yes
+  - role: rancher
