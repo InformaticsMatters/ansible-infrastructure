@@ -1,5 +1,10 @@
 ---
 
+# Configure the Rancher server.
+# Installing Docker, CertBot and then Rancher.
+#
+# You should set the environment variable CERTBOT_EMAIL
+
 - hosts: rancher[0]
   vars:
     pip_install_packages:
@@ -9,4 +14,12 @@
     become: yes
   - role: geerlingguy.docker
     become: yes
-  - role: rancher
+  - role: geerlingguy.certbot
+    vars:
+      certbot_create_if_missing: yes
+      certbot_certs:
+      - email: "{{ lookup('env', 'CERTBOT_EMAIL') }}"
+        domains:
+        - "{{ rancher_domain }}"
+    become: yes
+#  - role: rancher

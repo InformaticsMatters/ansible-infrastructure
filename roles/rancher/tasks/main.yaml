@@ -16,14 +16,33 @@
     mode: 0774
   become: yes
 
+- name: Create rancher autit log path
+  file:
+    path: /var/log/rancher/auditlog
+    state: directory
+    owner: "{{ rancher_user_account }}"
+    group: docker
+    mode: 0774
+  become: yes
+
+- name: Set certificate path
+  set_fact:
+    cert_path: /etc/letsencrypt/live/{{ rancher_domain }}
+
 - name: Start rancher container
   docker_container:
     name: rancher
     image: rancher/rancher:{{ rancher_container_tag }}
+    env:
+      AUDIT_LEVEL: '1'
     state: started
     restart_policy: always
     volumes:
     - /opt/rancher:/var/lib/rancher
+    - /var/log/rancher/auditlog:/var/log/auditlog
+    - "{{ cert_path }}/cert.pem:/etc/rancher/ssl/cert.pem"
+    - "{{ cert_path }}/privkey.pem:/etc/rancher/ssl/key.pem"
+    - "{{ cert_path }}/fullchain.pem:/etc/rancher/ssl/cacerts.pem"
     exposed_ports:
     - '80:80'
     - '443:443'
