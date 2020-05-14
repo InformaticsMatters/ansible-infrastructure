@@ -5,7 +5,32 @@
     name: "{{ rancher_user_account }}"
     groups: docker
     append: yes
+    shell: /bin/bash
   become: yes
+
+- name: Permit passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    regexp: "^{{ rancher_user_account }}"
+    line: "{{ rancher_user_account }} ALL=(ALL) NOPASSWD: ALL"
+  become: yes
+
+# Allow others to access the CertBot certificates.
+# Normally this directory is owned by root...
+
+- name: Adjust certbot directories
+  file:
+    path: /etc/letsencrypt/{{ item }}
+    mode: '0755'
+    state: directory
+  loop:
+  - live
+  - archive
+  become: yes
+
+- name: Set certificate path
+  set_fact:
+    cert_path: /etc/letsencrypt/live/{{ rancher_domain }}
 
 - name: Create rancher etcd path
   file:
@@ -25,10 +50,6 @@
     mode: 0774
   become: yes
 
-- name: Set certificate path
-  set_fact:
-    cert_path: /etc/letsencrypt/live/{{ rancher_domain }}
-
 - name: Start rancher container
   docker_container:
     name: rancher
@@ -44,8 +65,8 @@
     - "{{ cert_path }}/privkey.pem:/etc/rancher/ssl/key.pem"
     - "{{ cert_path }}/fullchain.pem:/etc/rancher/ssl/cacerts.pem"
     exposed_ports:
-    - '80:80'
-    - '443:443'
+    - '80'
+    - '443'
     network_mode: host
   become: yes
   become_user: "{{ rancher_user_account }}"

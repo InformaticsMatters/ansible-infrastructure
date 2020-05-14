@@ -22,4 +22,4 @@
         domains:
         - "{{ rancher_domain }}"
     become: yes
-#  - role: rancher
+  - role: rancher
