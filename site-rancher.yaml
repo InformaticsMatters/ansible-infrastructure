@@ -14,12 +14,4 @@
     become: yes
   - role: geerlingguy.docker
     become: yes
-  - role: geerlingguy.certbot
-    vars:
-      certbot_create_if_missing: yes
-      certbot_certs:
-      - email: "{{ lookup('env', 'CERTBOT_EMAIL') }}"
-        domains:
-        - "{{ rancher_domain }}"
-    become: yes
   - role: rancher

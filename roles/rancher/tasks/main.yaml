@@ -1,76 +1,11 @@
 ---
 
-- name: Create rancher user account
+- name: Enable docker control
   user:
-    name: "{{ rancher_user_account }}"
+    name: "{{ ansible_user }}"
     groups: docker
     append: yes
-    shell: /bin/bash
   become: yes
 
-- name: Permit passwordless sudo
-  lineinfile:
-    dest: /etc/sudoers
-    regexp: "^{{ rancher_user_account }}"
-    line: "{{ rancher_user_account }} ALL=(ALL) NOPASSWD: ALL"
-  become: yes
-
-# Allow others to access the CertBot certificates.
-# Normally this directory is owned by root...
-
-- name: Adjust certbot directories
-  file:
-    path: /etc/letsencrypt/{{ item }}
-    mode: '0755'
-    state: directory
-  loop:
-  - live
-  - archive
-  become: yes
-
-- name: Set certificate path
-  set_fact:
-    cert_path: /etc/letsencrypt/live/{{ rancher_domain }}
-
-- name: Create rancher etcd path
-  file:
-    path: /opt/rancher
-    state: directory
-    owner: "{{ rancher_user_account }}"
-    group: docker
-    mode: 0774
-  become: yes
-
-- name: Create rancher autit log path
-  file:
-    path: /var/log/rancher/auditlog
-    state: directory
-    owner: "{{ rancher_user_account }}"
-    group: docker
-    mode: 0774
-  become: yes
-
-- name: Start rancher container
-  docker_container:
-    name: rancher
-    image: rancher/rancher:{{ rancher_container_tag }}
-    env:
-      AUDIT_LEVEL: '1'
-    state: started
-    restart_policy: always
-    volumes:
-    - /opt/rancher:/var/lib/rancher
-    - /var/log/rancher/auditlog:/var/log/auditlog
-    - "{{ cert_path }}/cert.pem:/etc/rancher/ssl/cert.pem"
-    - "{{ cert_path }}/privkey.pem:/etc/rancher/ssl/key.pem"
-    - "{{ cert_path }}/fullchain.pem:/etc/rancher/ssl/cacerts.pem"
-    exposed_ports:
-    - '80'
-    - '443'
-    network_mode: host
-  become: yes
-  become_user: "{{ rancher_user_account }}"
-
-- name: Wait for rancher port
-  wait_for:
-    port: 80
+- name: Ensure docker control
+  shell: docker ps
