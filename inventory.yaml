@@ -5,9 +5,16 @@
 all:
 
   children:
-    rancher:
+    rke:
       hosts:
-        130.246.215.45
+        # etcd
+        192.168.253.44
+        192.168.253.35
+        192.168.253.5
+        # ctrl
+        192.168.253.11
+        # worker
+        192.168.253.30
     infra_server:
       hosts:
         localhost:

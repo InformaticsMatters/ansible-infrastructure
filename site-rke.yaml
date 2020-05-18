@@ -5,7 +5,7 @@
 #
 # You should set the environment variable CERTBOT_EMAIL
 
-- hosts: rancher[0]
+- hosts: rke
   vars:
     pip_install_packages:
     - name: docker
@@ -14,4 +14,4 @@
     become: yes
   - role: geerlingguy.docker
     become: yes
-  - role: rancher
+  - role: rke
