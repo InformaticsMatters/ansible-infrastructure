@@ -6,6 +6,3 @@
     groups: docker
     append: yes
   become: yes
-
-- name: Ensure docker control
-  shell: docker ps
