@@ -1,9 +1,7 @@
 ---
 
-# Configure the Rancher server.
-# Installing Docker, CertBot and then Rancher.
-#
-# You should set the environment variable CERTBOT_EMAIL
+# Configure the RKE cluster - installing
+# Docker in preparation for RKE installation.
 
 - hosts: rke
   vars:
