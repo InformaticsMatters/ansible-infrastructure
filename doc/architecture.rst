@@ -13,13 +13,15 @@ of creation, and described briefly in the following sections: -
     ``informaticsmatters.cert_manager`` Role, a Role deployed to Ansible Galaxy
     and maintained in our `cert manager`_ GitHub repository
 *   **Pod Security Policies**, managed by this repository's ``core`` Role
+*   An OpenStack **Cinder** *provisioner*, managed by this
+    repository's ``provisioner-cinder`` Role
 *   An AWS **Elastic File System** *provisioner*, managed by this
-    repository's ``efs-provisioner`` Role
+    repository's ``provisioner-efs`` Role
 *   A **PosgreSQL** database, managed by this repository's ``infrastructure`` Role
 *   A cron-like **Database Backup** process
+*   An **AWX** server, managed by this repository's ``infrastructure`` Role
 *   A **Keycloak** identity management instance, managed by this repository's
     ``infrastructure`` Role
-*   An **AWX** server, managed by this repository's ``infrastructure`` Role
 *   A **Database Recovery** Role
 
 Kubernetes Certificate Manager
@@ -49,7 +51,7 @@ to run containers. We provide the following PSPs: -
 Elastic File System
 ===================
 
-Using the ``ec2`` and ``efs`` module built into Ansible, our ``efs-provisioner``
+Using the ``ec2`` and ``efs`` module built into Ansible, our ``provisioner-efs``
 Role in this repository configures the cluster's security group to allow access
 to an AWS EFS instance. The role also creates, amongst other things: -
 
