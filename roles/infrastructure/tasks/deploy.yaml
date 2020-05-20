@@ -163,10 +163,14 @@
 - name: Wait for postgres volume claim to bind
   k8s_info:
     kind: PersistentVolumeClaim
-    name: pg-pvc
+    name: pg
     namespace: "{{ infra_namespace }}"
   register: pg_pvc_result
-  until: pg_pvc_result.resources[0].status.phase == 'Bound'
+  until: >-
+    pg_pvc_result.resources|length > 0
+    and pg_pvc_result.resources[0].status is defined
+    and pg_pvc_result.resources[0].status.phase is defined
+    and pg_pvc_result.resources[0].status.phase == 'Bound'
   delay: 5
   retries: "{{ (bind_timeout|int / 5)|int }}"
   when: wait_for_bind|bool
@@ -224,7 +228,7 @@
   - name: Wait for postgres backup volume claim to bind
     k8s_info:
       kind: PersistentVolumeClaim
-      name: pg-bu-pvc
+      name: pg-bu
       namespace: "{{ infra_namespace }}"
     register: pg_bu_pvc_result
     until: pg_bu_pvc_result.resources[0].status.phase == 'Bound'
@@ -239,46 +243,6 @@
       wait_timeout: "{{ wait_timeout }}"
 
   when: pg_bu_state|string == 'present'
-
-# Keycloak --------------------------------------------------------------------
-
-- name: Deploy Keycloak
-  block:
-
-  - name: Keycloak assertions
-    assert:
-      that:
-      - kc_cert_issuer in cert_issuer_set
-
-  - name: Keycloak
-    k8s:
-      definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
-      wait: yes
-      wait_timeout: "{{ wait_timeout }}"
-    loop:
-    - service-keycloak
-    - statefulset-keycloak
-
-  - name: Wait for keycloak to become Ready
-    k8s_info:
-      kind: Pod
-      name: keycloak-0
-      namespace: "{{ infra_namespace }}"
-    register: keycloak_result
-    until: >-
-      keycloak_result.resources|length == 1
-      and database_result.resources[0].status is defined
-      and database_result.resources[0].status.containerStatuses is defined
-      and keycloak_result.resources[0].status.containerStatuses|length == 1
-      and keycloak_result.resources[0].status.containerStatuses[0].ready
-    delay: 30
-    retries: "{{ (wait_timeout|int / 30)|int }}"
-
-  - name: Keycloak ingress
-    k8s:
-      definition: "{{ lookup('template', 'ingress-keycloak.yaml.j2') }}"
-
-  when: kc_state|string == 'present'
 
 # AWX -------------------------------------------------------------------------
 
@@ -383,3 +347,43 @@
     when: awx_version_change|bool
 
   when: ax_state|string == 'present'
+
+# Keycloak --------------------------------------------------------------------
+
+- name: Deploy Keycloak
+  block:
+
+  - name: Keycloak assertions
+    assert:
+      that:
+      - kc_cert_issuer in cert_issuer_set
+
+  - name: Keycloak
+    k8s:
+      definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+      wait: yes
+      wait_timeout: "{{ wait_timeout }}"
+    loop:
+    - service-keycloak
+    - statefulset-keycloak
+
+  - name: Wait for keycloak to become Ready
+    k8s_info:
+      kind: Pod
+      name: keycloak-0
+      namespace: "{{ infra_namespace }}"
+    register: keycloak_result
+    until: >-
+      keycloak_result.resources|length == 1
+      and database_result.resources[0].status is defined
+      and database_result.resources[0].status.containerStatuses is defined
+      and keycloak_result.resources[0].status.containerStatuses|length == 1
+      and keycloak_result.resources[0].status.containerStatuses[0].ready
+    delay: 30
+    retries: "{{ (wait_timeout|int / 30)|int }}"
+
+  - name: Keycloak ingress
+    k8s:
+      definition: "{{ lookup('template', 'ingress-keycloak.yaml.j2') }}"
+
+  when: kc_state|string == 'present'

@@ -1,6 +1,9 @@
 ---
 
-# Rendering logic for AWX 9.3.0 on Kubernetes.
+# NOTE:   It is only safe to delete this file
+#         when we have no more deployments of
+#         AWX 9.3.0 exist.
+
 # This play renders the AWX inventory file (and patches other AWX files)
 # for our Kubernetes cluster.
 #

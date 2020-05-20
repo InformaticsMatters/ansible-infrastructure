@@ -1,0 +1,8 @@
+---
+
+# Install Cinder (or un-deploy)?
+# One of 'present' or 'absent'.
+cinder_state: absent
+
+# Cinder availability zone
+cinder_availability_zone: ceph

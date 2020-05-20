@@ -6,6 +6,8 @@
     when: ic_state|string == 'present'
   - role: informaticsmatters.cert_manager
     when: cm_state|string == 'present'
-  - role: efs-provisioner
+  - role: provisioner-cinder
+    when: cinder_state|string == 'present'
+  - role: provisioner-efs
     when: efs_state|string == 'present'
   - role: infrastructure

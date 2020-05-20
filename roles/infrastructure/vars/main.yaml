@@ -19,7 +19,7 @@ cert_issuer_set:
 
 # The infrastructure database version.
 # For AWX the minimum version is 9.6+
-pg_version: '12.2-alpine'
+pg_version: '12.3-alpine'
 
 # Postgres superuser details
 pg_user: governor
@@ -52,7 +52,7 @@ pg_bu_imagepullpolicy: IfNotPresent
 #       will be downloaded for the version you define here. The play is should
 #       be located in 'infrastructure/tasks'  and MUST be called
 #       'render-awx-{{ ax_version }}-{{ ax_platform }}.yaml'
-ax_version: '10.0.0'
+ax_version: '11.2.0'
 
 # The directory (on the client) where the AWX repo
 # (including the built-in installation playbook)

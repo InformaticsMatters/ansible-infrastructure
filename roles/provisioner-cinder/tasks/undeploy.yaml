@@ -1,0 +1,9 @@
+---
+
+- name: Delete Cinder objects
+  k8s:
+    state: absent
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    wait: yes
+  loop:
+  - storageclass

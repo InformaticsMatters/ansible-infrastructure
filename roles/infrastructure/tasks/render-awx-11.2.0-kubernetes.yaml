@@ -2,7 +2,7 @@
 
 # NOTE:   It is only safe to delete this file
 #         when we have no more deployments of
-#         AWX 10.0.0 exist.
+#         AWX 11.2.0 exist.
 
 # This play renders the AWX inventory file (and patches other AWX files)
 # for our Kubernetes cluster.
@@ -101,41 +101,3 @@
     path: "{{ inventory_file }}"
     regexp: "^create_preload_data="
     line: create_preload_data=False
-
-# Patch the setup of the 'kubernetes_statefulset_api_version' fact.
-#
-# The existing role tasks rely on being able to query the Kubernetes API
-# using the API URI. This relies on authentication, which we may not have.
-# The aim of the original tasks was to determine the Kubernetes version and
-# set the StatefulSet object version accordingly. If it's Kubernetes 1.9 or
-# greater then the StatefulSet version is 'apps/v1', otherwise it's
-# 'apps/v1beta1'.
-#
-# As we're not going to be de dealing with Kubernetes 1.8 or earlier
-# (and to avoid needing to use the alternative `kubectl version`) we simply
-# remove the two unnecessary tasks from the role play file and hard-code the
-# 'kubernetes_statefulset_api_version' fact to 'apps/v1'.
-#
-# Quick and dirty, works for us and no need for API/URL authentication.
-
-- name: Set kubernetes/main file fact
-  set_fact:
-    k_main_file: "{{ ax_clone_dir }}/awx/installer/roles/kubernetes/tasks/main.yml"
-
-- name: Remove 'Get kube version from api server' task
-  replace:
-    path: "{{ k_main_file }}"
-    regexp: "^- name: Get kube version from api server[^-]+"
-    replace: ''
-
-- name: Remove 'Extract server version from command output' task
-  replace:
-    path: "{{ k_main_file }}"
-    regexp: "^- name: Extract server version from command output[^-]+"
-    replace: ''
-
-- name: Set 'kubernetes_statefulset_api_version' (apps/v1)
-  lineinfile:
-    path: "{{ k_main_file }}"
-    regexp: "    kubernetes_statefulset_api_version:"
-    line: "    kubernetes_statefulset_api_version: apps/v1"

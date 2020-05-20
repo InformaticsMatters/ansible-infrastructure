@@ -1,10 +1,10 @@
 ---
 kind: StorageClass
-apiVersion: storage.k8s.io/v1beta1
+apiVersion: storage.k8s.io/v1
 metadata:
   name: {{ efs_storage_class_name }}
 {% if efs_is_default|bool %}
   annotations:
-    storageclass.kubernetes.io/is-default-class: yes
+    storageclass.kubernetes.io/is-default-class: "true"
 {% endif %}
 provisioner: {{ efs_provisioner_name }}

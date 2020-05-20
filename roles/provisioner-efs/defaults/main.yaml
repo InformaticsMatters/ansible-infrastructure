@@ -12,7 +12,7 @@
 
 # Install EFS (or un-deploy)?
 # One of 'present' or 'absent'.
-efs_state: present
+efs_state: absent
 # The symbolic name of the 'root' cluster EFS volume.
 # This provides the backing storage for all volumes.
 # This value needs to be unique for a given region.

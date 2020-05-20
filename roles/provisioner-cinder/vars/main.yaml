@@ -1,0 +1,4 @@
+---
+
+# The basename for the 'delete' and 'reclaim' classes
+cinder_storage_basename: im-cinder
