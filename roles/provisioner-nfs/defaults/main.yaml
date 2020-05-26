@@ -1,0 +1,9 @@
+---
+
+# Install NFS (or un-deploy)?
+# One of 'present' or 'absent'.
+nfs_state: absent
+
+# The External NFS server and it's export volume
+nfs_server_address: SetMe
+nfs_path: /nfs/kubernetes-one

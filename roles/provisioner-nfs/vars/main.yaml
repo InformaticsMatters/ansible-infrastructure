@@ -1,0 +1,14 @@
+---
+
+# Namespace for the deployment
+nfs_namespace: im-nfs-client-provisioner
+
+# A symbolic name for the provisioner deployment,
+# used to direct the storage-class to the provisioner Pod.
+nfs_provisioner_name: informaticsmatters.com/nfs
+# The name used for the storage class that will be created.
+nfs_storage_class_name: nfs
+
+# The container image tag.
+# One valid for quay.io/repository/external_storage/nfs-client-provisioner
+nfs_provisioner_tag: v3.1.0-k8s1.11

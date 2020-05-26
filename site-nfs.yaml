@@ -1,0 +1,12 @@
+---
+
+# Configure the NFS server.
+
+- hosts: nfs
+  roles:
+  - role: nfs
+  - role: geerlingguy.nfs
+    vars:
+      nfs_exports:
+      - '/nfs/kubernetes-one *(rw,sync,no_subtree_check,no_root_squash,no_all_squash,insecure)'
+    become: yes

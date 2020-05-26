@@ -10,4 +10,6 @@
     when: cinder_state|string == 'present'
   - role: provisioner-efs
     when: efs_state|string == 'present'
+#  - role: provisioner-nfs
+#    when: nfs_state|string == 'present'
   - role: infrastructure
