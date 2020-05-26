@@ -1,10 +1,14 @@
-----
+---
 kind: Role
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: leader-locking-nfs-client-provisioner
   namespace: {{ nfs_namespace }}
 rules:
-- apiGroups: [""]
-  resources: ["endpoints"]
-  verbs: ["get", "list", "watch", "create", "update", "patch"]
+- apiGroups: ['']
+  resources: ['endpoints']
+  verbs: ['get', 'list', 'watch', 'create', 'update', 'patch']
+- apiGroups: ['policy']
+  resources: ['podsecuritypolicies']
+  verbs: ['use']
+  resourceNames: ['im-core-unrestricted']

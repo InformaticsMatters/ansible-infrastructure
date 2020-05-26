@@ -5,14 +5,14 @@ metadata:
   name: nfs-client-provisioner
   namespace: {{ nfs_namespace }}
 spec:
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: nfs-client-provisioner
-  replicas: 1
-  strategy:
-    type: Recreate
   template:
     metadata:
+      name: nfs-client-provisioner
       labels:
         app: nfs-client-provisioner
     spec:
@@ -34,6 +34,7 @@ spec:
       containers:
       - name: nfs-client-provisioner
         image: quay.io/external_storage/nfs-client-provisioner:{{  nfs_provisioner_tag }}
+        terminationMessagePolicy: FallbackToLogsOnError
         resources:
           limits:
             cpu: {{ nfs_cpu_limit }}
