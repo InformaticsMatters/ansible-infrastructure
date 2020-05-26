@@ -1,5 +1,8 @@
 ---
 
+# Role derived from the article
+# https://blog.exxactcorp.com/deploying-dynamic-nfs-provisioning-in-kubernetes/
+
 # Install NFS (or un-deploy)?
 # One of 'present' or 'absent'.
 nfs_state: absent
