@@ -34,13 +34,13 @@
     path: "{{ item.value.mount_path }}"
     state: directory
     mode: '0777'
-  loop: "{{ lookup('dict', nfs_devices) }}"
+  loop: "{{ lookup('dict', nfs_devices, wantlist=True) }}"
 
 - name: Create NFS volume ext4 filesystem
   filesystem:
     fstype: ext4
     dev: "{{ item.value.device }}"
-  loop: "{{ lookup('dict', nfs_devices) }}"
+  loop: "{{ lookup('dict', nfs_devices, wantlist=True) }}"
   when: item.value.device not in mounted_devices
 
 - name: Mount NFS volumes
@@ -49,5 +49,5 @@
     src: "{{ item.value.device }}"
     fstype: ext4
     state: mounted
-  loop: "{{ lookup('dict', nfs_devices) }}"
+  loop: "{{ lookup('dict', nfs_devices, wantlist=True) }}"
   when: item.value.device not in mounted_devices
