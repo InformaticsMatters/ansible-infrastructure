@@ -17,12 +17,30 @@ spec:
         app: nfs-client-provisioner
     spec:
       serviceAccountName: nfs-client-provisioner
+
+      # A 'preferred' (not guaranteed)
+      # node selection affinity...
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: purpose
+                operator: In
+                values:
+                - {{ nfs_node_purpose }}
+
       containers:
       - name: nfs-client-provisioner
         image: quay.io/external_storage/nfs-client-provisioner:{{  nfs_provisioner_tag }}
-        volumeMounts:
-        - name: nfs-client-root
-          mountPath: /persistentvolumes
+        resources:
+          limits:
+            cpu: {{ nfs_cpu_limit }}
+            memory: {{ nfs_mem_limit }}
+          requests:
+            cpu: {{ nfs_cpu_request }}
+            memory: {{ nfs_mem_request }}
         env:
         - name: PROVISIONER_NAME
           value: {{ nfs_provisioner_name }}
@@ -30,6 +48,9 @@ spec:
           value: {{ nfs_server_address }}
         - name: NFS_PATH
           value: {{ nfs_path }}
+        volumeMounts:
+        - name: nfs-client-root
+          mountPath: /persistentvolumes
       volumes:
       - name: nfs-client-root
         nfs:
