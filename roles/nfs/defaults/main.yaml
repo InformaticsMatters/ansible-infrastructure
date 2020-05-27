@@ -2,6 +2,6 @@
 
 # The NFS server's external volumes
 nfs_devices:
-  k_one:
+  kubernetes:
     device: /dev/vdb
-    mount_path: /nfs/kubernetes-one
+    mount_path: /nfs/kubernetes

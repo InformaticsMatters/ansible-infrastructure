@@ -1,5 +1,8 @@
 ---
 
+# Format and mount the designated drive (used as the NFS share)
+# and then mount it...
+
 # Get the list of exiting mounts, present in the built-in 'ansible_mounts'
 # variable, which looks little like this...
 #

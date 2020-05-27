@@ -7,7 +7,7 @@ all:
   children:
     nfs:
       hosts:
-        192.168.253.54:
+        130.246.213.182:
     rke:
       hosts:
         # etcd

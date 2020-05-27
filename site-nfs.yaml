@@ -1,6 +1,10 @@
 ---
 
 # Configure the NFS server.
+#
+# The 'nfs' role configures the shared volume and mounts it
+# onto the server prior to setting up NFS using the geerlingguy.nfs
+# Galaxy role.
 
 - hosts: nfs
   roles:
@@ -8,5 +12,5 @@
   - role: geerlingguy.nfs
     vars:
       nfs_exports:
-      - '/nfs/kubernetes-one *(rw,sync,no_subtree_check,no_root_squash,no_all_squash,insecure)'
+      - '/nfs/kubernetes *(rw,sync,no_subtree_check,no_root_squash,no_all_squash,insecure)'
     become: yes
