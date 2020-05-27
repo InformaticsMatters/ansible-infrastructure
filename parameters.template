@@ -13,6 +13,16 @@ wait_for_bind: no
 cm_state: present
 cm_letsencrypt_email: SetMe
 
+# Cinder installation ---------------------------------------------------------
+
+cinder_state: present
+cinder_availability_zone: ceph
+
+# NFS installation ------------------------------------------------------------
+
+nfs_state: present
+nfs_server_address: 130.246.213.182
+
 # EFS installation ------------------------------------------------------------
 
 efs_state: present
