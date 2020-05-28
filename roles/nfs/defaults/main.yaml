@@ -13,4 +13,4 @@ nfs_devices:
     mount_path: /nfs/kubernetes-media-replica
   db_replica:
     device: /dev/vde
-    mount_path: /nfs/kubernetes-database-replica
+    mount_path: /nfs/kubernetes-db-replica
