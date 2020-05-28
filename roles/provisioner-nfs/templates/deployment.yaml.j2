@@ -48,7 +48,7 @@ spec:
         - name: NFS_SERVER
           value: {{ nfs_server_address }}
         - name: NFS_PATH
-          value: {{ nfs_path }}
+          value: {{ nfs_dynamic_export }}
         volumeMounts:
         - name: nfs-client-root
           mountPath: /persistentvolumes
@@ -56,4 +56,4 @@ spec:
       - name: nfs-client-root
         nfs:
           server: {{ nfs_server_address }}
-          path: {{ nfs_path }}
+          path: {{ nfs_dynamic_export }}

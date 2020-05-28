@@ -7,6 +7,7 @@
 # One of 'present' or 'absent'.
 nfs_state: absent
 
-# The External NFS server and it's export volume
+# The External NFS server
+# and the export for dynamic allocations
 nfs_server_address: SetMe
-nfs_path: /nfs/kubernetes
+nfs_dynamic_export: SetMe

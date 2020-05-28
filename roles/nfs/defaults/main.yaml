@@ -2,6 +2,15 @@
 
 # The NFS server's external volumes
 nfs_devices:
-  kubernetes:
+  prod_dynamic:
     device: /dev/vdb
-    mount_path: /nfs/kubernetes
+    mount_path: /nfs/kubernetes-prod
+  dev_dynamic:
+    device: /dev/vdc
+    mount_path: /nfs/kubernetes-dev
+  media_replica:
+    device: /dev/vdd
+    mount_path: /nfs/kubernetes-media-replica
+  db_replica:
+    device: /dev/vde
+    mount_path: /nfs/kubernetes-database-replica

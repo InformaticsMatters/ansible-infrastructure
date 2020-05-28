@@ -5,10 +5,12 @@
     that:
     - nfs_server_address|string|length > 0
     - nfs_server_address|string != 'SetMe'
+    - nfs_dynamic_export|string|length > 0
+    - nfs_dynamic_export|string != 'SetMe'
 
 - name: Display key NFS facts
   debug:
-    msg: nfs_server_address={{ nfs_server_address }} nfs_path={{ nfs_path }}
+    msg: server_address={{ nfs_server_address }} dynamic_export={{ nfs_dynamic_export }}
 
 # Install an NFS provisioner and create a StorageClass
 
