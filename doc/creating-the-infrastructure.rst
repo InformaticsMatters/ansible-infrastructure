@@ -29,8 +29,9 @@ Using an appropriate parameter file, create (deploy) the **im-main**
 infrastructure using the root-level ansible playbook ``site.yaml``.
 It's the same playbook regardless of cluster::
 
+    $ INFRA_PARAMS=im-main
     $ ansible-playbook \
-        -e @site-im-main-parameters.vault \
+        -e @site-$INFRA_PARAMS-parameters.vault \
         site.yaml \
         --ask-vault-pass
 

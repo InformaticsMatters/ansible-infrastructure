@@ -17,12 +17,20 @@ of creation, and described briefly in the following sections: -
     repository's ``provisioner-cinder`` Role
 *   An AWS **Elastic File System** *provisioner*, managed by this
     repository's ``provisioner-efs`` Role
+*   An **NFS** *provisioner*, managed by this
+    repository's ``provisioner-nfs`` Role
 *   A **PosgreSQL** database, managed by this repository's ``infrastructure`` Role
 *   A cron-like **Database Backup** process
 *   An **AWX** server, managed by this repository's ``infrastructure`` Role
 *   A **Keycloak** identity management instance, managed by this repository's
     ``infrastructure`` Role
 *   A **Database Recovery** Role
+
+Additionally there are playbooks to simplify the provisioning on a base `RKE`_
+cluster for the installation of `Rancher`_ and a role to prepare an NFS server: -
+
+*   ``site-rke.yaml``
+*   ``site-nfs.yaml``
 
 Kubernetes Certificate Manager
 ==============================
@@ -48,8 +56,23 @@ to run containers. We provide the following PSPs: -
 
 *   ``im-core-unrestricted`` - a fully open policy
 
-Elastic File System
-===================
+Cinder Provisioner
+==================
+
+Using the ``cinder`` provisioner available to Kuberneetes, our
+``provisioner-cinder`` Role in this repository configures the cluster with the
+ability to create Read-Write Once volumes using the OpenStack cinder
+service. The role also creates, amongst other things: -
+
+*   A **StorageClass** that can be used by application
+    **Persistent Volume Claims** to create volumes that will be *deleted*
+    when released
+*   A **StorageClass** that can be used by application
+    **Persistent Volume Claims** to create volumes that will be *retained*
+    when released
+
+Elastic File System Provisioner
+===============================
 
 Using the ``ec2`` and ``efs`` module built into Ansible, our ``provisioner-efs``
 Role in this repository configures the cluster's security group to allow access
@@ -60,6 +83,20 @@ to an AWS EFS instance. The role also creates, amongst other things: -
     **Persistent Volume Claims**
 
 EFS is used by Squonk for *Read Write Many* volume access in order to run
+pipelines.
+
+Network File System Provisioner
+===============================
+
+Using the ``nfs`` provisioner available to Kuberneetes, our ``provisioner-efs``
+Role in this repository configures the cluster with an NFS provisioner.
+The role also creates, amongst other things: -
+
+*   A **Namespace** in which the NFS provisioner is deployed
+*   A **StorageClass** called ``nfs`` that can be used by application
+    **Persistent Volume Claims**
+
+NFS is used by Squonk for *Read Write Many* volume access in order to run
 pipelines.
 
 PostgreSQL
@@ -125,3 +162,6 @@ For more details refer to the documentation in ``recovery.py`` in our
 .. _Backup and recovery: https://github.com/InformaticsMatters/bandr
 .. _Cert Manager: https://github.com/InformaticsMatters/ansible-role-cert-manager
 .. _Kubernetes Cert Manager: https://github.com/jetstack/cert-manager
+.. _Rancher: https://rancher.com
+.. _RKE: https://rancher.com/docs/rke/latest/en/
+
