@@ -12,7 +12,7 @@ define the infrastructure for a given cluster.
 *   All official parameter files (basically Ansible variables) are encrypted as
     ``.vault`` files in the root of this repository using `Ansible Vault`_.
 *   You will find a set of parameters for our *im-main* site in the file
-    ``site-im-main-parameters.vault``.
+    ``parameters-im-main.vault``.
 
 Editing parameter files
 -----------------------
@@ -21,7 +21,7 @@ Parameter files can be (and should be) viewed and edited *in situ*
 using ``ansible-vault``::
 
     $ INFRA_NAME=im-main
-    $ ansible-vault edit site-$INFRA_NAME-parameters.vault
+    $ ansible-vault edit parameters-$INFRA_NAME.vault
 
 Creating
 --------
@@ -33,7 +33,7 @@ so change::
 
     $ INFRA_NAME=im-main
     $ ansible-playbook \
-        -e @site-INFRA_NAME-parameters.vault \
+        -e @parameters-$INFRA_NAME.vault \
         site.yaml \
         --ask-vault-pass
 

@@ -8,7 +8,7 @@ that corresponds to your cluster::
 
     $ INFRA_NAME=im-main
     $ ansible-playbook \
-        -e "@site-$INFRA_NAME-parameters.vault" \
+        -e "@parameters-$INFRA_NAME.vault" \
         unsite.yaml \
         --ask-vault-pass
 
