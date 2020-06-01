@@ -77,6 +77,21 @@ configuring via the environment for some of the Roles to properly function::
     $ export AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxx
 
 
+Verify you're using the right Kubernetes cluster with a quick node check,
+assuming you know the identity of the nodes in the cluster you expect to be
+configuring, using ``kubectl``::
+
+    $ $ kubectl get no
+    NAME                       STATUS   ROLES          AGE     VERSION
+    xch-production-app1        Ready    worker         3d11h   v1.17.5
+    xch-production-app2        Ready    worker         3d11h   v1.17.5
+    xch-production-ctrl1       Ready    controlplane   3d15h   v1.17.5
+    xch-production-ctrl2       Ready    controlplane   3d16h   v1.17.5
+    xch-production-etcd1       Ready    etcd           3d13h   v1.17.5
+    xch-production-etcd2       Ready    etcd           3d15h   v1.17.5
+    xch-production-etcd3       Ready    etcd           3d16h   v1.17.5
+    xch-production-graph-sm1   Ready    worker         3d16h   v1.17.5
+
 vault-pass.txt
 --------------
 

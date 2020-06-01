@@ -20,7 +20,8 @@ Editing parameter files
 Parameter files can be (and should be) viewed and edited *in situ*
 using ``ansible-vault``::
 
-    $ ansible-vault edit site-im-main-parameters.vault
+    $ INFRA_NAME=im-main
+    $ ansible-vault edit site-$INFRA_NAME-parameters.vault
 
 Creating
 --------
@@ -29,7 +30,7 @@ Using an appropriate parameter file, create (deploy) the **im-main**
 infrastructure using the root-level ansible playbook ``site.yaml``.
 It's the same playbook regardless of cluster::
 
-    $ INFRA_PARAMS=im-main
+    $ INFRA_NAME=im-main
     $ ansible-playbook \
         -e @site-$INFRA_PARAMS-parameters.vault \
         site.yaml \
