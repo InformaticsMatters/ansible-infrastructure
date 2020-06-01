@@ -28,17 +28,19 @@ Creating
 
 Using an appropriate parameter file, create (deploy) the **im-main**
 infrastructure using the root-level ansible playbook ``site.yaml``.
-It's the same playbook regardless of cluster::
+It's the same playbook regardless of cluster - only the parameter file needs
+so change::
 
     $ INFRA_NAME=im-main
     $ ansible-playbook \
-        -e @site-$INFRA_PARAMS-parameters.vault \
+        -e @site-INFRA_NAME-parameters.vault \
         site.yaml \
         --ask-vault-pass
 
-Caution, **DO NOT** delete the cluster before uninstall akk the resident
+Caution, **DO NOT** delete the cluster before you uninstall all the resident
 applications. If you delete the cluster without removing services like EFS
 you may end up with VPCs and other services that cannot be deleted because
-infrastructure components still exist.
+infrastructure components still exist. Tearing a cluster down requires careful
+thought.
 
 .. _Ansible Vault: https://docs.ansible.com/ansible/latest/user_guide/vault.html
