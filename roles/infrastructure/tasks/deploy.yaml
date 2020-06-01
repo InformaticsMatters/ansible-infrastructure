@@ -365,6 +365,7 @@
       wait_timeout: "{{ wait_timeout }}"
     loop:
     - service-keycloak
+    - ingress-keycloak
     - statefulset-keycloak
 
   - name: Wait for keycloak to become Ready
@@ -381,9 +382,5 @@
       and keycloak_result.resources[0].status.containerStatuses[0].ready
     delay: 30
     retries: "{{ (wait_timeout|int / 30)|int }}"
-
-  - name: Keycloak ingress
-    k8s:
-      definition: "{{ lookup('template', 'ingress-keycloak.yaml.j2') }}"
 
   when: kc_state|string == 'present'
