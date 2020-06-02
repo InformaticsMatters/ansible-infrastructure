@@ -57,8 +57,10 @@ spec:
             path: /auth/realms/master
             port: http
         livenessProbe:
-          initialDelaySeconds: 300
+          initialDelaySeconds: 240
+          periodSeconds: 20
           timeoutSeconds: 5
+          failureThreshold: 12
           httpGet:
             path: /auth/
             port: http
