@@ -8,7 +8,7 @@ wait_timeout: 600
 # where the PVC will not bind until the 'consumer' pod appears.
 wait_for_bind: no
 # Volume binding timeout (seconds)
-bind_timeout: 120
+bind_timeout: 60
 
 # The valid ingress certificate issuer values
 cert_issuer_set:
