@@ -63,3 +63,4 @@
 - name: Install packages
   package:
     name: rsync
+  become: yes
