@@ -17,7 +17,9 @@ all:
         # ctrl
         130.246.215.43:
         # worker
+        130.246.215.25:
         130.246.215.45:
+        130.246.215.64:
     infra_server:
       hosts:
         localhost:
