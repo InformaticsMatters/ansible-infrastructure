@@ -1,0 +1,53 @@
+---
+
+- name: Pre-flight check
+  assert:
+    that:
+    - ir_realm|string != 'SetMe'
+    - ir_realm|string is match('[-a-z]')
+
+# The infrastructure namespace must exist...
+
+- name: Get namespace ({{ ir_namespace }})
+  k8s_info:
+    kind: Namespace
+    name: "{{ ir_namespace }}"
+  register: n_result
+
+- name: Check namespace
+  assert:
+    that: n_result.resources|length == 1
+
+# Only remove the realm (and the secrets)
+# if the manager secrets exist
+
+- name: Get realm manager secrets (manager-{{ ir_realm }})
+  k8s_info:
+    kind: Secret
+    name: manager-{{ ir_realm }}
+    namespace: "{{ ir_namespace }}"
+  register: krm_s_result
+
+- block:
+
+  # Extract Realm manager details from pre-deployed secrets...
+
+  - name: Delete realm ({{ ir_realm }})
+    include_role:
+      name: informaticsmatters.infrastructure_user
+    vars:
+      iu_action: delete
+      iu_type: realm
+      iu_hostname: "{{ keycloak_server_url|urlsplit('hostname') }}"
+      iu_namespace: "{{ ir_namespace }}"
+      iu_realm: "{{ ir_realm }}"
+      iu_admin_user: "{{ keycloak_admin }}"
+      iu_admin_password: "{{ keycloak_admin_password }}"
+
+  - name: Delete realm manager secret
+    k8s:
+      definition: "{{ lookup('template', 'secret.yaml.j2') }}"
+      wait: yes
+      state: absent
+
+  when: krm_s_result.resources|length > 0

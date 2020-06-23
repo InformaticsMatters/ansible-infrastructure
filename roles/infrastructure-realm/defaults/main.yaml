@@ -1,0 +1,40 @@
+---
+
+# A role to create (or remove) a Keycloak Realm.
+# This role expects keycloak credentials (form AWX),
+# the namespace keycloak's deployed to and it
+# creates a realm-manager (and secrets), a realm
+# and an initial set of realm roles. It is up to
+# individual applications to add any additional roles.
+#
+# If creating realm 'a-c' a secret called 'manager-a-c'
+# will be found in the keycloak namespace.
+# When the realm is deleted the secrets are too.
+
+# Set to 'absent' to undeploy
+ir_state: present
+
+# The realm to create.
+# A url-like string of lower-case letters and hyphens only
+ir_realm: SetMe
+# A list of roles to add to the realm.
+# Each has a name and whether default for the realm.
+ir_realm_roles:
+- name: standard-user
+  default: yes
+
+# The namespace we'll expect to find Keycloak
+ir_namespace: im-infra
+# The realm manager and password
+ir_realm_manager: manager
+ir_realm_manager_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters') }}"
+
+# Provided by our chosen AWX/Tower Keycloak credentials
+# (keycloak credential type)...
+
+keycloak_server_url: "{{ lookup('env', 'KEYCLOAK_SERVER_URL') }}"
+keycloak_admin: "{{ lookup('env', 'KEYCLOAK_ADMIN') }}"
+keycloak_admin_password: "{{ lookup('env', 'KEYCLOAK_ADMIN_PASSWORD') }}"
+keycloak_public_key: "{{ lookup('env', 'KEYCLOAK_PUBLIC_KEY') }}"
+keycloak_secret: "{{ lookup('env', 'KEYCLOAK_SECRET') }}"
+keycloak_realm: "{{ lookup('env', 'KEYCLOAK_REALM') }}"
