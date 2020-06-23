@@ -44,6 +44,11 @@
       iu_admin_user: "{{ keycloak_admin }}"
       iu_admin_password: "{{ keycloak_admin_password }}"
 
+  - name: Set Keycloak realm manager facts (from secrets)
+    set_fact:
+      ir_realm_manager_fact: "{{ krm_s_result.resources[0].data.username|b64decode }}"
+      ir_realm_manager_password_fact: "{{ krm_s_result.resources[0].data.password|b64decode }}"
+
   - name: Delete realm manager secret
     k8s:
       definition: "{{ lookup('template', 'secret.yaml.j2') }}"
