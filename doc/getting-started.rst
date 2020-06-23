@@ -81,7 +81,7 @@ Verify you're using the right Kubernetes cluster with a quick node check,
 assuming you know the identity of the nodes in the cluster you expect to be
 configuring, using ``kubectl``::
 
-    $ $ kubectl get no
+    $ kubectl get no
     NAME                       STATUS   ROLES          AGE     VERSION
     xch-production-app1        Ready    worker         3d11h   v1.17.5
     xch-production-app2        Ready    worker         3d11h   v1.17.5

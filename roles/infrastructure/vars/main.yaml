@@ -2,6 +2,8 @@
 
 # General timeout,
 # typically used within the k8s module for wait durations.
+# One of the most time-consuming containers to start is Keycloak,
+# which may take 7 minutes or so to become ready.
 wait_timeout: 600
 # Wait for volume binding?
 # Probably unless multi-zone deployments

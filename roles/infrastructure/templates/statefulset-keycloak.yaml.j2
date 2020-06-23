@@ -48,16 +48,21 @@ spec:
           requests:
             cpu: {{ kc_cpu_request }}
             memory: {{ kc_mem_request }}
+        # Keycloak takes a significant period of time to initialise.
+        # On some compute instances 7 minutes has passed before it's
+        # become 'ready'. Here we delay for 5 minutes
+        # and then give it a further 4 minutes (at 20 second intervals)
+        # for the /auth endpoint to become available.
         readinessProbe:
-          initialDelaySeconds: 60
+          initialDelaySeconds: 300
           periodSeconds: 20
           timeoutSeconds: 5
-          failureThreshold: 6
+          failureThreshold: 12
           httpGet:
             path: /auth/realms/master
             port: http
         livenessProbe:
-          initialDelaySeconds: 240
+          initialDelaySeconds: 300
           periodSeconds: 20
           timeoutSeconds: 5
           failureThreshold: 12

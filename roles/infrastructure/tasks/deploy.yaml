@@ -368,7 +368,7 @@
     - ingress-keycloak
     - statefulset-keycloak
 
-  - name: Wait for keycloak to become Ready
+  - name: Wait for keycloak to become Ready ({{ wait_timeout }} seconds)
     k8s_info:
       kind: Pod
       name: keycloak-0
@@ -376,8 +376,8 @@
     register: keycloak_result
     until: >-
       keycloak_result.resources|length == 1
-      and database_result.resources[0].status is defined
-      and database_result.resources[0].status.containerStatuses is defined
+      and keycloak_result.resources[0].status is defined
+      and keycloak_result.resources[0].status.containerStatuses is defined
       and keycloak_result.resources[0].status.containerStatuses|length == 1
       and keycloak_result.resources[0].status.containerStatuses[0].ready
     delay: 30
