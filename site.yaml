@@ -1,9 +1,8 @@
 ---
 
-- hosts: infra_server
+- hosts: control
   roles:
-  - role: ingress-controller
-    when: ic_state|string == 'present'
+  - role: core
   - role: informaticsmatters.cert_manager
     when: cm_state|string == 'present'
   - role: provisioner-cinder

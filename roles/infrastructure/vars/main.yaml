@@ -54,7 +54,7 @@ pg_bu_imagepullpolicy: IfNotPresent
 #       will be downloaded for the version you define here. The play is should
 #       be located in 'infrastructure/tasks'  and MUST be called
 #       'render-awx-{{ ax_version }}-{{ ax_platform }}.yaml'
-ax_version: '11.2.0'
+ax_version: '13.0.0'
 
 # The directory (on the client) where the AWX repo
 # (including the built-in installation playbook)
@@ -79,7 +79,7 @@ ax_database: awx
 
 # Keycloak --------------------------------------------------------------------
 
-kc_version: '8.0.1'
+kc_version: '10.0.2'
 
 # Keycloak database credentials.
 # This is _not_ the keycloak console admin user.

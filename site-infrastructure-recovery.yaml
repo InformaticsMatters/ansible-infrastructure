@@ -4,7 +4,7 @@
 # The database backup to recover should be
 # passed-in via the 'recovery_from_backup' variable.
 
-- hosts: infra_server
+- hosts: control
   roles:
   - role: infrastructure-recovery
     vars:

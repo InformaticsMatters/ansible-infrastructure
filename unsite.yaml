@@ -1,6 +1,6 @@
 ---
 
-- hosts: infra_server
+- hosts: control
   roles:
   - { role: infrastructure, infra_state: absent }
   - { role: provisioner-efs, efs_state: absent }

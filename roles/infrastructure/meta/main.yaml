@@ -9,6 +9,3 @@ galaxy_info:
   platforms:
   - name: Kubernetes
     versions: 1.16
-
-dependencies:
-- role: core
