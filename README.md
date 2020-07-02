@@ -11,6 +11,11 @@ You'll find documentation written using [Sphinx] in the `doc` directory.
 >   Refer to the Sphinx [primer] for a quick _cheat sheet_ of Sphinx
     formatting style
 
+## Cluster provisioning
+Most of this material relates to configuring Kubernetes clusters that
+have been provisioned. For documentation relating to (some) cluster
+provisioning refer to the `provisioning/README.md`.
+
 ## Building the Documentation
 The source of the documentation can be found in the project's
 `doc` directory. To build the HTML version of the documentation install
