@@ -20,7 +20,7 @@ Editing parameter files
 Parameter files can be (and should be) viewed and edited *in situ*
 using ``ansible-vault``::
 
-    $ INFRA_NAME=im-main
+    $ INFRA_NAME=im-main-eks
     $ ansible-vault edit parameters-$INFRA_NAME.vault
 
 Creating
@@ -36,6 +36,11 @@ so change::
         -e @parameters-$INFRA_NAME.vault \
         site.yaml \
         --ask-vault-pass
+
+>   A typical AWS deployment, consisting of EFS provisioner, Database, AWX
+    and keycloak, is likely to take around 15 minutes to complete.
+    After this you should have AWX and Keycloak resolvable at the hostnames
+    you provided as parameters. Now configure AWX and you're off...
 
 Caution, **DO NOT** delete the cluster before you uninstall all the resident
 applications. If you delete the cluster without removing services like EFS

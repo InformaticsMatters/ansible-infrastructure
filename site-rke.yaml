@@ -8,8 +8,8 @@
     pip_install_packages:
     - name: docker
   roles:
-  - role: geerlingguy.pip
-    become: yes
   - role: geerlingguy.docker
+    become: yes
+  - role: geerlingguy.ntp
     become: yes
   - role: rke

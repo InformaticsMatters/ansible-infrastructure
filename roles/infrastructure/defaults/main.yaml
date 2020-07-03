@@ -12,7 +12,7 @@ infra_state: present
 # The database is _always_ deployed.
 
 # The database volume size (Gi).
-pg_vol_size_g: 10
+pg_vol_size_g: 50
 # The StorageClass of the postgres persistent volume.
 # An blank class implied the cluster default.
 pg_vol_storageclass: " "
@@ -33,7 +33,7 @@ db_user_password: "{{ lookup('password', '/dev/null length=8 chars=ascii_letters
 # One of 'present' or 'absent'
 pg_bu_state: present
 # The database backup volume size (Gi).
-pg_bu_vol_size_g: 25
+pg_bu_vol_size_g: 100
 # The backup volume StorageClass.
 # This must accommodate the ReadWriteMany access mode.
 # An blank class implied the cluster default.

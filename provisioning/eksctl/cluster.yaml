@@ -1,0 +1,35 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: im-main
+  region: eu-central-1
+
+nodeGroups:
+# A node-group locked to a specific Availability Zone.
+# This allows application deployed here to use EBS (gp2) volumes
+# without fear of new instances appearing in other zones.
+# Alternatives are EFS if you want to use zone-agnostic nodes.
+- name: ng-app-1a
+  instanceType: t3a.2xlarge
+  availabilityZones:
+  - eu-central-1a
+  minSize: 1
+  maxSize: 4
+  volumeSize: 80
+  volumeType: gp2
+  labels:
+    purpose: application
+  iam:
+    withAddonPolicies:
+      autoScaler: true
+  ssh:
+    publicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC0bZqMTVETU8t3nzZ60aexkpkeYCt68/ODg7APP6/zUwGxKK9YFk7wUCJwX6xoy6d5NWoa+9IfQ8/YepBUzUy2ypce5V7f2Jx+ugOi3TF9hMFnt+hcUFabazDvsQf+DYr/c+mjXnQl3X6N427WP1x7P9fKnUVjBZxn/LcRDOxzl/TUvR/ncfBvYAPC8q9rtkkTEcx6pj05f39GG/Eek2ayzY0FlqEGuiOlvovMSdRTvVp8CvRSEVi/ArO+wyXcWT9UtfX2JjpRKBHQLZV1oGqCyj86zWYckSNcK3CkMshUIjNoDqlK/9QCjlkjfMzpXakN8b29tA4E8wjsR5hEQb1h
+
+# cluster AZs must be set explicitly for single AZ nodegroup example to work
+# See https://github.com/weaveworks/eksctl/blob/master/examples/05-advanced-nodegroups.yaml
+availabilityZones:
+- eu-central-1a
+- eu-central-1b
+- eu-central-1c

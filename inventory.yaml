@@ -10,16 +10,11 @@ all:
         130.246.213.182:
     rke:
       hosts:
-        # etcd
-        192.168.253.14:
-        192.168.253.47:
-        192.168.253.30:
-        # ctrl
-        130.246.215.43:
-        # worker
-        130.246.215.45:
-        192.168.253.25:
-        192.168.253.64:
-    infra_server:
+        # etcd/ctrl/worker
+        18.156.198.182:
+      vars:
+        ansible_user: ubuntu
+        ansible_ssh_private_key_file: ~/.ssh/abc-im
+    control:
       hosts:
         localhost:

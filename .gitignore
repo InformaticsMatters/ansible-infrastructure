@@ -5,4 +5,6 @@ kubeconfig
 
 doc/build/
 
+**/*.rkestate
+provisioning/rke-aws/kube_config_aws-rke-cluster.yaml
 vault-pass.txt

@@ -1,7 +1,7 @@
-ansible == 2.9.9
+ansible == 2.9.10
 ansible-tower-cli == 3.3.9
-awscli == 1.18.61
-boto3 == 1.13.11
+awscli == 1.18.92
+boto3 == 1.14.13
 jmespath == 0.10.0
 kubernetes == 10.0.1
 openshift == 0.10.1
