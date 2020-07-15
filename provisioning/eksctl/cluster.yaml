@@ -64,7 +64,7 @@ nodeGroups:
   labels:
     purpose: bigmem
   taints:
-    purpose: bigmen:NoSchedule
+    purpose: bigmem:NoSchedule
   iam:
     attachPolicyARNs:
     # We need S3 read-access. If we use 'attachPolicyARNs'
