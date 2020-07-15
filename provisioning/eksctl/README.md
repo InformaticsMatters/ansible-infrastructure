@@ -1,10 +1,10 @@
 # eksctl (AWS)
 
-For background, refer to the official notes for eksctl: -
+For background, refer to the official notes for [eksctl]: -
 
     https://eksctl.io
 
->   These notes were based on eksctl v0.22.0 and kubectl v1.18.5
+>   These notes were based on eksctl v0.23.0 and kubectl v1.18.5
     
 1.  Before progressing read teh AWS [Getting Started] guide for **eksctl**
     and review the [examples], which may provide some useful excerpts.
@@ -18,11 +18,11 @@ For background, refer to the official notes for eksctl: -
     region = eu-central-1
 
 3.  Edit the cluster.yaml file to ensure it satisfies your needs
-    (if you need to SSH yu'll need the private part of the public key provided)
+    (if you need to SSH you'll need the private part of the public key provided)
     and then create the cluster from this directory: -
     
     $ eksctl create cluster -f cluster.yaml --auto-kubeconfig -p im
-    [ℹ]  eksctl version 0.22.0
+    [ℹ]  eksctl version 0.23.0
     [...]
     [✔]  EKS cluster "im-main" in "eu-central-1" region is ready
 
@@ -38,6 +38,25 @@ For background, refer to the official notes for eksctl: -
     
     $ export AWS_ACCESS_KEY_ID=0000
     $ export AWS_SECRET_ACCESS_KEY=0000
+
+## Adding node groups
+If you want to add node groups to an existing cluster simply
+add them to the `cluster.yaml` and then create the physical instances
+for the node group using the `eksctl` command and the cluster file: -
+
+    $ eksctl create nodegroup --config-file=cluster.yaml
+    [ℹ]  eksctl version 0.23.0
+    [...]
+    [ℹ]  all nodegroups have up-to-date configuration
+
+## Deleting node groups
+If you want to delete a node group use the `eksctl` command and the name
+of your EKS cluster: -
+
+    $ eksctl delete nodegroup --cluster=im-main --name=ng-bigmem-1a
+    [ℹ]  eksctl version 0.23.0
+    [...]
+    [✔]  deleted 1 nodegroup(s) from cluster "im-main"
 
 ## Importing into Rancher    
 If you're using rancher you can import the cluster. From your Rancher
@@ -56,5 +75,6 @@ kubernetes configuration file that Rancher provides.
 
 ---
 
-[getting started]: https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html
+[eksstl]: https://eksctl.io
 [examples]: https://github.com/weaveworks/eksctl/tree/master/examples
+[getting started]: https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html
