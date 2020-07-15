@@ -13,6 +13,15 @@ availabilityZones:
 - eu-central-1b
 - eu-central-1c
 
+# By design, node groups are immutable.
+#            -------------------------
+# This means that if you need to change something (other than scaling)
+# like the AMI or the instance type of a node group, you would need to
+# create a new nodegroup with the desired changes, move the load and
+# delete the old one.
+#
+# Once created and in use - they cannot be changed.
+
 # ----------------------
 # Un-managed Node Groups
 # ----------------------
