@@ -2,6 +2,7 @@
 
 kubeconfig
 *parameters
+parameters.yaml
 
 doc/build/
 

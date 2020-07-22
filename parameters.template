@@ -3,25 +3,13 @@
 # Infrastructure parameter template file.
 # Tune accordingly and replace all "SetMe" values with something meaningful
 # where the corresponding application is also set to 'present'.
-
-# General ---------------------------------------------------------------------
-
-wait_for_bind: no
+#
+# Parameters here are typical for an AWS deployment.
 
 # Cert-Manager installation ---------------------------------------------------
 
 cm_state: present
 cm_letsencrypt_email: SetMe
-
-# Cinder installation ---------------------------------------------------------
-
-cinder_state: present
-cinder_availability_zone: ceph
-
-# NFS installation ------------------------------------------------------------
-
-nfs_state: present
-nfs_server_address: 130.246.213.182
 
 # EFS installation ------------------------------------------------------------
 
@@ -34,18 +22,10 @@ pg_vol_storageclass: gp2
 pg_vol_size_g: 10
 
 pg_bu_state: absent
-pg_bu_vol_storageclass: efs
-pg_bu_vol_size_g: 25
 
 # Keycloak installation -------------------------------------------------------
 
-kc_state: present
-
-kc_admin: admin
-kc_admin_password: SetMe
-
-kc_hostname: SetMe
-kc_cert_issuer: production
+kc_state: absent
 
 # AWX installation ------------------------------------------------------------
 
