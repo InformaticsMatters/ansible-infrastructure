@@ -3,15 +3,23 @@
 # A role to create (or remove) a Keycloak Realm.
 #
 # This role expects keycloak credentials (from AWX) and the namespace
-# keycloak's. It creates a realm-manager (and secrets), a realm
-# and an initial set of realm roles. It is up to individual applications
-# to add any additional roles.
+# keycloak's deployed to. In return it creates: -
+#
+# 1.  A "Realm" in keycloak
+# 2.  A "Realm Manager" for the realm
+# 3.  Realm Manager credentials are written to a "Secret" in the keycloak
+#     namespace. The secret is named 'manager-{{ realm }}'.
+#     These credentials will be required by application to adjust the Realm
+#     (i.e. add Roles and Users)
+# 4.  An initial set of realm "Roles". It is up to individual applications
+#     to add any additional roles.
 #
 # If creating realm 'a-c' a secret called 'manager-a-c' will be found
-# in the keycloak namespace. When the realm is deleted the manager secret
-# is too.
+# in the keycloak namespace.
+#
+# When the realm is deleted the manager secret is too.
 
-# Set to 'absent' to undeploy
+# Set to 'absent' to undeploy (remove) the Realm.
 ir_state: present
 
 # The realm to create.
