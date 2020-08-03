@@ -59,6 +59,20 @@ spec:
                 secretKeyRef:
                   name: im-postgres
                   key: database_admin_user_password
+{% if pg_bu_s3_bucket_name %}
+            - name: AWS_BUCKET_NAME
+              value: '{{ pg_bu_s3_bucket_name }}'
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: im-s3
+                  key: access_key_id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: im-s3
+                  key: secret_access_key
+{% endif %}
             volumeMounts:
             - name: backup-data
               mountPath: /backup

@@ -39,6 +39,18 @@ pg_bu_vol_size_g: 100
 # An blank class implied the cluster default.
 pg_bu_vol_storageclass: " "
 
+# Backup to AWS S3?
+# You still need a local backup volume (above).
+# Defining these variables means the backup is also written to S3.
+#
+# If you set 'pg_bu_s3_bucket_name' you must set all the 'pg_bu_s3' variables
+# and the S3 (AWS) credentials you supply must be able to read and write
+# to the named bucket.
+pg_bu_s3_bucket_name: ''
+pg_bu_s3_default_region: 'eu-central-1'
+pg_bu_s3_access_key_id: ''
+pg_bu_s3_secret_access_key: ''
+
 # Keycloak --------------------------------------------------------------------
 
 # Deploy (or un-deploy)?
