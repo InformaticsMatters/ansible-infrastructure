@@ -50,13 +50,13 @@
       pg_bu_s3_default_region_fact: "{{ s3_s_result.resources[0].data.default_region|b64decode }}"
       pg_bu_s3_access_key_id_fact: "{{ s3_s_result.resources[0].data.access_key_id|b64decode }}"
       pg_bu_s3_secret_access_key_fact: "{{ s3_s_result.resources[0].data.secret_access_key|b64decode }}"
-    when: pg_s_result.resources|length == 1
+    when: s3_s_result.resources|length == 1
 
   - name: Write S3 secrets
     k8s:
       definition: "{{ lookup('template', 'secret-s3.yaml.j2') }}"
       wait: yes
-    when: pg_s_result.resources|length == 0
+    when: s3_s_result.resources|length == 0
 
   when: pg_bu_s3_bucket_name|string|length > 0
 

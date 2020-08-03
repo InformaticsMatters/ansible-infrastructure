@@ -46,10 +46,10 @@ pg_bu_vol_storageclass: " "
 # If you set 'pg_bu_s3_bucket_name' you must set all the 'pg_bu_s3' variables
 # and the S3 (AWS) credentials you supply must be able to read and write
 # to the named bucket.
-pg_bu_s3_bucket_name: ''
-pg_bu_s3_default_region: 'eu-central-1'
-pg_bu_s3_access_key_id: ''
-pg_bu_s3_secret_access_key: ''
+pg_bu_s3_bucket_name: ""
+pg_bu_s3_default_region: eu-central-1
+pg_bu_s3_access_key_id: ""
+pg_bu_s3_secret_access_key: ""
 
 # Keycloak --------------------------------------------------------------------
 
