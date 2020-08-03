@@ -2,7 +2,7 @@
 kind: CronJob
 apiVersion: batch/v1beta1
 metadata:
-  name: postgres-backup-hourly
+  name: postgres-backup
   namespace: {{ infra_namespace }}
 spec:
   schedule: '{{ pg_bu_hourly_schedule }}'

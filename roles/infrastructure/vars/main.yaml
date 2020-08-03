@@ -38,10 +38,10 @@ pg_mem_limit: 500Mi
 
 # Backups run as a CronJob.
 # Set the schedule (and the number of hourly backups to keep) here.
-pg_bu_hourly_schedule: '7 * * * *'
-pg_bu_hourly_history: 24
+pg_bu_hourly_schedule: '7 3 * * *'
+pg_bu_hourly_history: 10
 # The backup container image tag.
-pg_bu_image_tag: '2020.4'
+pg_bu_image_tag: '2020.5'
 # The pull policy for the container image.
 pg_bu_imagepullpolicy: IfNotPresent
 

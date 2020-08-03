@@ -280,7 +280,7 @@
     retries: "{{ (bind_timeout|int / 5)|int }}"
     when: wait_for_bind|bool
 
-  - name: Deploy hourly backup
+  - name: Deploy backup
     k8s:
       definition: "{{ lookup('template', 'cronjob-postgres-backup.yaml.j2') }}"
       wait: yes
