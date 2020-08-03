@@ -49,6 +49,17 @@ for the node group using the `eksctl` command and the cluster file: -
     [...]
     [ℹ]  all nodegroups have up-to-date configuration
 
+## Scaling node groups
+A nodegroup can be scaled by using the `eksctl scale nodegroup` command.
+Here we scale the `ng-app-1a` group to 2 instances: -
+
+    $ eksctl scale nodegroup --cluster=im-main --nodes=2 --name=ng-app-1a
+    [...]
+    [ℹ]  scaling nodegroup, desired capacity from 1 to 2
+
+>   Once the command is complete you may have to wait for a sort period
+    for the new nodes to become *Ready*.
+ 
 ## Deleting node groups
 If you want to delete a node group use the `eksctl` command and the name
 of your EKS cluster: -

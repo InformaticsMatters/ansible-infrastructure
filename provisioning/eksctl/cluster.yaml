@@ -38,6 +38,7 @@ nodeGroups:
   - eu-central-1a
   minSize: 1
   maxSize: 4
+  desiredCapacity: 1
   volumeSize: 80
   volumeType: gp2
   labels:
