@@ -79,7 +79,7 @@ ax_database: awx
 
 # Keycloak --------------------------------------------------------------------
 
-kc_version: '10.0.2'
+kc_version: '11.0.0'
 
 # Keycloak database credentials.
 # This is _not_ the keycloak console admin user.
