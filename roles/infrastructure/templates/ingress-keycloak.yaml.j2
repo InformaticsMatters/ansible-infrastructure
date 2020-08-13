@@ -8,6 +8,18 @@ metadata:
     ingress.kubernetes.io/rewrite-target: /
     kubernetes.io/ingress.class: "nginx"
     cert-manager.io/cluster-issuer: "letsencrypt-nginx-{{ kc_cert_issuer|lower }}"
+{#
+    # Proxy buffering - required while developing authentication for
+    # the Mini-Apps Data Tier. Without this, authentication with the
+    # early connexion-based Data Tier resulted in the error
+    # “upstream sent too big header while reading response header from upstream”
+    # (see https://ma.ttias.be/nginx-proxy-upstream-sent-big-header-reading-response-header-upstream/)
+    # To fix this we add the following annotations.
+#}
+    nginx.ingress.kubernetes.io/proxy-buffering: 'on'
+    nginx.ingress.kubernetes.io/proxy-buffers-number: '4'
+    nginx.ingress.kubernetes.io/proxy-buffer-size: '128k'
+    nginx.ingress.kubernetes.io/proxy-busy-buffer-size: '256k'
 spec:
   tls:
   - hosts:
