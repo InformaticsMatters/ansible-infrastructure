@@ -63,15 +63,15 @@ value of your control plane from the config file and ``API_KEY`` is the
     $ export K8S_AUTH_VERIFY_SSL=no
     $ export K8S_CONTEXT=im-main
 
->   To confirm you have the right context you can always rn the following
-    command to list the valid contexts: -
+To confirm you have the right context you can always run the following
+command to list the valid contexts::
 
     $ kubectl config get-contexts
 
-You will also need a copy of your kubeconfig file and will need to set the
+You will also need a copy of your **kubeconfig** file and will need to set the
 ``KUBECONFIG`` environment variable to point to your copy. You can safely place
 the config in the root of a clone of this repository as the file
-``kubeconfig`` as this is part fo the project ignore set::
+``kubeconfig`` as this is part of the project ignore set::
 
     $ export KUBECONFIG=./kubeconfig
 

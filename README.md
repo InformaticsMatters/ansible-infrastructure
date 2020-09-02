@@ -25,7 +25,7 @@ the build requirements and then move to the `doc` directory and execute
     $ pip install -r build-requirements.txt
     $ sphinx-build -b html doc doc/build
 
-The resultant index page will be called `build/html/index.html`.
+The resultant index page will be called `doc/build/index.html`.
 
 >   The build directory is currently excluded by the project's `.gitignore`
 
