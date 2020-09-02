@@ -100,9 +100,15 @@ configuring, using ``kubectl``::
 vault-pass.txt
 --------------
 
-Find the vault password for this project's repository (normally found in
-our **KeePass** application). And place it in a file called ``vault-pass.txt``
-in the root of this project.
+..  note::
+    Some pre-defined infrastructure parameter files, which contain preset
+    deployment variable values, require an `Ansible Vault`_ password so that
+    they can be decrypted. If you are using one of our built-in parameter files
+    you will need the appropriate vault password.
+
+Find the vault password for the parameter file you're interested in
+(normally found in our **KeePass** application). And place it in a file called
+``vault-pass.txt`` in the root of this project.
 
 .. _Ansible: https://pypi.org/project/ansible/
 .. _Ansible Galaxy: https://galaxy.ansible.com
