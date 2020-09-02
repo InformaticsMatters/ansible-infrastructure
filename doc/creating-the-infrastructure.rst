@@ -6,6 +6,9 @@ The infrastructure deployment is *fine-tuned* with Ansible parameter files.
 Some are pre-built (with their content encrypted using `Ansible Vault`_)
 but you can also create your won.
 
+When deploying it's useful to be able to observe the Kubernetes cluster,
+either with the ``kubectl`` command-line or a visual dashboard like `Lens`_.
+
 ..  note::
     A typical AWS deployment, consisting of EFS provisioner, Database, AWX
     and keycloak, is likely to take around 15 minutes to complete.
@@ -18,9 +21,6 @@ but you can also create your won.
     you may end up with VPCs and other services that cannot be deleted because
     infrastructure components still exist. Tearing a cluster down requires careful
     thought.
-
-When deploying it's useful to be able to observe the Kubernetes cluster,
-either with the ``kubectl`` command-line or a visual dashboard like `Lens`_.
 
 Creating (using your own parameters)
 ====================================
@@ -40,8 +40,8 @@ for all the ``SetMe`` examples (and the others if required).
     ``defaults/main.yaml`` and ``vars/main.yaml`` if you want to see every
     parameter that's available to you.
 
-To deploy the infrastructure you then name the parameter file in the
-Ansible playbook command::
+Once edited, to deploy the infrastructure, you then name the parameter file in
+the Ansible playbook command::
 
     $ INFRA_NAME=me
     $ ansible-playbook \

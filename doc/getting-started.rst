@@ -91,6 +91,13 @@ configuring via the environment for some of the Roles to properly function::
     $ export AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxx
 
 
+The permissions of the AWS user will depend on what you intend to deploy.
+Typically these will be something like: -
+
+*   AmazonEC2FullAccess
+*   AmazonElasticFileSystemFullAccess
+*   AmazonS3ReadOnlyAccess
+
 Verify you're using the right Kubernetes cluster with a quick node check,
 assuming you know the identity of the nodes in the cluster you expect to be
 configuring, using ``kubectl``::

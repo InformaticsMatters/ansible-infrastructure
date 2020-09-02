@@ -11,6 +11,10 @@ containers) to a Kubernetes cluster.
     architecture uses **Ingress** objects that rely on an **NGINX Ingress
     Controller** in the cluster.
 
+    If you have not installed the NGINX ingress controller you can use the
+    one in our ``provisioning`` directory and refer to the ``README.md``
+    file there.
+
 The architecture consists of the following components, in approximate order
 of creation, and described briefly in the following sections: -
 
