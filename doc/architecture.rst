@@ -6,6 +6,11 @@ The Ansible Infrastructure project is a set of roles that are used to
 deploy Informatics Matters infrastructure applications (in the form of
 containers) to a Kubernetes cluster.
 
+..  note::
+    The infrastructure playbooks do not deploy an *Ingress Controller* but the
+    architecture uses **Ingress** objects that rely on an **NGINX Ingress
+    Controller** in the cluster.
+
 The architecture consists of the following components, in approximate order
 of creation, and described briefly in the following sections: -
 
