@@ -36,10 +36,19 @@ Your Kubernetes cluster will need: -
     with the label ``purpose=application``. This is not mandatory,
     but recommended.
 
-3.  **Domain names** should be routed to your cluster.
-    You will set the actual names using parameters but you should have
-    resolvable domain names for infrastructure components that will be deployed
-    (e.g. domains for the **AWX** and **Keycloak** services).
+3.  An **NGINX Ingress Controller**. In order to load-balance and route traffic
+    into and around the cluster we rely on an NGINX ingress controller
+    and the annotations it supports in Kubernetes **Ingress** objects.
+    If you have not already installed NGINX as an ingress controller
+    you can use the one pre-packaged in our ``provisioning`` directory and
+    refer to our ``provisioning/README.md``.
+
+4.  **Domain names** should be routed to your cluster's Load Balancer (normally
+    automatically created by the installation of an NGINX Ingress Controller -
+    see above). You will set the actual names using parameters but you should
+    have resolvable domain names for infrastructure components that will be
+    deployed (e.g. domains for the **AWX** and **Keycloak** services if you're
+    using them).
 
 Cluster credentials
 ===================
@@ -97,8 +106,8 @@ configuring, using ``kubectl``::
     xch-production-etcd3       Ready    etcd           3d16h   v1.17.5
     xch-production-graph-sm1   Ready    worker         3d16h   v1.17.5
 
-vault-pass.txt
---------------
+Vault passwords (optional)
+--------------------------
 
 ..  note::
     Some pre-defined infrastructure parameter files, which contain preset
