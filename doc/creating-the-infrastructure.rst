@@ -22,6 +22,18 @@ either with the ``kubectl`` command-line or a visual dashboard like `Lens`_.
     infrastructure components still exist. Tearing a cluster down requires careful
     thought.
 
+Cluster Context (for AWX)
+=========================
+
+To install AWX you will need the context name of the cluster,
+located in your ``kubeconfig`` file::
+
+    contexts:
+    - name: "im-demo"
+      context:
+        user: "im-demo"
+        cluster: "im-demo"
+
 Creating (using your own parameters)
 ====================================
 
@@ -44,8 +56,10 @@ Once edited, to deploy the infrastructure, you then name the parameter file in
 the Ansible playbook command::
 
     $ INFRA_NAME=me
+    $ CLUSTER_CONTEXT=demo
     $ ansible-playbook \
         -e @parameters-$INFRA_NAME \
+        -e ax_kubernetes_context=$CLUSTER_CONTEXT \
         site.yaml
 
 ..  note::
@@ -72,8 +86,10 @@ It's the same playbook regardless of cluster - only the parameter file needs
 so change::
 
     $ INFRA_NAME=im-main
+    $ CLUSTER_CONTEXT=demo
     $ ansible-playbook \
         -e @parameters-$INFRA_NAME.vault \
+        -e ax_kubernetes_context=$CLUSTER_CONTEXT \
         site.yaml \
         --ask-vault-pass
 
