@@ -22,6 +22,8 @@ cert_issuer_set:
 # The infrastructure database version.
 # For AWX the minimum version is 9.6+
 pg_version: '12.2'
+# The image registry for the PostgreSQL container image
+pg_image_registry: docker.io
 
 # Postgres superuser details
 pg_user: governor
@@ -44,6 +46,8 @@ pg_bu_hourly_history: 10
 pg_bu_image_tag: '2020.5'
 # The pull policy for the container image.
 pg_bu_imagepullpolicy: IfNotPresent
+# The registry
+pg_bu_image_registry: docker.io
 
 # AWX -------------------------------------------------------------------------
 
@@ -79,7 +83,9 @@ ax_database: awx
 
 # Keycloak --------------------------------------------------------------------
 
+# The Keycloak container version and image registry
 kc_version: '11.0.0'
+kc_image_registry: docker.io
 
 # Keycloak database credentials.
 # This is _not_ the keycloak console admin user.

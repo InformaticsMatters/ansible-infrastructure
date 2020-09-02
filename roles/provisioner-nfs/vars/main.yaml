@@ -9,9 +9,10 @@ nfs_provisioner_name: informaticsmatters.com/nfs
 # The name used for the storage class that will be created.
 nfs_storage_class_name: nfs
 
-# The container image tag.
+# The container image tag and registry.
 # One valid for quay.io/repository/external_storage/nfs-client-provisioner
 nfs_provisioner_tag: v3.1.0-k8s1.11
+nfs_provisioner_registry: quay.io
 
 # The node 'purpose' for workload deployments.
 nfs_node_purpose: application

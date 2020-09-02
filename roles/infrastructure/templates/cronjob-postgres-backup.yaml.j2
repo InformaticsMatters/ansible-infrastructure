@@ -31,7 +31,7 @@ spec:
                     - {{ infra_node_purpose }}
 
           containers:
-          - image: informaticsmatters/sql-backup:{{ pg_bu_image_tag }}
+          - image: {{ pg_bu_image_registry }}/informaticsmatters/sql-backup:{{ pg_bu_image_tag }}
             name: postgres-backup
             imagePullPolicy: {{ pg_bu_imagepullpolicy }}
             terminationMessagePolicy: FallbackToLogsOnError

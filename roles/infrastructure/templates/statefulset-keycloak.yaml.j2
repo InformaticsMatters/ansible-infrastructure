@@ -33,7 +33,7 @@ spec:
 
       containers:
       - name: keycloak
-        image: jboss/keycloak:{{ kc_version }}
+        image: {{ kc_image_registry }}/jboss/keycloak:{{ kc_version }}
         imagePullPolicy: IfNotPresent
         terminationMessagePolicy: FallbackToLogsOnError
         ports:

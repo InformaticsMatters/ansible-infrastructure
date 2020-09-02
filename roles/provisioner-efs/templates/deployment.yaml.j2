@@ -33,7 +33,7 @@ spec:
 
       containers:
       - name: efs-provisioner
-        image: quay.io/external_storage/efs-provisioner:{{ efs_provisioner_tag }}
+        image: {{ efs_provisioner_registry }}/external_storage/efs-provisioner:{{ efs_provisioner_tag }}
         imagePullPolicy: IfNotPresent
         terminationMessagePolicy: FallbackToLogsOnError
         resources:

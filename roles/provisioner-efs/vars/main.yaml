@@ -1,8 +1,10 @@
 ---
 
-# The EFS provisioner container image tag.
+# The EFS provisioner container image tag and its registry.
 # One from quay.io/external_storage/efs-provisioner
 efs_provisioner_tag: v2.4.0
+efs_provisioner_registry: quay.io
+
 # A symbolic name for the provisioner deployment,
 # used to direct the storage-class to the provisioner Pod.
 efs_provisioner_name: informaticsmatters.com/efs

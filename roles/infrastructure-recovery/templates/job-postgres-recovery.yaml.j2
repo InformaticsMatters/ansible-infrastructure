@@ -28,7 +28,7 @@ spec:
                 - {{ infra_node_purpose }}
 
       containers:
-      - image: informaticsmatters/sql-recovery:{{ recovery_image_tag }}
+      - image: {{ recovery_image_registry }}/informaticsmatters/sql-recovery:{{ recovery_image_tag }}
         name: postgres-recovery
         imagePullPolicy: {{ recovery_imagepullpolicy }}
         terminationMessagePolicy: FallbackToLogsOnError

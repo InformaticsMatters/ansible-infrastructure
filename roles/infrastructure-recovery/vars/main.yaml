@@ -1,7 +1,9 @@
 ---
 
-# The recovery container image tag.
+# The recovery container image tag and registry.
 recovery_image_tag: '2020.2'
+recovery_image_registry: docker.io
+
 # The pull policy for the container image.
 recovery_imagepullpolicy: IfNotPresent
 
