@@ -49,6 +49,43 @@ nodeGroups:
   ssh:
     publicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC0bZqMTVETU8t3nzZ60aexkpkeYCt68/ODg7APP6/zUwGxKK9YFk7wUCJwX6xoy6d5NWoa+9IfQ8/YepBUzUy2ypce5V7f2Jx+ugOi3TF9hMFnt+hcUFabazDvsQf+DYr/c+mjXnQl3X6N427WP1x7P9fKnUVjBZxn/LcRDOxzl/TUvR/ncfBvYAPC8q9rtkkTEcx6pj05f39GG/Eek2ayzY0FlqEGuiOlvovMSdRTvVp8CvRSEVi/ArO+wyXcWT9UtfX2JjpRKBHQLZV1oGqCyj86zWYckSNcK3CkMshUIjNoDqlK/9QCjlkjfMzpXakN8b29tA4E8wjsR5hEQb1h
 
+# Multi-Zone (MZ) application (spot) instances.
+# Generally for workflow execution where
+# a volume does not have to exist in the designated zone,
+# i.e. where EFS volumes are sufficient.
+#
+# See https://eksctl.io/usage/spot-instances/
+# Application instances
+#   Type         Size   Spot      Demand
+#   ------------ ------ --------- -------
+# - t2.xlarge    4/16   $0.0643   $0.2144
+# - t3.xlarge    4/16   $0.0621
+# - m5.xlarge    4/16   $0.0769
+- name: ng-app-spot-mz
+  labels:
+    purpose: application-mz
+  tags:
+    k8s.io/cluster-autoscaler/node-template/label/purpose: application-mz
+  instancesDistribution:
+    maxPrice: 0.080
+    instanceTypes:
+    - t2.xlarge
+    - t3.xlarge
+    - m5.xlarge
+    onDemandBaseCapacity: 0
+    onDemandPercentageAboveBaseCapacity: 0
+    spotInstancePools: 3
+  desiredCapacity: 1
+  minSize: 1
+  maxSize: 4
+  volumeSize: 80
+  privateNetworking: true
+  iam:
+    withAddonPolicies:
+      autoScaler: true
+  ssh:
+    publicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC0bZqMTVETU8t3nzZ60aexkpkeYCt68/ODg7APP6/zUwGxKK9YFk7wUCJwX6xoy6d5NWoa+9IfQ8/YepBUzUy2ypce5V7f2Jx+ugOi3TF9hMFnt+hcUFabazDvsQf+DYr/c+mjXnQl3X6N427WP1x7P9fKnUVjBZxn/LcRDOxzl/TUvR/ncfBvYAPC8q9rtkkTEcx6pj05f39GG/Eek2ayzY0FlqEGuiOlvovMSdRTvVp8CvRSEVi/ArO+wyXcWT9UtfX2JjpRKBHQLZV1oGqCyj86zWYckSNcK3CkMshUIjNoDqlK/9QCjlkjfMzpXakN8b29tA4E8wjsR5hEQb1h
+
 # BigMem nodes (Graph Nodes) need read-access to AWS S3
 # as they're expected to download data from the bucket
 # that contains the input data for the graph database
@@ -65,9 +102,9 @@ nodeGroups:
   instanceType: r5.4xlarge
   availabilityZones:
   - eu-central-1a
-  minSize: 1
+  minSize: 0
   maxSize: 1
-  desiredCapacity: 1
+  desiredCapacity: 0
   volumeSize: 80
   volumeType: gp2
   privateNetworking: true

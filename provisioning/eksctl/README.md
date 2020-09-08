@@ -4,13 +4,13 @@ For background, refer to the official notes for [eksctl]: -
 
     https://eksctl.io
 
->   These notes were based on eksctl v0.23.0 and kubectl v1.18.5
+>   These notes were based on eksctl v0.27.0 and kubectl v1.19.0
     
 1.  Before progressing read teh AWS [Getting Started] guide for **eksctl**
     and review the [examples], which may provide some useful excerpts.
 
 2.  Ensure you've configured the AWS CLI with a **im** profile
-    in ~/.aws/credentials. i.e.: -
+    in `~/.aws/credentials`. i.e.: -
 
     [im]
     aws_access_key_id = 0000000
@@ -22,7 +22,7 @@ For background, refer to the official notes for [eksctl]: -
     and then create the cluster from this directory: -
     
     $ eksctl create cluster -f cluster.yaml --auto-kubeconfig -p im
-    [ℹ]  eksctl version 0.23.0
+    [ℹ]  eksctl version 0.27.0
     [...]
     [✔]  EKS cluster "im-main" in "eu-central-1" region is ready
 
@@ -42,10 +42,11 @@ For background, refer to the official notes for [eksctl]: -
 ## Adding node groups
 If you want to add node groups to an existing cluster simply
 add them to the `cluster.yaml` and then create the physical instances
-for the node group using the `eksctl` command and the cluster file: -
+for the node group using the `eksctl` command and `--include` option
+with the cluster file: -
 
-    $ eksctl create nodegroup --config-file=cluster.yaml
-    [ℹ]  eksctl version 0.23.0
+    $ eksctl create nodegroup --config-file=cluster.yaml --include='ng-app-spot-mz'
+    [ℹ]  eksctl version 0.27.0
     [...]
     [ℹ]  all nodegroups have up-to-date configuration
 
@@ -65,7 +66,7 @@ If you want to delete a node group use the `eksctl` command and the name
 of your EKS cluster: -
 
     $ eksctl delete nodegroup --cluster=im-main --name=ng-bigmem-1a
-    [ℹ]  eksctl version 0.23.0
+    [ℹ]  eksctl version 0.27.0
     [...]
     [✔]  deleted 1 nodegroup(s) from cluster "im-main"
 
