@@ -9,6 +9,10 @@ Individual directories should have their own `README.md` files.
 >   Most instruction assume you're using the project requirements in
     in Conda or a virtual environment.
 
+## eksctl
+This serves as an example directory only. Our EKS cluster is managed
+by the [eks-im-main] GitLab repository.
+
 ## Ingress controller and ELB (AWS)
 With a _bare_ cluster ready you can install an nginx ingress controller
 DaemonSet and AWS NLB by applying the YAML provided in this directory.
@@ -20,7 +24,11 @@ Simply run the following from this directory: -
 
 After a while your AWS NLB should be ready.
 
+## rke-aws
+Our RKE provisioning material.
+
 ---
 
 [copy]: https://raw.githubusercontent.com/kubernetes/ingress-nginx/ingress-nginx-2.9.1/deploy/static/provider/aws/deploy.yaml
+[eks-im-main]: https://gitlab.com/informaticsmatters/eks-im-main
 [ingress-nginx]: https://github.com/kubernetes/ingress-nginx
