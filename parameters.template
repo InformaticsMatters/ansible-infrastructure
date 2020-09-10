@@ -14,20 +14,33 @@ cm_letsencrypt_email: SetMe (if present)
 
 # EFS installation ------------------------------------------------------------
 # This allows you to use 'efs' in any PVC storageClassName,
-# and (importantly) any PVC that needs a 'ReadWriteMany' Access Mode.
+# and (importantly) any PVC that needs a 'ReadWriteMany' (RWX) Access Mode.
 
 efs_state: present
 efs_backing_volume_name: SetMe (if present)
 
-# PostgreSQL installation -----------------------------------------------------
-# Always required, with backups optional.
+# Infrastructure installation -------------------------------------------------
+
+# Do we want any infrastructure applications at all?
+# Setting infra_state to 'absent' will prevent the
+# installation of the database, keycloak and AWX.
+#
+# If hs is set to 'absent' the corresponding values
+# infrastructure apps like for Postgres, AWX or Keycloak
+# will be ignored.
+infra_state: present
+
+# PostgreSQL installation
+# ----------
 
 pg_vol_storageclass: gp2
 pg_vol_size_g: 10
 
 pg_bu_state: absent
 
-# Keycloak installation -------------------------------------------------------
+# Keycloak installation
+# --------
+
 # For SSO authentication.
 # Not required by all applications,
 # and not (atm) required by the Fragalysis Stack.
@@ -35,7 +48,9 @@ pg_bu_state: absent
 kc_state: absent
 kc_hostname: SetMe (if present)
 
-# AWX installation ------------------------------------------------------------
+# AWX installation
+# ---
+
 # the Ansible AWX server (normally required) and dependent on the
 # PostgreSQL database (above)
 

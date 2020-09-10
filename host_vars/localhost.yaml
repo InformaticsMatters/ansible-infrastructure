@@ -1,5 +1,11 @@
 ---
 
+ansible_connection: local
+ansible_python_interpreter: "/usr/bin/env python"
+
+# Install infrastructure (apps)?
+infra_state: present
+
 # The namespace of the deployment,
 # our 'infrastructure'. We anticipate
 # deploying postgres, the AWX server and Keycloak here.
@@ -9,6 +15,3 @@ infra_namespace_service_account: im-infra
 # The database, AWX server and keycloak deployments will try to deploy
 # workloads to nodes that contain the label "purpose={{ node_purpose }}".
 infra_node_purpose: application
-
-ansible_connection: local
-ansible_python_interpreter: "/usr/bin/env python"

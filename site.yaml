@@ -12,3 +12,4 @@
   - role: provisioner-nfs
     when: nfs_state|string == 'present'
   - role: infrastructure
+    when: infra_state|string == 'present'
