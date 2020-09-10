@@ -113,8 +113,32 @@ configuring, using ``kubectl``::
     xch-production-etcd3       Ready    etcd           3d16h   v1.17.5
     xch-production-graph-sm1   Ready    worker         3d16h   v1.17.5
 
+Using private registries
+========================
+
+If you have moved all the container images into your own private registry
+like JFrog Artifactory, either for preference or company policy, you may need
+to provide a container image pull **Secret** in order to pull them.
+
+If so: -
+
+1.  All images must be in your private registry. You cannot have some images
+    on the public Docker Hub and some in your registry.
+2.  At the moment the pull secret *must be* common to every images.
+    You cannot have a secret for image **A** and different secret for image **B**
+3.  You must create each application **Namespace** in advance of these playbooks
+4.  You must create a **Secret** in each **Namespace** that can be used by
+    Kubernetes as a container ``ImagePullSecret``
+5.  You must provide the name of the **Secret** in the ansible variable
+    ``all_image_preset_pullsecret_name``
+
+When you provide a value for ``all_image_preset_pullsecret_name`` an
+``imagePullSecret`` property will be added to every Kubernetes **Job**,
+**Deployment** and **StatefulSet** in these playbooks - in fact every object
+that pulls images.
+
 Vault passwords (optional)
---------------------------
+==========================
 
 ..  note::
     Some pre-defined infrastructure parameter files, which contain preset
