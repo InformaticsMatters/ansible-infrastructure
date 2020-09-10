@@ -30,6 +30,11 @@ spec:
                     values:
                     - {{ infra_node_purpose }}
 
+{% if all_image_preset_pullsecret_name|string|length > 0 %}
+          imagePullSecrets:
+          - name: {{ all_image_preset_pullsecret_name }}
+{% endif %}
+
           containers:
           - image: {{ pg_bu_image_registry }}/informaticsmatters/sql-backup:{{ pg_bu_image_tag }}
             name: postgres-backup

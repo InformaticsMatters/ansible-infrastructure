@@ -31,6 +31,11 @@ spec:
                 values:
                 - {{ nfs_node_purpose }}
 
+{% if all_image_preset_pullsecret_name|string|length > 0 %}
+      imagePullSecrets:
+      - name: {{ all_image_preset_pullsecret_name }}
+{% endif %}
+
       containers:
       - name: nfs-client-provisioner
         image: {{ nfs_provisioner_registry }}/external_storage/nfs-client-provisioner:{{ nfs_provisioner_tag }}

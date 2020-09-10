@@ -31,6 +31,11 @@ spec:
                 values:
                 - {{ efs_node_purpose }}
 
+{% if all_image_preset_pullsecret_name|string|length > 0 %}
+      imagePullSecrets:
+      - name: {{ all_image_preset_pullsecret_name }}
+{% endif %}
+
       containers:
       - name: efs-provisioner
         image: {{ efs_provisioner_registry }}/external_storage/efs-provisioner:{{ efs_provisioner_tag }}

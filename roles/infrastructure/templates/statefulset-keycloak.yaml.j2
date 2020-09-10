@@ -31,6 +31,11 @@ spec:
                 values:
                 - {{ infra_node_purpose }}
 
+{% if all_image_preset_pullsecret_name|string|length > 0 %}
+      imagePullSecrets:
+      - name: {{ all_image_preset_pullsecret_name }}
+{% endif %}
+
       containers:
       - name: keycloak
         image: {{ kc_image_registry }}/jboss/keycloak:{{ kc_version }}

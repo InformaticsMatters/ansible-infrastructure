@@ -27,6 +27,11 @@ spec:
                 values:
                 - {{ infra_node_purpose }}
 
+{% if all_image_preset_pullsecret_name|string|length > 0 %}
+      imagePullSecrets:
+      - name: {{ all_image_preset_pullsecret_name }}
+{% endif %}
+
       containers:
       - image: {{ recovery_image_registry }}/informaticsmatters/sql-recovery:{{ recovery_image_tag }}
         name: postgres-recovery
