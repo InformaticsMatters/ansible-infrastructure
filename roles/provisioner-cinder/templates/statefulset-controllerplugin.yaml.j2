@@ -1,0 +1,121 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: csi-cinder-controller-service
+  namespace: {{ cinder_namespace }}
+  labels:
+    app: csi-cinder-controllerplugin
+spec:
+  selector:
+    app: csi-cinder-controllerplugin
+  ports:
+    - name: dummy
+      port: 12345
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: csi-cinder-controllerplugin
+  namespace: {{ cinder_namespace }}
+spec:
+  serviceName: csi-cinder-controller-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csi-cinder-controllerplugin
+  template:
+    metadata:
+      labels:
+        app: csi-cinder-controllerplugin
+    spec:
+      serviceAccount: csi-cinder-controller-sa
+      containers:
+
+      - name: csi-attacher
+        image: "{{ cinder_attacher_registry }}/{{ cinder_attacher_image }}:{{ cinder_attacher_image_tag }}"
+        imagePullPolicy: IfNotPresent
+        args:
+        - "--csi-address=$(ADDRESS)"
+        - "--timeout=3m"
+        env:
+        - name: ADDRESS
+          value: /var/lib/csi/sockets/pluginproxy/csi.sock
+        volumeMounts:
+        - name: socket-dir
+          mountPath: /var/lib/csi/sockets/pluginproxy/
+
+      - name: csi-provisioner
+        image: "{{ cinder_provisioner_registry }}/{{ cinder_provisioner_image }}:{{ cinder_provisioner_image_tag }}"
+        imagePullPolicy: IfNotPresent
+        args:
+        - "--csi-address=$(ADDRESS)"
+        - "--timeout=3m"
+        env:
+        - name: ADDRESS
+          value: /var/lib/csi/sockets/pluginproxy/csi.sock
+        volumeMounts:
+        - name: socket-dir
+          mountPath: /var/lib/csi/sockets/pluginproxy/
+
+{% if not cinder_controller_exclude_snapshotter %}
+      - name: csi-snapshotter
+        image: "{{ cinder_snapshotter_registry }}/{{ cinder_snapshotter_image }}:{{ cinder_snapshotter_image_tag }}"
+        imagePullPolicy: IfNotPresent
+        args:
+        - "--csi-address=$(ADDRESS)"
+        env:
+        - name: ADDRESS
+          value: /var/lib/csi/sockets/pluginproxy/csi.sock
+        volumeMounts:
+        - mountPath: /var/lib/csi/sockets/pluginproxy/
+          name: socket-dir
+{% endif %}
+
+{% if not cinder_controller_exclude_resizer %}
+      - name: csi-resizer
+        image: "{{ cinder_resizer_registry }}/{{ cinder_resizer_image }}:{{ cinder_resizer_image_tag }}"
+        imagePullPolicy: IfNotPresent
+        args:
+        - "--csi-address=$(ADDRESS)"
+        env:
+        - name: ADDRESS
+          value: /var/lib/csi/sockets/pluginproxy/csi.sock
+        volumeMounts:
+        - name: socket-dir
+          mountPath: /var/lib/csi/sockets/pluginproxy/
+{% endif %}
+
+      - name: cinder-csi-plugin
+        image: "{{ cinder_plugin_registry }}/{{ cinder_plugin_image }}:{{ cinder_plugin_image_tag }}"
+        imagePullPolicy: IfNotPresent
+        args:
+        - /bin/cinder-csi-plugin
+        - "--nodeid=$(NODE_ID)"
+        - "--endpoint=$(CSI_ENDPOINT)"
+        - "--cloud-config=$(CLOUD_CONFIG)"
+        - "--cluster=$(CLUSTER_NAME)"
+        env:
+        - name: NODE_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: CSI_ENDPOINT
+          value: unix://csi/csi.sock
+        - name: CLOUD_CONFIG
+          value: /etc/config/cloud.conf
+        - name: CLUSTER_NAME
+          value: kubernetes
+        volumeMounts:
+        - name: socket-dir
+          mountPath: /csi
+        - name: secret-cinderplugin
+          mountPath: /etc/config
+          readOnly: true
+
+      volumes:
+      - name: socket-dir
+        emptyDir:
+      - name: secret-cinderplugin
+        secret:
+          secretName: cloud-config

@@ -2,18 +2,15 @@
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
-  name: {{ cinder_storage_basename }}-delete
-provisioner: kubernetes.io/cinder
+  name: csi-cinder-sc-delete
+provisioner: cinder.csi.openstack.org
 reclaimPolicy: Delete
-parameters:
-  availability: {{ cinder_availability_zone }}
-
+allowVolumeExpansion: {{ cinder_allow_volume_expansion }}
 ---
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
-  name: {{ cinder_storage_basename }}-retain
-provisioner: kubernetes.io/cinder
+  name: csi-cinder-sc-retain
+provisioner: cinder.csi.openstack.org
 reclaimPolicy: Retain
-parameters:
-  availability: {{ cinder_availability_zone }}
+allowVolumeExpansion: {{ cinder_allow_volume_expansion }}

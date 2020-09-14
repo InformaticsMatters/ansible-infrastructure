@@ -1,9 +1,24 @@
 ---
 
+- name: Check cloud config
+  assert:
+    that:
+    - cinder_cloud_config|string|length > 0
+    - cinder_cloud_config|string != 'SetMe'
+
 - name: Create cinder objects
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
   loop:
+  - namespace
+  - secret
+  - rbac-controllerplugin
+  - rbac-nodeplugin
+  - role-psp
+  - rolebinding-sa-psp
+  - statefulset-controllerplugin
+  - daemonset-nodeplugin
   - storageclass
+  - csidriver

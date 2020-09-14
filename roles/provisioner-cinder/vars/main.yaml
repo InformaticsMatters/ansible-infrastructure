@@ -1,4 +1,40 @@
 ---
 
-# The basename for the 'delete' and 'reclaim' classes
-cinder_storage_basename: im-cinder
+# Allow volume expansion?
+cinder_allow_volume_expansion: no
+
+# The provisioner container image tags and registries.
+cinder_node_driver_registrar_image_tag: v1.2.0
+cinder_node_driver_registrar_image: k8scsi/csi-node-driver-registrar
+cinder_node_driver_registrar_registry: quay.io
+
+cinder_plugin_image_tag: v1.19.0
+cinder_plugin_image: k8scloudprovider/cinder-csi-plugin
+cinder_plugin_registry: docker.io
+
+cinder_attacher_image_tag: v2.2.0
+cinder_attacher_image: k8scsi/csi-attacher
+cinder_attacher_registry: quay.io
+
+cinder_provisioner_image_tag: v1.6.0
+cinder_provisioner_image: k8scsi/csi-provisioner
+cinder_provisioner_registry: quay.io
+
+cinder_snapshotter_image_tag: v1.2.2
+cinder_snapshotter_image: k8scsi/csi-snapshotter
+cinder_snapshotter_registry: quay.io
+
+cinder_resizer_image_tag: v0.4.0
+cinder_resizer_image: k8scsi/csi-resizer
+cinder_resizer_registry: quay.io
+
+# Exclude certain pods in the StatefulSet controller plugin?
+cinder_controller_exclude_snapshotter: yes
+cinder_controller_exclude_resizer: yes
+
+# The PSP to apply to the StatefulSet and DaemonSet
+cinder_psp: im-core-unrestricted
+
+# General timeout, generally used within the k8s module,
+# for wait duration
+wait_timeout: 600

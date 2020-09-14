@@ -19,6 +19,13 @@ cm_letsencrypt_email: SetMe (if present)
 efs_state: present
 efs_backing_volume_name: SetMe (if present)
 
+# Cinder installation ---------------------------------------------------------
+# This allows you to use cinder provisioning (OpenStack).
+# You will need to provide the base64 encoding of your cloud config file.
+
+cinder_state: absent
+cinder_cloud_config: SetMe
+
 # Infrastructure installation -------------------------------------------------
 
 # Do we want any infrastructure applications at all?
