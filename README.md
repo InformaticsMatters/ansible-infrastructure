@@ -16,6 +16,11 @@ Most of this material relates to configuring Kubernetes clusters that
 have been provisioned. For documentation relating to (some) cluster
 provisioning refer to the `provisioning/README.md`.
 
+## Cinder provisioner
+The cinder provisioner is a 'work in progress' formed from Helm templates
+taken from the [cloud-provider-openstack] repository. The release used
+as a basic of the templates was **openstack-cinder-csi-1.1.2**. 
+
 ## Building the Documentation
 The source of the documentation can be found in the project's
 `doc` directory. To build the HTML version of the documentation install
@@ -34,3 +39,4 @@ The resultant index page will be called `doc/build/index.html`.
 [kubernetes]: https://kubernetes.io
 [sphinx]: http://www.sphinx-doc.org/en/master/#
 [primer]: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#lists-and-quote-like-blocks
+[cloud-provider-openstack]: https://github.com/kubernetes/cloud-provider-openstack
