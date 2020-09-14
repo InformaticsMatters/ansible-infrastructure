@@ -13,6 +13,7 @@
     wait_timeout: "{{ wait_timeout }}"
   loop:
   - namespace
+  - csidriver
   - secret
   - rbac-controllerplugin
   - rbac-nodeplugin
@@ -21,4 +22,3 @@
   - statefulset-controllerplugin
   - daemonset-nodeplugin
   - storageclass
-  - csidriver
