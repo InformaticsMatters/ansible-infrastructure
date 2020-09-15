@@ -58,7 +58,6 @@ spec:
         - name: socket-dir
           mountPath: /var/lib/csi/sockets/pluginproxy/
 
-{% if not cinder_controller_exclude_snapshotter %}
       - name: csi-snapshotter
         image: "{{ cinder_snapshotter_registry }}/{{ cinder_snapshotter_image }}:{{ cinder_snapshotter_image_tag }}"
         imagePullPolicy: IfNotPresent
@@ -70,9 +69,7 @@ spec:
         volumeMounts:
         - mountPath: /var/lib/csi/sockets/pluginproxy/
           name: socket-dir
-{% endif %}
 
-{% if not cinder_controller_exclude_resizer %}
       - name: csi-resizer
         image: "{{ cinder_resizer_registry }}/{{ cinder_resizer_image }}:{{ cinder_resizer_image_tag }}"
         imagePullPolicy: IfNotPresent
@@ -84,7 +81,6 @@ spec:
         volumeMounts:
         - name: socket-dir
           mountPath: /var/lib/csi/sockets/pluginproxy/
-{% endif %}
 
       - name: cinder-csi-plugin
         image: "{{ cinder_plugin_registry }}/{{ cinder_plugin_image }}:{{ cinder_plugin_image_tag }}"
