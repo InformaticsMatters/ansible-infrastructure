@@ -10,7 +10,14 @@ rules:
 ignore: |
   roles/ingress-controller/templates/ingress-nginx.yaml.j2
   roles/ingress-controller/templates/nlb-service.yaml.j2
+  roles/provisioner-efs/templates/deployment.yaml.j2
   roles/provisioner-efs/templates/storageclass.yaml.j2
+  roles/provisioner-nfs/templates/deployment.yaml.j2
   roles/provisioner-cinder/templates/storageclass.yaml.j2
+  roles/provisioner-cinder/templates/statefulset-controllerplugin.yaml.j2
+  roles/infrastructure-recovery/templates/job-postgres-recovery.yaml.j2
   roles/infrastructure/templates/cronjob-postgres-backup.yaml.j2
+  roles/infrastructure/templates/statefulset-keycloak.yaml.j2
+  roles/infrastructure/templates/statefulset-postgres.yaml.j2
+  roles/infrastructure/templates/ingress-keycloak.yaml.j2
   provisioning/ingress-controller/ingress-nginx-2.9.1.yaml
