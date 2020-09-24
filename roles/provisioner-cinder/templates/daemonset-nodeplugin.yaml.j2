@@ -15,6 +15,12 @@ spec:
     spec:
       serviceAccount: csi-cinder-node-sa
       hostNetwork: true
+
+      # Tolerate all possible Node taints - typical for DaemonSets.
+      # For us this allows deployment to graph (bigmem) nodes.
+      tolerations:
+      - operator: Exists
+
       containers:
 
       - name: node-driver-registrar
