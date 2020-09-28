@@ -22,14 +22,21 @@ spec:
       # node selection affinity...
       affinity:
         nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: informaticsmatters.com/purpose
+                operator: NotIn
+                values:
+                - worker
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 1
             preference:
               matchExpressions:
-              - key: purpose
+              - key: informaticsmatters.com/purpose
                 operator: In
                 values:
-                - {{ nfs_node_purpose }}
+                - application
 
 {% if all_image_preset_pullsecret_name|string|length > 0 %}
       imagePullSecrets:

@@ -11,11 +11,6 @@ efs_provisioner_name: informaticsmatters.com/efs
 # The name used for the storage class that will be created.
 efs_storage_class_name: efs
 
-# The node 'purpose' for workload deployments.
-# The EFS provisioner will try to deploy
-# workloads to nodes that contain the label "purpose={{ efs_node_purpose }}".
-efs_node_purpose: application
-
 # General timeout, generally used within the k8s module,
 # for wait duration
 wait_timeout: 600

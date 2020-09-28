@@ -18,14 +18,13 @@ spec:
       # node selection affinity...
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            preference:
-              matchExpressions:
-              - key: purpose
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: informaticsmatters.com/purpose
                 operator: In
                 values:
-                - {{ infra_node_purpose }}
+                - core
 
 {% if all_image_preset_pullsecret_name|string|length > 0 %}
       imagePullSecrets:
