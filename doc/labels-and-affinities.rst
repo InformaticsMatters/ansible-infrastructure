@@ -111,4 +111,29 @@ to place the Pod on worker nodes: -
                 values:
                 - worker
 
+A more flexible affinity, that avoids core nodes but prefers
+workers over application nodes, would be defined with the following: -
+
+.. code-block:: yaml
+
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: informaticsmatters.com/purpose
+                operator: NotIn
+                values:
+                - core
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: informaticsmatters.com/purpose
+                operator: In
+                values:
+                - worker
+
+
 .. _ch1312: https://app.clubhouse.io/informaticsmatters/story/1312/pod-scheduling-and-node-label-policy
