@@ -72,6 +72,25 @@ is not available.
                 values:
                 - application
 
+Transient application services, Jobs, CronJobs with zone-agnostic persistence
+or no persistence requirements at all can use a less complex
+affinity, this one simply avoiding a core node (shown below),
+or by not providing any affinity at all - letting the Pod appear anywhere
+resources allow.
+
+.. code-block:: yaml
+
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: informaticsmatters.com/purpose
+                operator: NotIn
+                values:
+                - core
+
 Worker pods
 -----------
 Transient workload Pods that do not need a core node (like a nextflow process)
