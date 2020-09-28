@@ -20,6 +20,10 @@ availabilityZones:
 # create a new nodegroup with the desired changes, move the load and
 # delete the old one.
 #
+# Our "Pod scheduling and node label policy"
+# for a discussion of node labels and usage guidelines.
+# See https://app.clubhouse.io/informaticsmatters/story/1312/pod-scheduling-and-node-label-policy
+#
 # Once created and in use - they cannot be changed.
 
 # ----------------------
@@ -28,11 +32,17 @@ availabilityZones:
 
 nodeGroups:
 
-# A node-group locked to a specific Availability Zone.
+# A node-group locked to a specific Availability Zone, considered
+# a 'core' node. Applications that are not zone-agnostics (ie. that need
+# EBS-like/gp2 volumes) should use these nodes.
 # This allows application deployed here to use EBS (gp2) volumes
 # without fear of new instances appearing in other zones.
 # Alternatives are EFS if you want to use zone-agnostic nodes.
-- name: ng-app-1a
+#
+# Applications that don't need core (i.e. have no volume needs) can also use
+# this node group but these applications are strongly encouraged
+# to use 'application' nodes.
+- name: ng-core
   instanceType: t3a.2xlarge
   availabilityZones:
   - eu-central-1a
@@ -42,12 +52,35 @@ nodeGroups:
   volumeSize: 80
   volumeType: gp2
   labels:
-    purpose: application
+    informaticsmatters.com/purpose: core
+
+# A node-group for general purpose 'applications'
+# that do not need to be on a 'core' node (i.e. are zone-agnostic).
+# These nodes are expected to be multi-zoned where gp2 is of little use.
+- name: ng-app
+  instanceType: t3a.2xlarge
+  minSize: 1
+  maxSize: 4
+  desiredCapacity: 1
+  volumeSize: 80
+  volumeType: gp2
+  labels:
+    informaticsmatters.com/purpose: application
+
+# A node-group for worker (transient) applications that do not need to be on a
+# 'core' or 'application' node.
+- name: ng-worker
+  instanceType: t3a.2xlarge
+  minSize: 0
+  maxSize: 4
+  desiredCapacity: 0
+  volumeSize: 80
+  volumeType: gp2
+  labels:
+    informaticsmatters.com/purpose: worker
   iam:
     withAddonPolicies:
       autoScaler: true
-  ssh:
-    publicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC0bZqMTVETU8t3nzZ60aexkpkeYCt68/ODg7APP6/zUwGxKK9YFk7wUCJwX6xoy6d5NWoa+9IfQ8/YepBUzUy2ypce5V7f2Jx+ugOi3TF9hMFnt+hcUFabazDvsQf+DYr/c+mjXnQl3X6N427WP1x7P9fKnUVjBZxn/LcRDOxzl/TUvR/ncfBvYAPC8q9rtkkTEcx6pj05f39GG/Eek2ayzY0FlqEGuiOlvovMSdRTvVp8CvRSEVi/ArO+wyXcWT9UtfX2JjpRKBHQLZV1oGqCyj86zWYckSNcK3CkMshUIjNoDqlK/9QCjlkjfMzpXakN8b29tA4E8wjsR5hEQb1h
 
 # Multi-Zone (MZ) application (spot) instances.
 # Generally for workflow execution where
