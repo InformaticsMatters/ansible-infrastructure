@@ -14,6 +14,7 @@ and :doc:`getting-started`.
     :caption: Contents:
 
     architecture
+    labels-and-affinities
     getting-started
     creating-the-infrastructure
     deleting-the-infrastructure
