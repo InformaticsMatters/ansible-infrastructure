@@ -3,6 +3,7 @@
 - hosts: control
   roles:
   - role: core
+    when: core_state|string == 'present'
   - role: informaticsmatters.cert_manager
     when: cm_state|string == 'present'
   - role: provisioner-cinder

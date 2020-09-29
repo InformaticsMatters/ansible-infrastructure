@@ -85,7 +85,7 @@ infrastructure using the root-level ansible playbook ``site.yaml``.
 It's the same playbook regardless of cluster - only the parameter file needs
 so change::
 
-    $ INFRA_NAME=im-main
+    $ INFRA_NAME=im-main-eks
     $ CLUSTER_CONTEXT=demo
     $ ansible-playbook \
         -e @parameters-$INFRA_NAME.vault \
