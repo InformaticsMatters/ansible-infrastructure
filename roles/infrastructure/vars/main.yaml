@@ -58,7 +58,7 @@ pg_bu_image_registry: docker.io
 #       will be downloaded for the version you define here. The play is should
 #       be located in 'infrastructure/tasks'  and MUST be called
 #       'render-awx-{{ ax_version }}-{{ ax_platform }}.yaml'
-ax_version: '13.0.0'
+ax_version: '15.0.0'
 
 # The directory (on the client) where the AWX repo
 # (including the built-in installation playbook)
