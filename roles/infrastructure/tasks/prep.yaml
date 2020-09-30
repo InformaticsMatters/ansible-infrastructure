@@ -12,7 +12,6 @@
 - name: Install prerequisite Python modules
   pip:
     name:
-    - openshift==0.10.0
     - jmespath==0.9.4
     extra_args: --user
 
