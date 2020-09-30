@@ -69,11 +69,13 @@ ax_clone_dir: /tmp
 # Typically 'kubernetes' or 'openshift' where supported.
 # A deploy-{{ ax-platform }}-awx-{{ ax_version }}.yaml file must exist
 ax_platform: kubernetes
-# The AWX task_cpu_request. This controls the CPU requests
-# for all the containers in the AWX Pod. This (for 9.1.1) is 1500 (1.5 cores).
-# Reduce this for compact deployments or minikube experiments.
-# The value (expected to be a number) is used if not 'default'.
-ax_task_cpu_request: default
+# The AWX CPU requests and limits.
+ax_redis_cpu_request: 100
+ax_redis_cpu_limit: 250
+ax_task_cpu_request: 500
+ax_task_cpu_limit: 1500
+ax_web_cpu_request: 100
+ax_web_cpu_limit: 250
 
 # AWX database credentials.
 # This is _not_ the AWX console admin user.

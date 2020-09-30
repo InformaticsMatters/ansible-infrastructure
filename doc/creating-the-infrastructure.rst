@@ -86,7 +86,7 @@ It's the same playbook regardless of cluster - only the parameter file needs
 so change::
 
     $ INFRA_NAME=im-main-eks
-    $ CLUSTER_CONTEXT=demo
+    $ CLUSTER_CONTEXT=im-eks-admin
     $ ansible-playbook \
         -e @parameters-$INFRA_NAME.vault \
         -e ax_kubernetes_context=$CLUSTER_CONTEXT \

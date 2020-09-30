@@ -6,6 +6,7 @@ ansible_python_interpreter: "/usr/bin/env python"
 # Install core?
 core_state: present
 # Install infrastructure (apps)?
+cm_state: present
 infra_state: present
 
 # The namespace of the deployment,
