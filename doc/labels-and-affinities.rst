@@ -20,9 +20,9 @@ Node affinities
 Core pods
 ---------
 Pods that need a core node, i.e. those that have a persistence
-requirement like our infrastructure database, should define a
-``requiredDuringSchedulingIgnoredDuringExecution`` *Node Affinity* rule in the
-corresponding Pod spec.
+requirement like our infrastructure database or a neo4j graph service,
+should define a ``requiredDuringSchedulingIgnoredDuringExecution``
+*Node Affinity* rule in the corresponding Pod spec.
 
 This will force the Kubernetes scheduler to place the Pod on a core node.
 
