@@ -97,6 +97,6 @@ kc_database: keycloak
 
 # CPU and Memory requests and limits
 kc_cpu_request: 250m
-kc_cpu_limit: 250m
+kc_cpu_limit: 1000m
 kc_mem_request: 1024Mi
 kc_mem_limit: 1024Mi
