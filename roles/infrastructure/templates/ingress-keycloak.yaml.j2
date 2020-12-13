@@ -5,8 +5,8 @@ metadata:
   name: keycloak
   namespace: {{ infra_namespace }}
   annotations:
-    kubernetes.io/ingress.class: "nginx"
     cert-manager.io/cluster-issuer: "letsencrypt-nginx-{{ kc_cert_issuer|lower }}"
+    kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/rewrite-target: /
 {#
     # Proxy buffering - required while developing authentication for
@@ -29,7 +29,7 @@ spec:
   - host: {{ kc_hostname }}
     http:
       paths:
-      - path: /
+      - path: /{{ kc_hostname_path }}
         backend:
           serviceName: keycloak
           servicePort: http

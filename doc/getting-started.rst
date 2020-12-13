@@ -16,8 +16,12 @@ be beneficial: -
 Working environment
 ===================
 
-Ideally you'll start from a Python 3.8 virtual environment and then install
-the required modules, roles and collections::
+Ideally you'll start from a Python 3.8 virtual environment::
+
+    $ python -m venv ~/.venv/ansible-infrastructure
+    $ source ~/.venv/ansible-infrastructure/bin/activate
+
+...and then install the required modules, roles and collections::
 
     $ pip install -r requirements.txt
     $ ansible-galaxy install -r role-requirements.yaml --force-with-deps
@@ -70,7 +74,7 @@ value of your control plane from the config file and ``API_KEY`` is the
     $ export K8S_AUTH_HOST=https://1.2.3.4:6443
     $ export K8S_AUTH_API_KEY=kubeconfig-user-abc:00000000
     $ export K8S_AUTH_VERIFY_SSL=no
-    $ export K8S_CONTEXT=im-main
+    $ export K8S_CONTEXT=im-eks-admin
 
 To confirm you have the right context you can always run the following
 command to list the valid contexts::

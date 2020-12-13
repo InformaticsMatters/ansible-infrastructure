@@ -64,6 +64,11 @@ kc_state: present
 # The hostname of the server that will host Keycloak,
 # devoid of the protocol (i.e. 'https://' assumed so just 'example.com')
 kc_hostname: SetMe
+# If using path-based routing enter the path here.
+# i.e. if you want something like 'xyz.informaticsmatters.com/keycloak'
+# Set kc_hostname to 'xyz.informaticsmatters.com'
+# and kc_hostname_path to 'keycloak'.
+kc_hostname_path: ''
 # Kubernetes certificate issuer.
 # One of 'staging' or 'production' (rate-limited)
 kc_cert_issuer: production
