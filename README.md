@@ -21,7 +21,7 @@ provisioning refer to the `provisioning/README.md`.
 ## Cinder provisioner
 The cinder provisioner is a 'work in progress' formed from Helm templates
 taken from the [cloud-provider-openstack] repository. The release used
-as a basic of the templates was **openstack-cinder-csi-1.1.2**. 
+as a basis of the templates was **openstack-cinder-csi-1.1.2**. 
 
 ## Building the Documentation
 The source of the documentation can be found in the project's
