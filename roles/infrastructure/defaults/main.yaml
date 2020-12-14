@@ -64,11 +64,14 @@ kc_state: present
 # The hostname of the server that will host Keycloak,
 # devoid of the protocol (i.e. 'https://' assumed so just 'example.com')
 kc_hostname: SetMe
-# If using path-based routing enter the path here.
-# i.e. if you want something like 'xyz.informaticsmatters.com/keycloak'
-# Set kc_hostname to 'xyz.informaticsmatters.com'
-# and kc_hostname_path to 'keycloak'.
-kc_hostname_path: ''
+# By default we use the /auth path (built-in to Keycloak).
+# You can set this to blank for domain-based routing but (atm)
+# other paths are not supported as I believe that requires changes to
+# standalone.xml in keycloak.
+# See: -
+# https://stackoverflow.com/questions/44624844/
+#     configure-reverse-proxy-for-keycloak-docker-with-custom-base-url/54311713#54311713.
+kc_hostname_path: auth
 # Kubernetes certificate issuer.
 # One of 'staging' or 'production' (rate-limited)
 kc_cert_issuer: production
