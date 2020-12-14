@@ -46,3 +46,7 @@ keycloak_admin_password: "{{ lookup('env', 'KEYCLOAK_ADMIN_PASSWORD') }}"
 keycloak_public_key: "{{ lookup('env', 'KEYCLOAK_PUBLIC_KEY') }}"
 keycloak_secret: "{{ lookup('env', 'KEYCLOAK_SECRET') }}"
 keycloak_realm: "{{ lookup('env', 'KEYCLOAK_REALM') }}"
+
+# If keycloak is using a path it needs to be set.
+# At the moment this is either blank ('') or '/auth'.
+keycloak_server_url_path: ''

@@ -38,7 +38,7 @@
     vars:
       iu_action: delete
       iu_type: realm
-      iu_hostname: "{{ keycloak_server_url|urlsplit('hostname') }}"
+      iu_hostname: "{{ keycloak_server_url|urlsplit('hostname') }}{{ keycloak_server_url_path }}"
       iu_namespace: "{{ ir_namespace }}"
       iu_realm: "{{ ir_realm }}"
       iu_admin_user: "{{ keycloak_admin }}"
