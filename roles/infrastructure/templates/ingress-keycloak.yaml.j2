@@ -15,6 +15,7 @@ metadata:
     # (see https://ma.ttias.be/nginx-proxy-upstream-sent-big-header-reading-response-header-upstream/)
     # To fix this we add the following annotations.
 #}
+    ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/proxy-buffering: 'on'
     nginx.ingress.kubernetes.io/proxy-buffers-number: '4'
     nginx.ingress.kubernetes.io/proxy-buffer-size: '128k'
