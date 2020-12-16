@@ -102,6 +102,15 @@ Typically these will be something like: -
 *   AmazonElasticFileSystemFullAccess
 *   AmazonS3ReadOnlyAccess
 
+If you intend to use AWS S3 for infrastructure database backups you will need
+to provide suitable AWS credentials in the following Ansible variables
+in your parameter file::
+
+    pg_bu_s3_bucket_name: my-bucket
+    pg_bu_s3_default_region: eu-central-1
+    pg_bu_s3_access_key_id: 000
+    pg_bu_s3_secret_access_key: 111
+
 Verify you're using the right Kubernetes cluster with a quick node check,
 assuming you know the identity of the nodes in the cluster you expect to be
 configuring, using ``kubectl``::

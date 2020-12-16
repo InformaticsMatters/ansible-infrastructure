@@ -65,8 +65,8 @@ the Ansible playbook command::
 ..  note::
     Remember to preserve you parameter file somewhere.
 
-Creating (using pre-built parameters)
-=====================================
+Creating and using pre-built parameters
+=======================================
 
 All pre-built parameter files (basically Ansible variables) are encrypted as
 ``.vault`` files in the root of this repository using `Ansible Vault`_.
