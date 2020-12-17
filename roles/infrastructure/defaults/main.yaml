@@ -50,6 +50,10 @@ pg_bu_s3_bucket_name: ""
 pg_bu_s3_default_region: eu-central-1
 pg_bu_s3_access_key_id: ""
 pg_bu_s3_secret_access_key: ""
+# Mount S3 as the backup destination?
+# If true no backup volume is required or created -
+# just a bucket and S3 credentials
+pg_bu_volume_is_s3: no
 
 # Keycloak --------------------------------------------------------------------
 

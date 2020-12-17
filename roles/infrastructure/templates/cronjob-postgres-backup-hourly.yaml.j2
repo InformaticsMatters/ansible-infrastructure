@@ -2,7 +2,7 @@
 kind: CronJob
 apiVersion: batch/v1beta1
 metadata:
-  name: postgres-backup
+  name: postgres-backup-hourly
   namespace: {{ infra_namespace }}
 spec:
   schedule: '{{ pg_bu_hourly_schedule }}'
@@ -13,7 +13,7 @@ spec:
       template:
         metadata:
           labels:
-            name: postgres-backup
+            name: postgres-backup-hourly
         spec:
           serviceAccountName: {{ infra_namespace_service_account }}
 
@@ -36,7 +36,7 @@ spec:
 
           containers:
           - image: {{ pg_bu_image_registry }}/informaticsmatters/sql-backup:{{ pg_bu_image_tag }}
-            name: postgres-backup
+            name: postgres-backup-hourly
             imagePullPolicy: {{ pg_bu_imagepullpolicy }}
             terminationMessagePolicy: FallbackToLogsOnError
             resources:
@@ -63,6 +63,10 @@ spec:
                 secretKeyRef:
                   name: im-postgres
                   key: database_admin_user_password
+{% if pg_bu_volume_is_s3 %}
+            - name: BACKUP_VOLUME_IS_S3
+              value: 'yes'
+{% endif %}
 {% if pg_bu_s3_bucket_name %}
             - name: AWS_BUCKET_NAME
               value: '{{ pg_bu_s3_bucket_name }}'
@@ -77,12 +81,17 @@ spec:
                   name: im-s3
                   key: secret_access_key
 {% endif %}
+{% if not pg_bu_volume_is_s3 %}
             volumeMounts:
             - name: backup-data
               mountPath: /backup
+{% endif %}
 
+{% if not pg_bu_volume_is_s3 %}
           volumes:
           - name: backup-data
             persistentVolumeClaim:
               claimName: pg-bu
+{% endif %}
+
           restartPolicy: Never

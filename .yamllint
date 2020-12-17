@@ -16,7 +16,9 @@ ignore: |
   roles/provisioner-cinder/templates/storageclass.yaml.j2
   roles/provisioner-cinder/templates/statefulset-controllerplugin.yaml.j2
   roles/infrastructure-recovery/templates/job-postgres-recovery.yaml.j2
-  roles/infrastructure/templates/cronjob-postgres-backup.yaml.j2
+  roles/infrastructure/templates/cronjob-postgres-backup-hourly.yaml.j2
+  roles/infrastructure/templates/cronjob-postgres-backup-daily.yaml.j2
+  roles/infrastructure/templates/cronjob-postgres-backup-weekly.yaml.j2
   roles/infrastructure/templates/statefulset-keycloak.yaml.j2
   roles/infrastructure/templates/statefulset-postgres.yaml.j2
   roles/infrastructure/templates/ingress-keycloak.yaml.j2

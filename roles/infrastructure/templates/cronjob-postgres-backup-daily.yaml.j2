@@ -1,0 +1,89 @@
+---
+kind: CronJob
+apiVersion: batch/v1beta1
+metadata:
+  name: postgres-backup-daily
+  namespace: {{ infra_namespace }}
+spec:
+  schedule: '{{ pg_bu_daily_schedule }}'
+  startingDeadlineSeconds: 180
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            name: postgres-backup-hourly
+        spec:
+          serviceAccountName: {{ infra_namespace_service_account }}
+
+          # A 'preferred' (not guaranteed)
+          # node selection affinity...
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: informaticsmatters.com/purpose
+                    operator: In
+                    values:
+                    - core
+
+{% if all_image_preset_pullsecret_name|string|length > 0 %}
+          imagePullSecrets:
+          - name: {{ all_image_preset_pullsecret_name }}
+{% endif %}
+
+          containers:
+          - image: {{ pg_bu_image_registry }}/informaticsmatters/sql-backup:{{ pg_bu_image_tag }}
+            name: postgres-backup-daily
+            imagePullPolicy: {{ pg_bu_imagepullpolicy }}
+            terminationMessagePolicy: FallbackToLogsOnError
+            resources:
+              limits:
+                cpu: 500m
+                memory: 1Gi
+              requests:
+                cpu: 100m
+                memory: 128Mi
+            env:
+            - name: BACKUP_TYPE
+              value: daily
+            - name: BACKUP_COUNT
+              value: '{{ pg_bu_daily_history }}'
+            - name: BACKUP_PRIOR_TYPE
+              value: hourly
+            - name: BACKUP_PRIOR_COUNT
+              value: '{{ pg_bu_hourly_history }}'
+{% if pg_bu_volume_is_s3 %}
+            - name: BACKUP_VOLUME_IS_S3
+              value: 'yes'
+{% endif %}
+{% if pg_bu_s3_bucket_name %}
+            - name: AWS_BUCKET_NAME
+              value: '{{ pg_bu_s3_bucket_name }}'
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: im-s3
+                  key: access_key_id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: im-s3
+                  key: secret_access_key
+{% endif %}
+{% if not pg_bu_volume_is_s3 %}
+            volumeMounts:
+            - name: backup-data
+              mountPath: /backup
+{% endif %}
+
+{% if not pg_bu_volume_is_s3 %}
+          volumes:
+          - name: backup-data
+            persistentVolumeClaim:
+              claimName: pg-bu
+{% endif %}
+
+          restartPolicy: Never
