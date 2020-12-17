@@ -44,8 +44,6 @@ pg_bu_hourly_schedule: '7 3 * * *'
 pg_bu_hourly_history: 24
 # The backup container image tag.
 pg_bu_image_tag: 'stable'
-# The pull policy for the container image.
-pg_bu_imagepullpolicy: IfNotPresent
 # The registry
 pg_bu_image_registry: docker.io
 
