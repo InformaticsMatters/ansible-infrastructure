@@ -34,7 +34,7 @@ pg_database: postgres
 pg_cpu_request: 250m
 pg_cpu_limit: 1000m
 pg_mem_request: 100Mi
-pg_mem_limit: 500Mi
+pg_mem_limit: 2Gi
 
 # Backup ----------------------------------------------------------------------
 
