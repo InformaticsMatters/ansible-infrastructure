@@ -6,6 +6,7 @@ parameters.yaml
 
 doc/build/
 
+**/.DS_Store
 **/*.rkestate
 provisioning/rke-aws/kube_config_aws-rke-cluster.yaml
 vault-pass.txt
