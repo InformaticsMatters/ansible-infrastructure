@@ -1,6 +1,7 @@
 # Ansible Infrastructure
 
-[![Build Status](https://travis-ci.com/InformaticsMatters/ansible-infrastructure.svg?branch=master)](https://travis-ci.com/InformaticsMatters/ansible-infrastructure)
+![yamllint and doc build](https://github.com/InformaticsMatters/ansible-infrastructure/workflows/lint%20and%20doc%20build/badge.svg)
+
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/informaticsmatters/ansible-infrastructure)
 
 [![CodeFactor](https://www.codefactor.io/repository/github/informaticsmatters/ansible-infrastructure/badge)](https://www.codefactor.io/repository/github/informaticsmatters/ansible-infrastructure)
