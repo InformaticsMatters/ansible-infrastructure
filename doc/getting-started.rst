@@ -20,6 +20,7 @@ Ideally you'll start from a Python 3.8 virtual environment::
 
     $ python -m venv ~/.venv/ansible-infrastructure
     $ source ~/.venv/ansible-infrastructure/bin/activate
+    $ pip install --upgrade pip
 
 ...and then install the required modules, roles and collections::
 
@@ -57,9 +58,16 @@ Your Kubernetes cluster will need: -
 Cluster credentials
 ===================
 
-You should be in possession of a Kubernetes configuration file. Plays run
-from within AWX benefit from the automatic injection of Kubernetes variables.
-Once installed our AWX will inject the following environment variables: -
+You will also need a copy of your **kubeconfig** file and will need to set the
+``KUBECONFIG`` environment variable to point to your copy. You can safely place
+the config in the root of a clone of this repository as the file
+``kubeconfig`` as this is part of the project ignore set::
+
+    $ export KUBECONFIG=./kubeconfig
+
+Plays run from within AWX benefit from the automatic injection of Kubernetes
+variables. Once installed our AWX will inject the following environment
+cat variables: -
 
 -   ``K8S_AUTH_HOST``
 -   ``K8S_AUTH_API_KEY``
@@ -67,26 +75,19 @@ Once installed our AWX will inject the following environment variables: -
 -   ``K8S_CONTEXT``
 
 As we're deploying the infrastructure components (from outside AWX)
-we need to provide values for these. The ``HOST`` is the **cluster -> server**
-value of your control plane from the config file and ``API_KEY`` is the
-**user-> token** value::
+we need to provide values for these. The ``HOST`` is the
+**clusters -> cluster -> server** value from the config file and the
+``API_KEY`` is the **users -> user -> token** value::
 
     $ export K8S_AUTH_HOST=https://1.2.3.4:6443
     $ export K8S_AUTH_API_KEY=kubeconfig-user-abc:00000000
     $ export K8S_AUTH_VERIFY_SSL=no
     $ export K8S_CONTEXT=im-eks-admin
 
-To confirm you have the right context you can always run the following
+To confirm you have the right context you should run the following
 command to list the valid contexts::
 
     $ kubectl config get-contexts
-
-You will also need a copy of your **kubeconfig** file and will need to set the
-``KUBECONFIG`` environment variable to point to your copy. You can safely place
-the config in the root of a clone of this repository as the file
-``kubeconfig`` as this is part of the project ignore set::
-
-    $ export KUBECONFIG=./kubeconfig
 
 You will also need to provide standard AWS credentials for the cluster you're
 configuring via the environment for some of the Roles to properly function::
@@ -111,9 +112,9 @@ in your parameter file::
     pg_bu_s3_access_key_id: 000
     pg_bu_s3_secret_access_key: 111
 
-Verify you're using the right Kubernetes cluster with a quick node check,
-assuming you know the identity of the nodes in the cluster you expect to be
-configuring, using ``kubectl``::
+finally, verify you're using the right Kubernetes cluster with a quick node
+check, assuming you know the identity of the nodes in the cluster you expect
+to be configuring, using ``kubectl``::
 
     $ kubectl get no
     NAME                       STATUS   ROLES          AGE     VERSION

@@ -73,6 +73,11 @@ All pre-built parameter files (basically Ansible variables) are encrypted as
 For example, you will find a set of parameters for our *im-main* site in the
 file ``parameters-im-main-eks.vault``.
 
+..  note::
+    We use KeePass to store our credentials. You should find vault
+    passwords for the various infrastructure parameter files in the
+    ``ansible-infrastructure`` group.
+
 If you need to edit a pre-built parameter file it should be viewed and edited
 *in situ* using ``ansible-vault``::
 
