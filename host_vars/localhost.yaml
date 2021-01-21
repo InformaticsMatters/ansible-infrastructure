@@ -15,6 +15,13 @@ infra_state: present
 infra_namespace: im-infra
 infra_namespace_service_account: im-infra
 
+# A pull-secret for public images pulled from DockerHub.
+# If set this is the base-64 string that can be used as the value
+# in our Kubernetes Secret as the .dockerconfigjson value.
+# If set it is applied to the ServiceAccount in the namespace
+# and applied to Pods that use that namespace.
+infra_dockerhub_pullsecret: ''
+
 # Providing your own Kubernetes image pull secrets.
 #
 # If you have moved the public (docker.io and quay.io) images to

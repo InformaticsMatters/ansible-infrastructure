@@ -61,13 +61,29 @@
 # EFS has been created (or already exists).
 # We now need to install an EFS provisioner and create a StorageClass
 
-- name: Deploy
+- name: Deploy namespace
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
   loop:
   - namespace
+
+- name: Create DockerHub image pull secret
+  k8s:
+    definition: "{{ lookup('template', 'secret-dh-imagepull.yaml.j2') }}"
+    wait: yes
+  vars:
+    pull_namespace: "{{ efs_namespace }}"
+    pull_secret: "{{ infra_dockerhub_pullsecret }}"
+  when: infra_dockerhub_pullsecret|string|length > 0
+
+- name: Deploy
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    wait: yes
+    wait_timeout: "{{ wait_timeout }}"
+  loop:
   - serviceaccount
   - clusterrole
   - clusterrolebinding

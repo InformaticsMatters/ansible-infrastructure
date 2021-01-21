@@ -16,12 +16,24 @@
 
 # Namespace and basic material ------------------------------------------------
 
-- name: Creating namespace '{{ infra_namespace }}'
+- name: Create namespace
+  k8s:
+    definition: "{{ lookup('template', 'namespace-im-infra.yaml.j2') }}"
+
+- name: Create DockerHub image pull secret
+  k8s:
+    definition: "{{ lookup('template', 'secret-dh-imagepull.yaml.j2') }}"
+    wait: yes
+  vars:
+    pull_namespace: "{{ infra_namespace }}"
+    pull_secret: "{{ infra_dockerhub_pullsecret }}"
+  when: infra_dockerhub_pullsecret|string|length > 0
+
+- name: Creating namespace material
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes
   loop:
-  - namespace-im-infra
   - serviceaccount-im-infra
   - role-im-psp-unrestricted
   - rolebinding-im-infra-sa
