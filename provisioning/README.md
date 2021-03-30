@@ -7,7 +7,7 @@ of clusters directly (generally on cloud-specific providers like AWS).
 Individual directories should have their own `README.md` files.
 
 >   Most instruction assume you're using the project requirements in
-    in Conda or a virtual environment.
+    Conda or a virtual environment.
 
 ## Ingress controller and ELB (AWS)
 With a _bare_ cluster ready you can install an nginx ingress controller
