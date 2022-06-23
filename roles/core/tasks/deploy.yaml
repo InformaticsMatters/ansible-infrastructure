@@ -6,3 +6,8 @@
     wait: yes
   loop:
   - psp-im-core-unrestricted
+
+- name: Install PriorityClasses
+  k8s:
+    definition: "{{ lookup('file', 'pc-im.yaml') }}"
+    wait: yes

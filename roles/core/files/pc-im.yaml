@@ -1,0 +1,58 @@
+# Worker (pre-emptive)
+# ------
+
+---
+kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1
+metadata:
+  name: informaticsmatters-worker-low
+value: 81001000
+---
+kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1
+metadata:
+  name: informaticsmatters-worker-medium
+value: 81002000
+---
+kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1
+metadata:
+  name: informaticsmatters-worker-high
+value: 81003000
+---
+kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1
+metadata:
+  name: informaticsmatters-worker-critical
+value: 81004000
+
+# Worker (non-pre-emptive)
+# ------
+
+# Application (pre-emptive)
+# -----------
+
+---
+kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1
+metadata:
+  name: informaticsmatters-application-low
+value: 83001000
+---
+kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1
+metadata:
+  name: informaticsmatters-application-medium
+value: 83002000
+---
+kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1
+metadata:
+  name: informaticsmatters-application-high
+value: 83003000
+---
+kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1
+metadata:
+  name: informaticsmatters-application-critical
+value: 83004000
