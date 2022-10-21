@@ -11,3 +11,4 @@
   k8s:
     definition: "{{ lookup('file', 'pc-im.yaml') }}"
     wait: yes
+  when: core_deploy_priority_classes|bool

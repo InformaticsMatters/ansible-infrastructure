@@ -1,8 +1,9 @@
-ansible == 2.9.15
+ansible == 2.9.27
+kubernetes == 19.15.0
+openshift == 0.13.1
+
 ansible-tower-cli == 3.3.9
-colorama == 0.4.3
-awscli == 1.18.195
-boto3 == 1.16.35
-jmespath == 0.10.0
-kubernetes == 11.0.0
-openshift == 0.11.2
+colorama
+awscli
+boto3
+jmespath

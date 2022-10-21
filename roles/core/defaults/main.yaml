@@ -3,3 +3,9 @@
 # Install Core components (or remove)?
 # One of 'present' or 'absent'.
 core_state: present
+
+# Deploy priority class definitions?
+core_deploy_priority_classes: no
+# If deploying (or un-deploying) priority classes
+# do we also include the default?
+core_include_default_priority_class: yes

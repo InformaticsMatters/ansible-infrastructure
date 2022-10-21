@@ -1,0 +1,94 @@
+# Worker (pre-emptive)
+# ------
+
+---
+kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1
+metadata:
+  name: im-worker-low
+value: 81001000
+description: >-
+  Used for IM-managed workers/transient deployments considered
+  low priority. Typically used for EVALUATION tier workers.
+---
+kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1
+metadata:
+  name: im-worker-medium
+value: 81002000
+description: >-
+  Used for IM-managed workers/transient deployments considered
+  medium priority. Typically used for BRONZE tier workers.
+---
+kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1
+metadata:
+  name: im-worker-high
+value: 81003000
+description: >-
+  Used for IM-managed workers/transient deployments considered
+  high priority. Typically used for SILVER tier workers.
+---
+kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1
+metadata:
+  name: im-worker-critical
+value: 81004000
+description: >-
+  Used for IM-managed workers/transient deployments considered of the
+  highest priority. Typically used for GOLD tier workers.
+
+# Worker (non-pre-emptive)
+# ------
+
+# Application (pre-emptive)
+# -----------
+
+---
+kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1
+metadata:
+  name: im-application-low
+value: 83001000
+description: >-
+  Used for IM-managed applications considered low priority.
+---
+kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1
+metadata:
+  name: im-application-medium
+value: 83002000
+description: >-
+  Used for IM-managed applications considered medium priority.
+---
+kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1
+metadata:
+  name: im-application-high
+value: 83003000
+description: >-
+  Used for IM-managed applications considered high priority.
+---
+kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1
+metadata:
+  name: im-application-critical
+value: 83004000
+description: >-
+  Used for IM-managed applications considered of the highest priority.
+
+
+{% if core_include_default_priority_class %}
+# Default
+# -------
+
+---
+kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1
+metadata:
+  name: im-default
+value: 83003000
+globalDefault: true
+description: >-
+  The Priority Class adopted when another is not specified.
+{% endif %}

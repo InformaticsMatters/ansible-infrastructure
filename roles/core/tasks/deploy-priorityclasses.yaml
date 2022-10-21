@@ -1,0 +1,9 @@
+---
+
+# This set of tasks, used by `site_priorityclasses.yaml` add the
+# PriorityClass definitions.
+
+- name: Install PriorityClasses
+  k8s:
+    definition: "{{ lookup('template', 'pc-im.yaml.j2') }}"
+    wait: yes

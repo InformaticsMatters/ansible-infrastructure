@@ -7,3 +7,11 @@
     wait: yes
   loop:
   - psp-im-core-unrestricted
+
+- name: Remove PriorityClasses
+  k8s:
+    state: absent
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    wait: yes
+  loop:
+  - pc-im
