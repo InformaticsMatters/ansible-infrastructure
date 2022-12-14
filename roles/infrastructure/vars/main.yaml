@@ -31,7 +31,7 @@ pg_user_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letter
 pg_database: postgres
 
 # CPU and Memory requests and limits
-pg_cpu_request: 250m
+pg_cpu_request: 100m
 pg_cpu_limit: 1000m
 pg_mem_request: 1Gi
 pg_mem_limit: 2Gi
@@ -105,6 +105,6 @@ kc_database: keycloak
 
 # CPU and Memory requests and limits
 kc_cpu_request: 250m
-kc_cpu_limit: 1000m
-kc_mem_request: 1024Mi
-kc_mem_limit: 1024Mi
+kc_cpu_limit: 2
+kc_mem_request: 1Gi
+kc_mem_limit: 1Gi

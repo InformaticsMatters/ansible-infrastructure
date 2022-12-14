@@ -25,10 +25,8 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: informaticsmatters.com/purpose
-                operator: In
-                values:
-                - core
+              - key: informaticsmatters.com/purpose-core
+                operator: Exists
 
       # To access the mounted database volume
       # we set the security context's fsGroup
