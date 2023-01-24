@@ -1,4 +1,4 @@
-ansible == 2.9.27
+ansible == 7.0.0
 kubernetes == 19.15.0
 openshift == 0.13.1
 
