@@ -18,6 +18,7 @@ rules:
 
 ignore: |
   .github/
+  .venv/
   roles/core/templates/pc-im.yaml.j2
   roles/ingress-controller/templates/ingress-nginx.yaml.j2
   roles/ingress-controller/templates/nlb-service.yaml.j2
