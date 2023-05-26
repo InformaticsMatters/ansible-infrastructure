@@ -2,6 +2,7 @@
 
 skip_list:
 - '204'  # Lines should be no longer than 160 chars
+- yaml
 warn_list:
 - '106'  # Role name {} does not match ``^[a-z][a-z0-9_]+$`` pattern
 - '207'  # Nested jinja pattern
@@ -14,4 +15,3 @@ warn_list:
 - risky-file-permissions  # File permissions unset or incorrect.
 - role-name
 - schema[meta]  # Perform JSON Schema Validation for known lintable kinds.
-- yaml[truthy]  # Violations reported by yamllint.

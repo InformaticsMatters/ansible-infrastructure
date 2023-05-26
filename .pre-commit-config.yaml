@@ -42,15 +42,15 @@ repos:
 
 # Old repo and lots of trouble with ansible-lint...
 #
-#- repo: https://github.com/ansible-community/ansible-lint
-#  rev: v6.16.1
-#  hooks:
-#  - id: ansible-lint
-#    args:
-#    - --nocolor
-#    additional_dependencies:
-#    - ansible==7.5.0
-#    - ansible-core>=2.14.5
+# - repo: https://github.com/ansible-community/ansible-lint
+#   rev: v6.16.1
+#   hooks:
+#   - id: ansible-lint
+#     args:
+#     - --nocolor
+#     additional_dependencies:
+#     - ansible==7.5.0
+#     - ansible-core>=2.14.5
 
 - repo: https://github.com/IamTheFij/ansible-pre-commit
   rev: v1.0.0
