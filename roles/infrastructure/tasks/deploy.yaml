@@ -400,6 +400,7 @@
       file:
         path: "{{ ax_clone_dir }}"
         state: directory
+        mode: '0755'
 
     - name: Remove existing AWX clone directory
       file:
