@@ -10,7 +10,7 @@
 # The infrastructure namespace must exist...
 
 - name: Get namespace ({{ ir_namespace }})
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: Namespace
     name: "{{ ir_namespace }}"
   register: n_result
@@ -20,7 +20,7 @@
     that: n_result.resources|length == 1
 
 - name: Get realm manager secrets (manager-{{ ir_realm }})
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: Secret
     name: manager-{{ ir_realm }}
     namespace: "{{ ir_namespace }}"

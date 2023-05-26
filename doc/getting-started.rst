@@ -23,8 +23,7 @@ Ideally you'll start from a Poetry environment::
 ...and then install the required modules, roles and collections::
 
     poetry install
-    ansible-galaxy install -r role-requirements.yaml --force-with-deps
-    ansible-galaxy collection install -r collection-requirements.yaml --force-with-deps
+    ansible-galaxy install -r requirements.yaml --force-with-deps
 
 You **MUST** install GitHub hooks to comply with our standards::
 

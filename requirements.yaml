@@ -1,5 +1,6 @@
 ---
 
+roles:
 - src: informaticsmatters.cert_manager
   version: 0.12.0
 - src: geerlingguy.nfs
@@ -10,3 +11,7 @@
   version: 2.0.1
 - src: geerlingguy.certbot
   version: 3.1.0
+
+collections:
+- name: awx.awx
+  version: 13.0.0

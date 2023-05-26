@@ -5,7 +5,7 @@ galaxy_info:
   description: The application infrastructure provisioning role
   author: Informatics Matters
   license: Apache
-  min_ansible_version: 2.9.0
+  min_ansible_version: 7.5.0
   platforms:
   - name: Kubernetes
-    versions: 1.16
+    versions: 1.19

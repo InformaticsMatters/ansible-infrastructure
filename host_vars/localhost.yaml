@@ -38,3 +38,14 @@ infra_dockerhub_pullsecret: ''
 # You cannot put some images into a private repo and rely on
 # public images for the rest - it's "all or none".
 all_image_preset_pullsecret_name: ''
+
+# USe PodSecurityPolicy (PSP)?
+# Not supported on k8s 1.25
+k8s_use_psp: yes
+
+# A named kubeconfig file?
+# If set, use this kubernetes config, rather than K8S credentials.
+# You would set this if executing the playbooks locally, i.e. not from
+# and AWX server, where K8S_AUTH_HOST, K8S_AUTH_API_KEY environment
+# variables are set and used.
+k8s_kubeconfig: ''

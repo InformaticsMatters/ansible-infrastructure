@@ -75,7 +75,7 @@ kc_hostname: SetMe
 # See: -
 # https://stackoverflow.com/questions/44624844/
 #     configure-reverse-proxy-for-keycloak-docker-with-custom-base-url/54311713#54311713.
-kc_hostname_path: auth
+kc_hostname_path: ''
 # Kubernetes certificate issuer.
 # One of 'staging' or 'production' (rate-limited)
 kc_cert_issuer: production

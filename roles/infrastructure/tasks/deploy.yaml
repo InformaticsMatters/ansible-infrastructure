@@ -29,14 +29,21 @@
     pull_secret: "{{ infra_dockerhub_pullsecret }}"
   when: infra_dockerhub_pullsecret|string|length > 0
 
-- name: Creating namespace material
+- name: Create SA
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes
   loop:
   - serviceaccount-im-infra
+
+- name: Create PSP
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    wait: yes
+  loop:
   - role-im-psp-unrestricted
   - rolebinding-im-infra-sa
+  when: k8s_use_psp|bool
 
 - name: Relax {{ infra_namespace }} 'default' service account (for cert-manager)
   k8s:
@@ -59,7 +66,7 @@
         You must provide values for all the other 'pg_bu_s3_' variables.
 
   - name: Check S3 secrets
-    k8s_info:
+    kubernetes.core.k8s_info:
       kind: Secret
       api_version: v1
       namespace: "{{ infra_namespace }}"
@@ -91,7 +98,7 @@
 # Secrets (database) ----------------------------------------------------------
 
 - name: Check database (postgres) secrets
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: Secret
     api_version: v1
     namespace: "{{ infra_namespace }}"
@@ -125,7 +132,7 @@
 # Secrets (AWX database) ------------------------------------------------------
 
 - name: Check AWX database secrets
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: Secret
     api_version: v1
     namespace: "{{ infra_namespace }}"
@@ -167,7 +174,7 @@
 # Secrets (Keycloak) ----------------------------------------------------------
 
 - name: Check Keycloak secrets
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: Secret
     api_version: v1
     namespace: "{{ infra_namespace }}"
@@ -211,7 +218,7 @@
 # Database (postgres) ---------------------------------------------------------
 
 - name: Get {{ pg_vol_storageclass }} StorageClass
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: StorageClass
     name: "{{ pg_vol_storageclass }}"
   register: sc_result
@@ -233,7 +240,7 @@
 # e.g. wait until resources[0].status.phase == Bound (initially Pending)
 
 - name: Wait for postgres volume claim to bind
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: PersistentVolumeClaim
     name: pg
     namespace: "{{ infra_namespace }}"
@@ -259,7 +266,7 @@
   - statefulset-postgres
 
 - name: Wait for postgres to become Ready
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: Pod
     name: database-0
     namespace: "{{ infra_namespace }}"
@@ -279,7 +286,7 @@
   block:
 
   - name: Get {{ pg_bu_vol_storageclass }} StorageClass
-    k8s_info:
+    kubernetes.core.k8s_info:
       kind: StorageClass
       name: "{{ pg_bu_vol_storageclass }}"
     register: sc_result
@@ -303,7 +310,7 @@
     when: not pg_bu_volume_is_s3|bool
 
   - name: Wait for postgres backup volume claim to bind
-    k8s_info:
+    kubernetes.core.k8s_info:
       kind: PersistentVolumeClaim
       name: pg-bu
       namespace: "{{ infra_namespace }}"
@@ -355,7 +362,7 @@
   # otherwise skip the AWX stage.
 
   - name: Check AWX stateful set
-    k8s_info:
+    kubernetes.core.k8s_info:
       kind: StatefulSet
       namespace: "{{ infra_namespace }}"
       name: awx
@@ -464,7 +471,7 @@
     - statefulset-keycloak
 
   - name: Wait for keycloak to become Ready ({{ wait_timeout }} seconds)
-    k8s_info:
+    kubernetes.core.k8s_info:
       kind: Pod
       name: keycloak-0
       namespace: "{{ infra_namespace }}"
