@@ -21,7 +21,7 @@ pre-commit = "3.3.*"
 yamllint = "1.*"
 
 [tool.poetry.group.doc.dependencies]
-sphinx = "7.*"
+sphinx = "5.*"
 sphinx_rtd_theme = "1.*"
 
 [build-system]
