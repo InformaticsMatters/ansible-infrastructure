@@ -11,8 +11,8 @@ If you're familiar with :doc:`creating-the-infrastructure` deleting is
 simple, using the ``unsite.yaml`` playbook, combined with a set of parameters
 that corresponds to your cluster::
 
-    $ INFRA_NAME=im-main
-    $ ansible-playbook \
+    INFRA_NAME=im-main
+    ansible-playbook \
         -e "@parameters-$INFRA_NAME.vault" \
         unsite.yaml \
         --ask-vault-pass
@@ -24,8 +24,8 @@ database, the AWX server and the certificate manager.
 
 If you've used your own parameter file you probably don't need to use vault::
 
-    $ INFRA_NAME=me
-    $ ansible-playbook \
+    INFRA_NAME=me
+    ansible-playbook \
         -e "@parameters-$INFRA_NAME" \
         unsite.yaml
 

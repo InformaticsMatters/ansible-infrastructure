@@ -2,10 +2,10 @@
 
 - hosts: control
   roles:
-  - { role: infrastructure, infra_state: absent }
-  - { role: provisioner-efs, efs_state: absent }
-  - { role: provisioner-nfs, nfs_state: absent }
-  - { role: provisioner-cinder, cinder_state: absent }
-  - { role: core, core_state: absent }
-  - { role: informaticsmatters.cert_manager, cm_state: absent }
-  - { role: ingress-controller, ic_state: absent }
+  - {role: infrastructure, infra_state: absent}
+  - {role: provisioner-efs, efs_state: absent}
+  - {role: provisioner-nfs, nfs_state: absent}
+  - {role: provisioner-cinder, cinder_state: absent}
+  - {role: core, core_state: absent}
+  - {role: informaticsmatters.cert_manager, cm_state: absent}
+  - {role: ingress-controller, ic_state: absent}

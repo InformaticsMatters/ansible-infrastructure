@@ -433,6 +433,7 @@
 
     - name: Deploy AWX (into {{ infra_namespace }})
       command: ansible-playbook -i inventory install.yml
+      changed_when: false
       args:
         chdir: "{{ ax_clone_dir }}/awx/installer"
       async: "{{ 15 * 60 }}"

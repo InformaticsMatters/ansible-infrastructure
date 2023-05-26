@@ -12,5 +12,6 @@ warn_list:
 - name[template]  # Rule for checking task and play names.
 - no-changed-when  # Commands should not change things if nothing needs doing.
 - risky-file-permissions  # File permissions unset or incorrect.
+- role-name
 - schema[meta]  # Perform JSON Schema Validation for known lintable kinds.
 - yaml[truthy]  # Violations reported by yamllint.

@@ -1,8 +1,0 @@
----
-
-- name: Enable docker control
-  user:
-    name: "{{ ansible_user }}"
-    groups: docker
-    append: yes
-  become: yes

@@ -6,6 +6,15 @@
 
 rules:
   indentation: {spaces: 2, indent-sequences: false}
+  truthy:
+    allowed-values:
+    - 'yes'
+    - 'no'
+    - 'true'
+    - 'false'
+  new-lines:
+    type: unix
+  new-line-at-end-of-file: enable
 
 ignore: |
   .github/

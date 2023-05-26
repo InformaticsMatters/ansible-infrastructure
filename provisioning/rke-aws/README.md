@@ -3,7 +3,7 @@
 Based on the following Rancher notes: -
 
     https://rancher.com/blog/2018/2018-05-14-rke-on-aws/
- 
+
 >   NOTES: Creating a single "all-in-one" cluster was not successful and
     investigation paused as we switched to eksctl. If we return to this
     and the installation is successful this note will be removed.
@@ -30,13 +30,3 @@ Based on the following Rancher notes: -
     Value: owned
 
     Where <CLUSTERID> can be any string you choose.
-
-4.  Adjust this project's inventory.yaml for the rke group
-    and run our rke role to setup Docker and NTP: -
-
-    $ ansible-playbook site-rke.yaml
-
-5. Adjust our aws-rke-cluster.yaml run RKE: -
-
-   $ rke up --config aws-rke-cluster.yaml
- 
