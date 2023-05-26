@@ -42,11 +42,6 @@ jobs:
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       run: |
         poetry install --no-interaction --no-root
-    - name: Install ansibe dependencies
-      run: |
-        source .venv/bin/activate
-        ansible-galaxy install -r role-requirements.yaml
-        ansible-galaxy collection install -r collection-requirements.yaml
     - name: Pre-commit check
       run: |
         source .venv/bin/activate
@@ -56,7 +51,12 @@ jobs:
         source .venv/bin/activate
         yamllint .
         find . -type f -name '*.yaml.j2' -exec yamllint {} +
-        ansible-lint --exclude ${HOME}/.ansible
+        ansible-lint
+    - name: Install ansible dependencies
+      run: |
+        source .venv/bin/activate
+        ansible-galaxy install -r role-requirements.yaml
+        ansible-galaxy collection install -r collection-requirements.yaml
     - name: Build docs with Sphinx
       run: |
         source .venv/bin/activate
