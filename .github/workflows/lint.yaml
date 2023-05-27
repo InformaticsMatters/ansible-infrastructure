@@ -55,8 +55,7 @@ jobs:
     - name: Install ansible dependencies
       run: |
         source .venv/bin/activate
-        ansible-galaxy install -r role-requirements.yaml
-        ansible-galaxy collection install -r collection-requirements.yaml
+        ansible-galaxy install -r requirements.yaml
     - name: Build docs with Sphinx
       run: |
         source .venv/bin/activate
