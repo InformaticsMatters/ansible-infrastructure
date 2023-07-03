@@ -173,4 +173,3 @@ For more details refer to the documentation in ``recovery.py`` in our
 .. _Kubernetes Cert Manager: https://github.com/jetstack/cert-manager
 .. _Rancher: https://rancher.com
 .. _RKE: https://rancher.com/docs/rke/latest/en/
-

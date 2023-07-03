@@ -10,9 +10,9 @@ be left to the Clubhouse story, here we'll just summarise labels and affinities
 Labels
 ======
 
-*   ``informaticsmatters.com/purpose=core``
-*   ``informaticsmatters.com/purpose=application``
-*   ``informaticsmatters.com/purpose=worker``
+*   ``informaticsmatters.com/purpose-core=yes``
+*   ``informaticsmatters.com/purpose-application=yes``
+*   ``informaticsmatters.com/purpose-worker=yes``
 
 Node affinities
 ===============
@@ -34,10 +34,8 @@ This will force the Kubernetes scheduler to place the Pod on a core node.
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: informaticsmatters.com/purpose
-                operator: In
-                values:
-                - core
+              - key: informaticsmatters.com/purpose-core
+                operator: Exists
 
 Application pods
 ----------------
@@ -59,18 +57,14 @@ is not available.
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: informaticsmatters.com/purpose
-                operator: NotIn
-                values:
-                - worker
+              - key: informaticsmatters.com/purpose-worker
+                operator: DoesNotExist
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 1
             preference:
               matchExpressions:
-              - key: informaticsmatters.com/purpose
-                operator: In
-                values:
-                - application
+              - key: informaticsmatters.com/purpose-application
+                operator: Exists
 
 Transient application services, Jobs, CronJobs with zone-agnostic persistence
 or no persistence requirements at all can use a less complex
@@ -86,10 +80,8 @@ resources allow.
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: informaticsmatters.com/purpose
-                operator: NotIn
-                values:
-                - core
+              - key: informaticsmatters.com/purpose-coer
+                operator: DoesNotExist
 
 Worker pods
 -----------
@@ -106,10 +98,8 @@ to place the Pod on worker nodes: -
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: informaticsmatters.com/purpose
-                operator: In
-                values:
-                - worker
+              - key: informaticsmatters.com/purpose-worker
+                operator: Exists
 
 A more flexible affinity, that avoids core nodes but prefers
 workers over application nodes, would be defined with the following: -
@@ -122,18 +112,14 @@ workers over application nodes, would be defined with the following: -
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: informaticsmatters.com/purpose
-                operator: NotIn
-                values:
-                - core
+              - key: informaticsmatters.com/purpose-core
+                operator: DoesNotExist
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 1
             preference:
               matchExpressions:
-              - key: informaticsmatters.com/purpose
-                operator: In
-                values:
-                - worker
+              - key: informaticsmatters.com/purpose-worker
+                operator: Exists
 
 
 .. _ch1312: https://app.clubhouse.io/informaticsmatters/story/1312/pod-scheduling-and-node-label-policy

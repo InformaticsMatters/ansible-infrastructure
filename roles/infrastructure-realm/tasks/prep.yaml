@@ -3,7 +3,8 @@
 # Common playbook preparation.
 
 # Expose ansible version
-- debug:
+- name: Display Ansible
+  debug:
     var: ansible_version.full
 
 # Basic pre-playbook prerequisites.

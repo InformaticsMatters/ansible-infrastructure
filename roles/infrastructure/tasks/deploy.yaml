@@ -16,19 +16,7 @@
 
 # Namespace and basic material ------------------------------------------------
 
-- name: A cautionary reminder before we continue
-  ansible.builtin.pause:
-    prompt: >
-      Are you sure you want to configure the infrastructure namespace "{{ infra_namespace }}"?
-      Type 'YES' to continue
-  register: pause_result
-
-- name: Assert confirmation
-  ansible.builtin.assert:
-    that: pause_result.user_input == 'YES'
-    fail_msg: "Stopping - you did not type YES"
-
-- name: Create namespace
+- name: Create namespace ({{ infra_namespace }})
   k8s:
     definition: "{{ lookup('template', 'namespace-im-infra.yaml.j2') }}"
 
@@ -41,14 +29,21 @@
     pull_secret: "{{ infra_dockerhub_pullsecret }}"
   when: infra_dockerhub_pullsecret|string|length > 0
 
-- name: Creating namespace material
+- name: Create SA
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes
   loop:
   - serviceaccount-im-infra
+
+- name: Create PSP
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    wait: yes
+  loop:
   - role-im-psp-unrestricted
   - rolebinding-im-infra-sa
+  when: k8s_use_psp|bool
 
 - name: Relax {{ infra_namespace }} 'default' service account (for cert-manager)
   k8s:
@@ -71,7 +66,7 @@
         You must provide values for all the other 'pg_bu_s3_' variables.
 
   - name: Check S3 secrets
-    k8s_info:
+    kubernetes.core.k8s_info:
       kind: Secret
       api_version: v1
       namespace: "{{ infra_namespace }}"
@@ -103,7 +98,7 @@
 # Secrets (database) ----------------------------------------------------------
 
 - name: Check database (postgres) secrets
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: Secret
     api_version: v1
     namespace: "{{ infra_namespace }}"
@@ -137,7 +132,7 @@
 # Secrets (AWX database) ------------------------------------------------------
 
 - name: Check AWX database secrets
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: Secret
     api_version: v1
     namespace: "{{ infra_namespace }}"
@@ -179,7 +174,7 @@
 # Secrets (Keycloak) ----------------------------------------------------------
 
 - name: Check Keycloak secrets
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: Secret
     api_version: v1
     namespace: "{{ infra_namespace }}"
@@ -222,68 +217,79 @@
 
 # Secrets (Squonk2 DM) ------------------------------------------------------
 
-- name: Check DM database secrets
-  k8s_info:
-    kind: Secret
-    api_version: v1
-    namespace: "{{ infra_namespace }}"
-    name: im-data-manager
-  register: dm_s_result
+- name: Create DM Secret
+  block:
 
-- name: Set DM database secret facts
-  set_fact:
-    dm_user_fact: "{{ dm_user }}"
-    dm_user_password_fact: "{{ dm_user_password }}"
-    dm_database_fact: "{{ dm_database }}"
-  when: dm_s_result.resources|length == 0
+  - name: Check DM database secrets
+    k8s_info:
+      kind: Secret
+      api_version: v1
+      namespace: "{{ infra_namespace }}"
+      name: im-data-manager
+    register: dm_s_result
+    when: dm_database_user|string|length > 0
 
-- name: Set AWX database secret facts (pre-deployed secrets)
-  set_fact:
-    dm_user_fact: "{{ dm_s_result.resources[0].data.database_user|b64decode }}"
-    dm_user_password_fact: "{{ dm_s_result.resources[0].data.database_user_password|b64decode }}"
-    dm_database_fact: "{{ dm_s_result.resources[0].data.database_name|b64decode }}"
-  when: dm_s_result.resources|length == 1
+  - name: Set DM database secret facts
+    set_fact:
+      dm_user_fact: "{{ dm_database_user }}"
+      dm_user_password_fact: "{{ dm_database_user_password }}"
+      dm_database_fact: "{{ dm_database }}"
+    when: dm_s_result.resources|length == 0
 
-- name: Write DM database secrets
-  k8s:
-    definition: "{{ lookup('template', 'secret-data-manager.yaml.j2') }}"
-    wait: yes
-  when: dm_s_result.resources|length == 0
+  - name: Set DM database secret facts (pre-deployed secrets)
+    set_fact:
+      dm_user_fact: "{{ dm_s_result.resources[0].data.database_user|b64decode }}"
+      dm_user_password_fact: "{{ dm_s_result.resources[0].data.database_user_password|b64decode }}"
+      dm_database_fact: "{{ dm_s_result.resources[0].data.database_name|b64decode }}"
+    when: dm_s_result.resources|length == 1
+
+  - name: Write DM database secrets
+    k8s:
+      definition: "{{ lookup('template', 'secret-data-manager.yaml.j2') }}"
+      wait: yes
+    when: dm_s_result.resources|length == 0
+
+  when: dm_database_user|string|length > 0
 
 # Secrets (Squonk2 AS) ------------------------------------------------------
 
-- name: Check AS database secrets
-  k8s_info:
-    kind: Secret
-    api_version: v1
-    namespace: "{{ infra_namespace }}"
-    name: im-account-server
-  register: as_s_result
+- name: Create AS Secret
+  block:
 
-- name: Set AS database secret facts
-  set_fact:
-    as_user_fact: "{{ as_user }}"
-    as_user_password_fact: "{{ as_user_password }}"
-    as_database_fact: "{{ as_database }}"
-  when: as_s_result.resources|length == 0
+  - name: Check AS database secrets
+    k8s_info:
+      kind: Secret
+      api_version: v1
+      namespace: "{{ infra_namespace }}"
+      name: im-account-server
+    register: as_s_result
 
-- name: Set AS database secret facts (pre-deployed secrets)
-  set_fact:
-    as_user_fact: "{{ as_s_result.resources[0].data.database_user|b64decode }}"
-    as_user_password_fact: "{{ as_s_result.resources[0].data.database_user_password|b64decode }}"
-    as_database_fact: "{{ as_s_result.resources[0].data.database_name|b64decode }}"
-  when: as_s_result.resources|length == 1
+  - name: Set AS database secret facts
+    set_fact:
+      as_user_fact: "{{ as_database_user }}"
+      as_user_password_fact: "{{ as_database_user_password }}"
+      as_database_fact: "{{ as_database }}"
+    when: as_s_result.resources|length == 0
 
-- name: Write AS database secrets
-  k8s:
-    definition: "{{ lookup('template', 'secret-account-server.yaml.j2') }}"
-    wait: yes
-  when: as_s_result.resources|length == 0
+  - name: Set AS database secret facts (pre-deployed secrets)
+    set_fact:
+      as_user_fact: "{{ as_s_result.resources[0].data.database_user|b64decode }}"
+      as_user_password_fact: "{{ as_s_result.resources[0].data.database_user_password|b64decode }}"
+      as_database_fact: "{{ as_s_result.resources[0].data.database_name|b64decode }}"
+    when: as_s_result.resources|length == 1
+
+  - name: Write AS database secrets
+    k8s:
+      definition: "{{ lookup('template', 'secret-account-server.yaml.j2') }}"
+      wait: yes
+    when: as_s_result.resources|length == 0
+
+  when: as_database_user|string|length > 0
 
 # Database (postgres) ---------------------------------------------------------
 
 - name: Get {{ pg_vol_storageclass }} StorageClass
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: StorageClass
     name: "{{ pg_vol_storageclass }}"
   register: sc_result
@@ -305,7 +311,7 @@
 # e.g. wait until resources[0].status.phase == Bound (initially Pending)
 
 - name: Wait for postgres volume claim to bind
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: PersistentVolumeClaim
     name: pg
     namespace: "{{ infra_namespace }}"
@@ -331,7 +337,7 @@
   - statefulset-postgres
 
 - name: Wait for postgres to become Ready
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: Pod
     name: database-0
     namespace: "{{ infra_namespace }}"
@@ -351,7 +357,7 @@
   block:
 
   - name: Get {{ pg_bu_vol_storageclass }} StorageClass
-    k8s_info:
+    kubernetes.core.k8s_info:
       kind: StorageClass
       name: "{{ pg_bu_vol_storageclass }}"
     register: sc_result
@@ -375,7 +381,7 @@
     when: not pg_bu_volume_is_s3|bool
 
   - name: Wait for postgres backup volume claim to bind
-    k8s_info:
+    kubernetes.core.k8s_info:
       kind: PersistentVolumeClaim
       name: pg-bu
       namespace: "{{ infra_namespace }}"
@@ -427,7 +433,7 @@
   # otherwise skip the AWX stage.
 
   - name: Check AWX stateful set
-    k8s_info:
+    kubernetes.core.k8s_info:
       kind: StatefulSet
       namespace: "{{ infra_namespace }}"
       name: awx
@@ -472,6 +478,7 @@
       file:
         path: "{{ ax_clone_dir }}"
         state: directory
+        mode: '0755'
 
     - name: Remove existing AWX clone directory
       file:
@@ -505,6 +512,7 @@
 
     - name: Deploy AWX (into {{ infra_namespace }})
       command: ansible-playbook -i inventory install.yml
+      changed_when: false
       args:
         chdir: "{{ ax_clone_dir }}/awx/installer"
       async: "{{ 15 * 60 }}"
@@ -534,7 +542,7 @@
     - statefulset-keycloak
 
   - name: Wait for keycloak to become Ready ({{ wait_timeout }} seconds)
-    k8s_info:
+    kubernetes.core.k8s_info:
       kind: Pod
       name: keycloak-0
       namespace: "{{ infra_namespace }}"

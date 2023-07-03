@@ -95,7 +95,7 @@ ax_database: awx
 # Keycloak --------------------------------------------------------------------
 
 # The Keycloak container version and image registry
-kc_version: '11.0.0'
+kc_version: '10.0.2'
 kc_image_registry: docker.io
 
 # Keycloak database credentials.

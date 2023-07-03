@@ -3,7 +3,7 @@
 # Get the region we're in (from the first node)
 
 - name: Get cluster nodes
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: Node
   register: cluster_result
 

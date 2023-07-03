@@ -16,16 +16,22 @@ be beneficial: -
 Working environment
 ===================
 
-Ideally you'll start from a Python 3.8 virtual environment::
+Ideally you'll start from a Poetry environment::
 
-    python -m venv ~/.venv/ansible-infrastructure
-    source ~/.venv/ansible-infrastructure/bin/activate
-    pip install --upgrade pip
+    poetry shell
 
 ...and then install the required modules, roles and collections::
 
-    pip install -r requirements.txt
-    ansible-galaxy install -r role-requirements.yaml --force-with-deps
+    poetry install
+    ansible-galaxy install -r requirements.yaml --force-with-deps
+
+You **MUST** install GitHub hooks to comply with our standards::
+
+    pre-commit install -t commit-msg -t pre-commit
+
+And can then check the current diction fo the repository with::
+
+    pre-commit run --all-files
 
 Cluster (Kubernetes) pre-requisites
 ===================================
@@ -86,7 +92,7 @@ we need to provide values for these. The ``HOST`` is the
 To confirm you have the right context you should run the following
 command to list the valid contexts::
 
-    $ kubectl config get-contexts
+    kubectl config get-contexts
 
 You will also need to provide standard AWS credentials for the cluster you're
 configuring via the environment for some of the Roles to properly function::
@@ -115,7 +121,7 @@ finally, verify you're using the right Kubernetes cluster with a quick node
 check, assuming you know the identity of the nodes in the cluster you expect
 to be configuring, using ``kubectl``::
 
-    $ kubectl get no
+    kubectl get no
     NAME                       STATUS   ROLES          AGE     VERSION
     xch-production-app1        Ready    worker         3d11h   v1.17.5
     xch-production-app2        Ready    worker         3d11h   v1.17.5

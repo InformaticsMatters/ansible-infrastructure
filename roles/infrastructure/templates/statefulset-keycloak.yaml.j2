@@ -56,7 +56,7 @@ spec:
         # and then give it a further 4 minutes (at 20 second intervals)
         # for the /auth endpoint to become available.
         readinessProbe:
-          initialDelaySeconds: 300
+          initialDelaySeconds: 180
           periodSeconds: 20
           timeoutSeconds: 5
           failureThreshold: 12
@@ -64,7 +64,7 @@ spec:
             path: /auth/realms/master
             port: http
         livenessProbe:
-          initialDelaySeconds: 300
+          initialDelaySeconds: 180
           periodSeconds: 20
           timeoutSeconds: 5
           failureThreshold: 12

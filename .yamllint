@@ -6,9 +6,19 @@
 
 rules:
   indentation: {spaces: 2, indent-sequences: false}
+  truthy:
+    allowed-values:
+    - 'yes'
+    - 'no'
+    - 'true'
+    - 'false'
+  new-lines:
+    type: unix
+  new-line-at-end-of-file: enable
 
 ignore: |
   .github/
+  .venv/
   roles/core/templates/pc-im.yaml.j2
   roles/ingress-controller/templates/ingress-nginx.yaml.j2
   roles/ingress-controller/templates/nlb-service.yaml.j2

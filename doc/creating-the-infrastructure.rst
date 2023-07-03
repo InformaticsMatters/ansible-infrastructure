@@ -42,7 +42,7 @@ parameters (variables). Start with a copy of the template file
 ``parameters.template`` and replace the variable values in it with ones
 suitable for your cluster::
 
-    $ cp parameters.template parameters-me
+    cp parameters.template parameters-me
 
 At the very least you sill need to provide values
 for all the ``SetMe`` examples (and the others if required).
@@ -55,9 +55,9 @@ for all the ``SetMe`` examples (and the others if required).
 Once edited, to deploy the infrastructure, you then name the parameter file in
 the Ansible playbook command::
 
-    $ INFRA_NAME=me
-    $ CLUSTER_CONTEXT=demo
-    $ ansible-playbook \
+    INFRA_NAME=me
+    CLUSTER_CONTEXT=demo
+    ansible-playbook \
         -e @parameters-$INFRA_NAME \
         -e ax_kubernetes_context=$CLUSTER_CONTEXT \
         site.yaml
@@ -81,8 +81,8 @@ file ``parameters-im-main-eks.vault``.
 If you need to edit a pre-built parameter file it should be viewed and edited
 *in situ* using ``ansible-vault``::
 
-    $ INFRA_NAME=im-main-eks
-    $ ansible-vault edit parameters-$INFRA_NAME.vault
+    INFRA_NAME=im-main-eks
+    ansible-vault edit parameters-$INFRA_NAME.vault
 
 Using an appropriate parameter file, create (deploy) the **im-main-eks**
 infrastructure using the root-level ansible playbook ``site.yaml``.
@@ -90,9 +90,9 @@ infrastructure using the root-level ansible playbook ``site.yaml``.
 It's the same playbook regardless of cluster - only the parameter file needs
 so change::
 
-    $ INFRA_NAME=im-main-eks
-    $ CLUSTER_CONTEXT=im-eks-admin
-    $ ansible-playbook \
+    INFRA_NAME=im-main-eks
+    CLUSTER_CONTEXT=im-eks-admin
+    ansible-playbook \
         -e @parameters-$INFRA_NAME.vault \
         -e ax_kubernetes_context=$CLUSTER_CONTEXT \
         site.yaml \
