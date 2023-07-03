@@ -30,8 +30,12 @@ The source of the documentation can be found in the project's
 the build requirements and then move to the `doc` directory and execute
 `sphinx-build`: -
 
-    $ pip install -r build-requirements.txt
-    $ sphinx-build -b html doc doc/build
+    python -m venv venv
+    source venv/bin/activate
+    pip install --upgrade pip
+
+    pip install -r build-requirements.txt
+    sphinx-build -b html doc doc/build
 
 The resultant index page will be called `doc/build/index.html`.
 

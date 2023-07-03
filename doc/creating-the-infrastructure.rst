@@ -98,5 +98,14 @@ so change::
         site.yaml \
         --ask-vault-pass
 
+If you're not deploying AWX the playbook command you don't need a `CLUSTER_CONTEXT`: -
+
+    $ INFRA_NAME=im-main-eks
+    $ ansible-playbook \
+        -e @parameters-$INFRA_NAME.vault \
+        site.yaml \
+        --ask-vault-pass
+
+
 .. _Ansible Vault: https://docs.ansible.com/ansible/latest/user_guide/vault.html
 .. _Lens: https://github.com/lensapp/lens
