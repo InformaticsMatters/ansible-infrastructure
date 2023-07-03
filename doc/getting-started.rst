@@ -26,7 +26,6 @@ Ideally you'll start from a Python 3.8 virtual environment::
 
     $ pip install -r requirements.txt
     $ ansible-galaxy install -r role-requirements.yaml --force-with-deps
-    $ ansible-galaxy collection install -r collection-requirements.yaml --force-with-deps
 
 Cluster (Kubernetes) pre-requisites
 ===================================
