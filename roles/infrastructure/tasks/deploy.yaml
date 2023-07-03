@@ -16,7 +16,7 @@
 
 # Namespace and basic material ------------------------------------------------
 
-- name: Create namespace
+- name: Create namespace ({{ infra_namespace }})
   k8s:
     definition: "{{ lookup('template', 'namespace-im-infra.yaml.j2') }}"
 
@@ -214,6 +214,77 @@
 - name: Display Keycloak admin password
   debug:
     var: kc_admin_password_fact
+
+# Secrets (Squonk2 DM) ------------------------------------------------------
+
+- name: Create DM Secret
+  block:
+
+  - name: Check DM database secrets
+    k8s_info:
+      kind: Secret
+      api_version: v1
+      namespace: "{{ infra_namespace }}"
+      name: im-data-manager
+    register: dm_s_result
+    when: dm_database_user|string|length > 0
+
+  - name: Set DM database secret facts
+    set_fact:
+      dm_user_fact: "{{ dm_database_user }}"
+      dm_user_password_fact: "{{ dm_database_user_password }}"
+      dm_database_fact: "{{ dm_database }}"
+    when: dm_s_result.resources|length == 0
+
+  - name: Set DM database secret facts (pre-deployed secrets)
+    set_fact:
+      dm_user_fact: "{{ dm_s_result.resources[0].data.database_user|b64decode }}"
+      dm_user_password_fact: "{{ dm_s_result.resources[0].data.database_user_password|b64decode }}"
+      dm_database_fact: "{{ dm_s_result.resources[0].data.database_name|b64decode }}"
+    when: dm_s_result.resources|length == 1
+
+  - name: Write DM database secrets
+    k8s:
+      definition: "{{ lookup('template', 'secret-data-manager.yaml.j2') }}"
+      wait: yes
+    when: dm_s_result.resources|length == 0
+
+  when: dm_database_user|string|length > 0
+
+# Secrets (Squonk2 AS) ------------------------------------------------------
+
+- name: Create AS Secret
+  block:
+
+  - name: Check AS database secrets
+    k8s_info:
+      kind: Secret
+      api_version: v1
+      namespace: "{{ infra_namespace }}"
+      name: im-account-server
+    register: as_s_result
+
+  - name: Set AS database secret facts
+    set_fact:
+      as_user_fact: "{{ as_database_user }}"
+      as_user_password_fact: "{{ as_database_user_password }}"
+      as_database_fact: "{{ as_database }}"
+    when: as_s_result.resources|length == 0
+
+  - name: Set AS database secret facts (pre-deployed secrets)
+    set_fact:
+      as_user_fact: "{{ as_s_result.resources[0].data.database_user|b64decode }}"
+      as_user_password_fact: "{{ as_s_result.resources[0].data.database_user_password|b64decode }}"
+      as_database_fact: "{{ as_s_result.resources[0].data.database_name|b64decode }}"
+    when: as_s_result.resources|length == 1
+
+  - name: Write AS database secrets
+    k8s:
+      definition: "{{ lookup('template', 'secret-account-server.yaml.j2') }}"
+      wait: yes
+    when: as_s_result.resources|length == 0
+
+  when: as_database_user|string|length > 0
 
 # Database (postgres) ---------------------------------------------------------
 

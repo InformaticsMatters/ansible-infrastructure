@@ -90,12 +90,22 @@ infrastructure using the root-level ansible playbook ``site.yaml``.
 It's the same playbook regardless of cluster - only the parameter file needs
 so change::
 
-    INFRA_NAME=xch-scratch
-    CLUSTER_CONTEXT=xch
+    INFRA_NAME=im-main-eks
+    CLUSTER_CONTEXT=im-eks-admin
     ansible-playbook \
+        -e @parameters-$INFRA_NAME.vault \
+        -e ax_kubernetes_context=$CLUSTER_CONTEXT \
+        site.yaml \
+        --ask-vault-pass
+
+If you're not deploying AWX the playbook command you don't need a `CLUSTER_CONTEXT`: -
+
+    $ INFRA_NAME=im-main-eks
+    $ ansible-playbook \
         -e @parameters-$INFRA_NAME.vault \
         site.yaml \
         --ask-vault-pass
+
 
 .. _Ansible Vault: https://docs.ansible.com/ansible/latest/user_guide/vault.html
 .. _Lens: https://github.com/lensapp/lens

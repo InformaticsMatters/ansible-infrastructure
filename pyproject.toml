@@ -4,7 +4,6 @@ version = "2023.1"
 description = "Ansible roles to deploy Informatics Matters infrastructure components to Kubernetes"
 authors = ["Alan Christie <achristie@informaticsmatters.com>"]
 readme = "README.md"
-packages = [{include = "ansible_infrastructure"}]
 
 [tool.poetry.dependencies]
 python = "3.11.*"

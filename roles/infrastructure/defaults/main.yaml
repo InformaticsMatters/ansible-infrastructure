@@ -107,3 +107,18 @@ ax_cert_issuer: production
 # The password to assign to the admin user of our AWX server.
 ax_admin: admin
 ax_admin_password: "{{ lookup('password', '/dev/null length=14 chars=ascii_letters,digits') }}"
+
+# Squonk2 ---------------------------------------------------------------------
+
+# If there is a username is then a corresponding secret is created and a database
+# and a user will be setup via the ConfigMap used for postgres initialisation.
+# There are separate variables for the Squonk2 Account Server (as) and
+# Squonk2 Data Manager (dm).
+
+as_database_user: ''
+as_database_user_password: ''
+as_database: sq2-as
+
+dm_database_user: ''
+dm_database_user_password: ''
+dm_database: sq2-dm

@@ -14,9 +14,25 @@ data:
         ALTER USER {{ kc_user_fact }} WITH PASSWORD '{{ kc_user_password_fact }}';
         CREATE DATABASE {{ kc_database_fact }};
         GRANT ALL PRIVILEGES ON DATABASE {{ kc_database_fact }} TO {{ kc_user_fact }};
+{% if ax_user_fact is defined %}
         -- Configure a user and database for AWX
         CREATE USER {{ ax_user_fact }};
         ALTER USER {{ ax_user_fact }} WITH PASSWORD '{{ ax_user_password_fact }}';
         CREATE DATABASE {{ ax_database_fact }};
         GRANT ALL PRIVILEGES ON DATABASE {{ ax_database_fact }} TO {{ ax_user_fact }};
+{% endif%}
+{% if as_user_fact is defined %}
+        -- Configure a user and database for the Squonk2 Account Server
+        CREATE USER {{ as_user_fact }};
+        ALTER USER {{ as_user_fact }} WITH PASSWORD '{{ as_user_password_fact }}';
+        CREATE DATABASE {{ as_database_fact }};
+        GRANT ALL PRIVILEGES ON DATABASE {{ as_database_fact }} TO {{ as_user_fact }};
+{% endif %}
+{% if dm_user_fact is defined %}
+        -- Configure a user and database for the Squonk2 Data Manager
+        CREATE USER {{ dm_user_fact }};
+        ALTER USER {{ dm_user_fact }} WITH PASSWORD '{{ dm_user_password_fact }}';
+        CREATE DATABASE {{ dm_database_fact }};
+        GRANT ALL PRIVILEGES ON DATABASE {{ dm_database_fact }} TO {{ dm_user_fact }};
+{% endif %}
     EOSQL
