@@ -3,7 +3,6 @@ kubernetes == 19.15.0
 openshift == 0.13.1
 
 ansible-tower-cli == 3.3.9
-colorama
 awscli
 boto3
 jmespath
