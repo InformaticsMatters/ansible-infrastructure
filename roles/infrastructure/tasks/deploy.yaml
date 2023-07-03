@@ -16,6 +16,18 @@
 
 # Namespace and basic material ------------------------------------------------
 
+- name: A cautionary reminder before we continue
+  ansible.builtin.pause:
+    prompt: >
+      Are you sure you want to configure the infrastructure namespace "{{ infra_namespace }}"?
+      Type 'YES' to continue
+  register: pause_result
+
+- name: Assert confirmation
+  ansible.builtin.assert:
+    that: pause_result.user_input == 'YES'
+    fail_msg: "Stopping - you did not type YES"
+
 - name: Create namespace
   k8s:
     definition: "{{ lookup('template', 'namespace-im-infra.yaml.j2') }}"

@@ -18,14 +18,14 @@ Working environment
 
 Ideally you'll start from a Python 3.8 virtual environment::
 
-    $ python -m venv ~/.venv/ansible-infrastructure
-    $ source ~/.venv/ansible-infrastructure/bin/activate
-    $ pip install --upgrade pip
+    python -m venv ~/.venv/ansible-infrastructure
+    source ~/.venv/ansible-infrastructure/bin/activate
+    pip install --upgrade pip
 
 ...and then install the required modules, roles and collections::
 
-    $ pip install -r requirements.txt
-    $ ansible-galaxy install -r role-requirements.yaml --force-with-deps
+    pip install -r requirements.txt
+    ansible-galaxy install -r role-requirements.yaml --force-with-deps
 
 Cluster (Kubernetes) pre-requisites
 ===================================
@@ -78,10 +78,10 @@ we need to provide values for these. The ``HOST`` is the
 **clusters -> cluster -> server** value from the config file and the
 ``API_KEY`` is the **users -> user -> token** value::
 
-    $ export K8S_AUTH_HOST=https://1.2.3.4:6443
-    $ export K8S_AUTH_API_KEY=kubeconfig-user-abc:00000000
-    $ export K8S_AUTH_VERIFY_SSL=no
-    $ export K8S_CONTEXT=im-eks-admin
+    export K8S_AUTH_HOST=https://1.2.3.4:6443
+    export K8S_AUTH_API_KEY=kubeconfig-user-abc:00000000
+    export K8S_AUTH_VERIFY_SSL=no
+    export K8S_CONTEXT=im-eks-admin
 
 To confirm you have the right context you should run the following
 command to list the valid contexts::
@@ -91,8 +91,8 @@ command to list the valid contexts::
 You will also need to provide standard AWS credentials for the cluster you're
 configuring via the environment for some of the Roles to properly function::
 
-    $ export AWS_ACCESS_KEY_ID=xxxxxxxxxxxx
-    $ export AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxx
+    export AWS_ACCESS_KEY_ID=xxxxxxxxxxxx
+    export AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxx
 
 
 The permissions of the AWS user will depend on what you intend to deploy.
