@@ -21,6 +21,10 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-buffer-size: '128k'
     nginx.ingress.kubernetes.io/proxy-busy-buffer-size: '256k'
 spec:
+  tls:
+  - hosts:
+    -  {{ kc_hostname }}
+    secretName: im-keycloak-tls
   rules:
   - host: {{ kc_hostname }}
     http:
