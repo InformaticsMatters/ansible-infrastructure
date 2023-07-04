@@ -1,6 +1,6 @@
 # Ansible Infrastructure
 
-![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/informaticsmatters/ansible-infrastructure)
+![GitHub release](https://img.shields.io/github/v/release/informaticsmatters/ansible-infrastructure)
 
 ![yamllint and doc build](https://github.com/InformaticsMatters/ansible-infrastructure/workflows/lint%20and%20doc%20build/badge.svg)
 
