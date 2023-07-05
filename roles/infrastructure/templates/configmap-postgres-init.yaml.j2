@@ -30,8 +30,10 @@ data:
 {% endif %}
 {% if dm_user_fact is defined %}
         -- Configure a user and database for the Squonk2 Data Manager
+        -- This user needs to be a SUPERUSER (as they rely on the RDKit cartridge)
         CREATE USER {{ dm_user_fact }};
         ALTER USER {{ dm_user_fact }} WITH PASSWORD '{{ dm_user_password_fact }}';
+        ALTER USER {{ dm_user_fact }} WITH SUPERUSER;
         CREATE DATABASE {{ dm_database_fact }};
         GRANT ALL PRIVILEGES ON DATABASE {{ dm_database_fact }} TO {{ dm_user_fact }};
 {% endif %}
