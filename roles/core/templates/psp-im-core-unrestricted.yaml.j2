@@ -3,6 +3,8 @@ kind: PodSecurityPolicy
 apiVersion: policy/v1beta1
 metadata:
   name: im-core-unrestricted
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'  
 spec:
   privileged: yes
   allowPrivilegeEscalation: yes
