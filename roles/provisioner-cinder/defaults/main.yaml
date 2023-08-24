@@ -4,12 +4,6 @@
 # One of 'present' or 'absent'.
 cinder_state: absent
 
-# Namespace for the workload deployment
-cinder_namespace: im-cinder-provisioner
-
-# Cinder availability zone
-cinder_availability_zone: ceph
-
 # The Base64 encoding of the cloud-config file (the .conf).
 # A file that (typically) contains: -
 #

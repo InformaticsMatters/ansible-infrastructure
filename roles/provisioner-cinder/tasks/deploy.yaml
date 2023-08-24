@@ -6,19 +6,34 @@
     - cinder_cloud_config|string|length > 0
     - cinder_cloud_config|string != 'SetMe'
 
-- name: Create cinder objects
+- name: Debug
+  debug:
+    msg: Hello
+
+- name: Create cinder objects (templates)
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
   loop:
-  - namespace
-  - csidriver
-  - secret
-  - rbac-controllerplugin
-  - rbac-nodeplugin
-  - role-psp
-  - rolebinding-sa-psp
-  - statefulset-controllerplugin
-  - daemonset-nodeplugin
-  - storageclass
+  - im-role-psp
+  - csi-secret-cinderplugin
+
+- name: Create cinder objects (files)
+  k8s:
+    definition: "{{ lookup('file', '{{ item }}.yaml') }}"
+    wait: yes
+    wait_timeout: "{{ wait_timeout }}"
+  loop:
+  - im-rolebinding-sa-psp
+  - csi-cinder-driver
+  - cinder-csi-controllerplugin-rbac
+  - cinder-csi-controllerplugin
+  - cinder-csi-nodeplugin-rbac
+  - cinder-csi-nodeplugin
+
+- name: Create StorageClass
+  k8s:
+    definition: "{{ lookup('template', 'storageclass.yaml.j2') }}"
+    wait: yes
+    wait_timeout: "{{ wait_timeout }}"
