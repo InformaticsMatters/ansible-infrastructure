@@ -1,11 +1,13 @@
 ---
 
-- include_tasks: prep.yaml
+- name: Prep
+  include_tasks: prep.yaml
 
 # If it looks like we're deploying to OpenShift
 # we need to use the k8s authentication module to login
 # and obtain an API key.
-- include_tasks: login.yaml
+- name: login
+  include_tasks: login.yaml
   when: okd_master_hostname is defined
 
 # A kubernetes (or OpenShift) host and an API key must be set.
@@ -26,9 +28,11 @@
 - name: Deploy (without KUBECONFIG)
   block:
 
-  - include_tasks: deploy.yaml
+  - name: Deploy
+    include_tasks: deploy.yaml
     when: infra_state|string == 'present'
-  - include_tasks: undeploy.yaml
+  - name: Undeploy
+    include_tasks: undeploy.yaml
     when: infra_state|string == 'absent'
 
   module_defaults:
