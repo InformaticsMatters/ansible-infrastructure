@@ -22,6 +22,10 @@ ignore: |
   roles/core/templates/pc-im.yaml.j2
   roles/ingress-controller/templates/ingress-nginx.yaml.j2
   roles/ingress-controller/templates/nlb-service.yaml.j2
+  roles/provisioner-cinder/files/cinder-csi-controllerplugin-rbac.yaml
+  roles/provisioner-cinder/files/cinder-csi-nodeplugin.yaml
+  roles/provisioner-cinder/files/cinder-csi-controllerplugin.yaml
+  roles/provisioner-cinder/files/cinder-csi-nodeplugin-rbac.yaml
   roles/provisioner-efs/templates/deployment.yaml.j2
   roles/provisioner-efs/templates/serviceaccount.yaml.j2
   roles/provisioner-efs/templates/storageclass.yaml.j2
