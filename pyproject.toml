@@ -12,7 +12,7 @@ kubernetes = "23.6.0"
 jmespath = "1.0.1"
 
 [tool.poetry.group.dev.dependencies]
-ansible-lint = "5.*"
+ansible-lint = "6.*"
 pre-commit = "3.3.*"
 yamllint = "1.*"
 
