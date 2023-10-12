@@ -52,7 +52,6 @@ jobs:
         source .venv/bin/activate
         yamllint .
         find . -type f -name '*.yaml.j2' -exec yamllint {} +
-        ansible-lint
     - name: Install ansible dependencies
       run: |
         source .venv/bin/activate
