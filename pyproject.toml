@@ -7,12 +7,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.11.*"
-ansible = "7.5.0"
-kubernetes = "26.1.0"
+ansible = "8.5.0"
+kubernetes = "23.6.0"
 jmespath = "1.0.1"
-ansible-tower-cli = "3.3.9"
-awscli = "1.27.*"
-boto3 = "1.26.*"
 
 [tool.poetry.group.dev.dependencies]
 ansible-lint = "5.*"
