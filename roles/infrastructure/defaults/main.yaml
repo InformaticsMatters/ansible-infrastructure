@@ -11,6 +11,10 @@ infra_state: present
 # There is no 'state' variable here.
 # The database is _always_ deployed.
 
+# Skip PostgreSQL init config?
+# Set to 'no' if you intend to initialise or restore the users and databases yourself.
+pg_create_users_and_databases: yes
+
 # The database volume size (Gi).
 pg_vol_size_g: 50
 # The StorageClass of the postgres persistent volume.
