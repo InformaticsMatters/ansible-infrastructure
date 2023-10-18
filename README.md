@@ -2,7 +2,7 @@
 
 ![GitHub release](https://img.shields.io/github/v/release/informaticsmatters/ansible-infrastructure)
 
-![yamllint and doc build](https://github.com/InformaticsMatters/ansible-infrastructure/workflows/lint%20and%20doc%20build/badge.svg)
+[![lint and doc build](https://github.com/InformaticsMatters/ansible-infrastructure/actions/workflows/lint.yaml/badge.svg)](https://github.com/InformaticsMatters/ansible-infrastructure/actions/workflows/lint.yaml)
 
 [![CodeFactor](https://www.codefactor.io/repository/github/informaticsmatters/ansible-infrastructure/badge)](https://www.codefactor.io/repository/github/informaticsmatters/ansible-infrastructure)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
