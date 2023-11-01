@@ -97,123 +97,138 @@
 
 # Secrets (database) ----------------------------------------------------------
 
-- name: Check database (postgres) secrets
-  kubernetes.core.k8s_info:
-    kind: Secret
-    api_version: v1
-    namespace: "{{ infra_namespace }}"
-    name: im-postgres
-  register: pg_s_result
+- name: Database Secrets
+  block:
 
-- name: Set database secret facts
-  set_fact:
-    pg_user_fact: "{{ pg_user }}"
-    pg_user_password_fact: "{{ pg_user_password }}"
-    pg_database_fact: "{{ pg_database }}"
-  when: pg_s_result.resources|length == 0
+  - name: Check database (postgres) secrets
+    kubernetes.core.k8s_info:
+      kind: Secret
+      api_version: v1
+      namespace: "{{ infra_namespace }}"
+      name: im-postgres
+    register: pg_s_result
 
-- name: Set database secret facts (pre-deployed secrets)
-  set_fact:
-    pg_user_fact: "{{ pg_s_result.resources[0].data.database_admin_user|b64decode }}"
-    pg_user_password_fact: "{{ pg_s_result.resources[0].data.database_admin_user_password|b64decode }}"
-    pg_database_fact: "{{ pg_s_result.resources[0].data.database_name|b64decode }}"
-  when: pg_s_result.resources|length == 1
+  - name: Set database secret facts
+    set_fact:
+      pg_user_fact: "{{ pg_user }}"
+      pg_user_password_fact: "{{ pg_user_password }}"
+      pg_database_fact: "{{ pg_database }}"
+    when: pg_s_result.resources|length == 0
 
-- name: Write Database secrets
-  k8s:
-    definition: "{{ lookup('template', 'secret-postgres.yaml.j2') }}"
-    wait: yes
-  when: pg_s_result.resources|length == 0
+  - name: Set database secret facts (pre-deployed secrets)
+    set_fact:
+      pg_user_fact: "{{ pg_s_result.resources[0].data.database_admin_user|b64decode }}"
+      pg_user_password_fact: "{{ pg_s_result.resources[0].data.database_admin_user_password|b64decode }}"
+      pg_database_fact: "{{ pg_s_result.resources[0].data.database_name|b64decode }}"
+    when: pg_s_result.resources|length == 1
 
-- name: Display Database admin password
-  debug:
-    var: pg_user_password_fact
+  - name: Write Database secrets
+    k8s:
+      definition: "{{ lookup('template', 'secret-postgres.yaml.j2') }}"
+      wait: yes
+    when: pg_s_result.resources|length == 0
+
+  - name: Display Database admin password
+    debug:
+      var: pg_user_password_fact
+
+  when: pg_state|string == 'present'
 
 # Secrets (AWX database) ------------------------------------------------------
 
-- name: Check AWX database secrets
-  kubernetes.core.k8s_info:
-    kind: Secret
-    api_version: v1
-    namespace: "{{ infra_namespace }}"
-    name: im-awx
-  register: awx_s_result
+- name: AWX database secret
+  block:
 
-- name: Set AWX database secret facts
-  set_fact:
-    ax_user_fact: "{{ ax_user }}"
-    ax_user_password_fact: "{{ ax_user_password }}"
-    ax_database_fact: "{{ ax_database }}"
-    ax_admin_fact: "{{ ax_admin }}"
-    ax_admin_password_fact: "{{ ax_admin_password }}"
-  when: awx_s_result.resources|length == 0
+  - name: Check AWX database secrets
+    kubernetes.core.k8s_info:
+      kind: Secret
+      api_version: v1
+      namespace: "{{ infra_namespace }}"
+      name: im-awx
+    register: awx_s_result
 
-- name: Set AWX database secret facts (pre-deployed secrets)
-  set_fact:
-    ax_user_fact: "{{ awx_s_result.resources[0].data.database_user|b64decode }}"
-    ax_user_password_fact: "{{ awx_s_result.resources[0].data.database_user_password|b64decode }}"
-    ax_database_fact: "{{ awx_s_result.resources[0].data.database_name|b64decode }}"
-    ax_admin_fact: "{{ awx_s_result.resources[0].data.ax_admin|b64decode }}"
-    ax_admin_password_fact: "{{ awx_s_result.resources[0].data.ax_admin_password|b64decode }}"
-  when: awx_s_result.resources|length == 1
+  - name: Set AWX database secret facts
+    set_fact:
+      ax_user_fact: "{{ ax_user }}"
+      ax_user_password_fact: "{{ ax_user_password }}"
+      ax_database_fact: "{{ ax_database }}"
+      ax_admin_fact: "{{ ax_admin }}"
+      ax_admin_password_fact: "{{ ax_admin_password }}"
+    when: awx_s_result.resources|length == 0
 
-- name: Write AWX database secrets
-  k8s:
-    definition: "{{ lookup('template', 'secret-awx.yaml.j2') }}"
-    wait: yes
-  when: awx_s_result.resources|length == 0
+  - name: Set AWX database secret facts (pre-deployed secrets)
+    set_fact:
+      ax_user_fact: "{{ awx_s_result.resources[0].data.database_user|b64decode }}"
+      ax_user_password_fact: "{{ awx_s_result.resources[0].data.database_user_password|b64decode }}"
+      ax_database_fact: "{{ awx_s_result.resources[0].data.database_name|b64decode }}"
+      ax_admin_fact: "{{ awx_s_result.resources[0].data.ax_admin|b64decode }}"
+      ax_admin_password_fact: "{{ awx_s_result.resources[0].data.ax_admin_password|b64decode }}"
+    when: awx_s_result.resources|length == 1
 
-- name: Display AWX database password
-  debug:
-    var: ax_user_password_fact
+  - name: Write AWX database secrets
+    k8s:
+      definition: "{{ lookup('template', 'secret-awx.yaml.j2') }}"
+      wait: yes
+    when: awx_s_result.resources|length == 0
 
-- name: Display AWX console admin user and password
-  debug:
-    msg: AWX console admin user - {{ ax_admin_fact }}/{{ ax_admin_password_fact }}
+  - name: Display AWX database password
+    debug:
+      var: ax_user_password_fact
+
+  - name: Display AWX console admin user and password
+    debug:
+      msg: AWX console admin user - {{ ax_admin_fact }}/{{ ax_admin_password_fact }}
+
+  when: ax_state|string == 'present'
 
 # Secrets (Keycloak) ----------------------------------------------------------
 
-- name: Check Keycloak secrets
-  kubernetes.core.k8s_info:
-    kind: Secret
-    api_version: v1
-    namespace: "{{ infra_namespace }}"
-    name: im-keycloak
-  register: kc_s_result
+- name: Keyclock secret
+  block:
 
-- name: Set Keycloak secret facts
-  set_fact:
-    kc_user_fact: "{{ kc_user }}"
-    kc_user_password_fact: "{{ kc_user_password }}"
-    kc_database_fact: "{{ kc_database }}"
-    kc_hostname_fact: "{{ kc_hostname }}"
-    kc_admin_fact: "{{ kc_admin }}"
-    kc_admin_password_fact: "{{ kc_admin_password }}"
-  when: kc_s_result.resources|length == 0
+  - name: Check Keycloak secrets
+    kubernetes.core.k8s_info:
+      kind: Secret
+      api_version: v1
+      namespace: "{{ infra_namespace }}"
+      name: im-keycloak
+    register: kc_s_result
 
-- name: Set Keycloak secret facts (pre-deployed secrets)
-  set_fact:
-    kc_user_fact: "{{ kc_s_result.resources[0].data.database_user|b64decode }}"
-    kc_user_password_fact: "{{ kc_s_result.resources[0].data.database_user_password|b64decode }}"
-    kc_database_fact: "{{ kc_s_result.resources[0].data.database_name|b64decode }}"
-    kc_hostname_fact: "{{ kc_s_result.resources[0].data.keycloak_hostname|b64decode }}"
-    kc_admin_fact: "{{ kc_s_result.resources[0].data.keycloak_admin_user|b64decode }}"
-    kc_admin_password_fact: "{{ kc_s_result.resources[0].data.keycloak_admin_user_password|b64decode }}"
-  when: kc_s_result.resources|length == 1
+  - name: Set Keycloak secret facts
+    set_fact:
+      kc_user_fact: "{{ kc_user }}"
+      kc_user_password_fact: "{{ kc_user_password }}"
+      kc_database_fact: "{{ kc_database }}"
+      kc_hostname_fact: "{{ kc_hostname }}"
+      kc_admin_fact: "{{ kc_admin }}"
+      kc_admin_password_fact: "{{ kc_admin_password }}"
+    when: kc_s_result.resources|length == 0
 
-- name: Write Keycloak secrets
-  k8s:
-    definition: "{{ lookup('template', 'secret-keycloak.yaml.j2') }}"
-    wait: yes
-  when: kc_s_result.resources|length == 0
+  - name: Set Keycloak secret facts (pre-deployed secrets)
+    set_fact:
+      kc_user_fact: "{{ kc_s_result.resources[0].data.database_user|b64decode }}"
+      kc_user_password_fact: "{{ kc_s_result.resources[0].data.database_user_password|b64decode }}"
+      kc_database_fact: "{{ kc_s_result.resources[0].data.database_name|b64decode }}"
+      kc_hostname_fact: "{{ kc_s_result.resources[0].data.keycloak_hostname|b64decode }}"
+      kc_admin_fact: "{{ kc_s_result.resources[0].data.keycloak_admin_user|b64decode }}"
+      kc_admin_password_fact: "{{ kc_s_result.resources[0].data.keycloak_admin_user_password|b64decode }}"
+    when: kc_s_result.resources|length == 1
 
-- name: Display Keycloak database password
-  debug:
-    var: kc_user_password_fact
+  - name: Write Keycloak secrets
+    k8s:
+      definition: "{{ lookup('template', 'secret-keycloak.yaml.j2') }}"
+      wait: yes
+    when: kc_s_result.resources|length == 0
 
-- name: Display Keycloak admin password
-  debug:
-    var: kc_admin_password_fact
+  - name: Display Keycloak database password
+    debug:
+      var: kc_user_password_fact
+
+  - name: Display Keycloak admin password
+    debug:
+      var: kc_admin_password_fact
+
+  when: kc_state|string == 'present'
 
 # Secrets (Squonk2 DM) ------------------------------------------------------
 
@@ -286,70 +301,110 @@
 
   when: as_database_user|string|length > 0
 
+# Secrets (RabbitMQ) ----------------------------------------------------------
+
+- name: Create RabbitMQ Secret
+  block:
+
+  - name: Check RabbitMQ secrets
+    k8s_info:
+      kind: Secret
+      api_version: v1
+      namespace: "{{ infra_namespace }}"
+      name: rabbitmq
+    register: rmq_s_result
+
+  - name: Set RabbitMQ secret facts
+    set_fact:
+      rabbitmq_user_fact: "{{ rabbitmq_user }}"
+      rabbitmq_user_password_fact: "{{ rabbitmq_user_password }}"
+      rabbitmq_erlang_cookie_fact: "{{ rabbitmq_erlang_cookie }}"
+    when: rmq_s_result.resources|length == 0
+
+  - name: Set RabbitMQ secret facts (pre-deployed secrets)
+    set_fact:
+      rabbitmq_user_fact: "{{ rmq_s_result.resources[0].user|b64decode }}"
+      rabbitmq_user_password_fact: "{{ rmq_s_result.resources[0].data.password|b64decode }}"
+      rabbitmq_database_fact: "{{ rmq_s_result.resources[0].erlang_cookie|b64decode }}"
+    when: rmq_s_result.resources|length == 1
+
+  - name: Write RabbitMQ secrets
+    k8s:
+      definition: "{{ lookup('template', 'secret-rabbitmq.yaml.j2') }}"
+      wait: yes
+    when: rmq_s_result.resources|length == 0
+
+  when: rabbitmq_state|string == 'present'
+
 # Database (postgres) ---------------------------------------------------------
 
-- name: Get {{ pg_vol_storageclass }} StorageClass
-  kubernetes.core.k8s_info:
-    kind: StorageClass
-    name: "{{ pg_vol_storageclass }}"
-  register: sc_result
-  when: pg_vol_storageclass != " "
-
-- name: Assert {{ pg_vol_storageclass }} StorageClass
-  assert:
-    that: sc_result.resources|length == 1
-    fail_msg: The {{ pg_vol_storageclass }} StorageClass must be available on the cluster
-  when: pg_vol_storageclass != " "
-
-- name: Create postgres volume claim ({{ pg_vol_storageclass }})
-  k8s:
-    definition: "{{ lookup('template', 'pvc-postgres.yaml.j2') }}"
-    wait: yes
-    wait_timeout: "{{ wait_timeout }}"
-
-# Best practice ... wait for the PVC to bind.
-# e.g. wait until resources[0].status.phase == Bound (initially Pending)
-
-- name: Wait for postgres volume claim to bind
-  kubernetes.core.k8s_info:
-    kind: PersistentVolumeClaim
-    name: pg
-    namespace: "{{ infra_namespace }}"
-  register: pg_pvc_result
-  until: >-
-    pg_pvc_result.resources|length > 0
-    and pg_pvc_result.resources[0].status is defined
-    and pg_pvc_result.resources[0].status.phase is defined
-    and pg_pvc_result.resources[0].status.phase == 'Bound'
-  delay: 5
-  retries: "{{ (bind_timeout|int / 5)|int }}"
-  when: wait_for_bind|bool
-
 - name: Postgres
-  k8s:
-    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
-    wait: yes
-    wait_timeout: "{{ wait_timeout }}"
-  loop:
-  - configmap-postgres-conf
-  - configmap-postgres-init
-  - service-postgres
-  - statefulset-postgres
+  block:
 
-- name: Wait for postgres to become Ready
-  kubernetes.core.k8s_info:
-    kind: Pod
-    name: database-0
-    namespace: "{{ infra_namespace }}"
-  register: database_result
-  until: >-
-    database_result.resources|length == 1
-    and database_result.resources[0].status is defined
-    and database_result.resources[0].status.containerStatuses is defined
-    and database_result.resources[0].status.containerStatuses|length == 1
-    and database_result.resources[0].status.containerStatuses[0].ready
-  delay: 30
-  retries: "{{ (wait_timeout|int / 30)|int }}"
+  - name: Get {{ pg_vol_storageclass }} StorageClass
+    kubernetes.core.k8s_info:
+      kind: StorageClass
+      name: "{{ pg_vol_storageclass }}"
+    register: sc_result
+    when: pg_vol_storageclass != " "
+
+  - name: Assert {{ pg_vol_storageclass }} StorageClass
+    assert:
+      that: sc_result.resources|length == 1
+      fail_msg: The {{ pg_vol_storageclass }} StorageClass must be available on the cluster
+    when: pg_vol_storageclass != " "
+
+  - name: Create postgres volume claim ({{ pg_vol_storageclass }})
+    k8s:
+      definition: "{{ lookup('template', 'pvc-postgres.yaml.j2') }}"
+      wait: yes
+      wait_timeout: "{{ wait_timeout }}"
+
+  # Best practice ... wait for the PVC to bind.
+  # e.g. wait until resources[0].status.phase == Bound (initially Pending)
+
+  - name: Wait for postgres volume claim to bind
+    kubernetes.core.k8s_info:
+      kind: PersistentVolumeClaim
+      name: pg
+      namespace: "{{ infra_namespace }}"
+    register: pg_pvc_result
+    until: >-
+      pg_pvc_result.resources|length > 0
+      and pg_pvc_result.resources[0].status is defined
+      and pg_pvc_result.resources[0].status.phase is defined
+      and pg_pvc_result.resources[0].status.phase == 'Bound'
+    delay: 5
+    retries: "{{ (bind_timeout|int / 5)|int }}"
+    when: wait_for_bind|bool
+
+  - name: Postgres
+    k8s:
+      definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+      wait: yes
+      wait_timeout: "{{ wait_timeout }}"
+    loop:
+    - configmap-postgres-conf
+    - configmap-postgres-init
+    - service-postgres
+    - statefulset-postgres
+
+  - name: Wait for postgres to become Ready
+    kubernetes.core.k8s_info:
+      kind: Pod
+      name: database-0
+      namespace: "{{ infra_namespace }}"
+    register: database_result
+    until: >-
+      database_result.resources|length == 1
+      and database_result.resources[0].status is defined
+      and database_result.resources[0].status.containerStatuses is defined
+      and database_result.resources[0].status.containerStatuses|length == 1
+      and database_result.resources[0].status.containerStatuses[0].ready
+    delay: 30
+    retries: "{{ (wait_timeout|int / 30)|int }}"
+
+  when: pg_state|string == 'present'
 
 # Database (backups) ----------------------------------------------------------
 
@@ -557,3 +612,77 @@
     retries: "{{ (wait_timeout|int / 30)|int }}"
 
   when: kc_state|string == 'present'
+
+# RabbitMQ --------------------------------------------------------------------
+
+- name: Deploy RabbitMQ
+  block:
+
+  - name: RabbitMQ assertions
+    assert:
+      that:
+      - kc_cert_issuer in cert_issuer_set
+
+  - name: Get {{ rabbitmq_vol_storageclass }} StorageClass
+    kubernetes.core.k8s_info:
+      kind: StorageClass
+      name: "{{ rabbitmq_vol_storageclass }}"
+    register: sc_result
+    when: rabbitmq_vol_storageclass != " "
+
+  - name: Assert {{ pg_vol_storageclass }} StorageClass
+    assert:
+      that: sc_result.resources|length == 1
+      fail_msg: The {{ rabbitmq_vol_storageclass }} StorageClass must be available on the cluster
+    when: rabbitmq_vol_storageclass != " "
+
+  - name: Create RabbitMQ volume claim ({{ rabbitmq_vol_storageclass }})
+    k8s:
+      definition: "{{ lookup('template', 'pvc-rabbitmq.yaml.j2') }}"
+      wait: yes
+      wait_timeout: "{{ wait_timeout }}"
+
+  # Best practice ... wait for the PVC to bind.
+  # e.g. wait until resources[0].status.phase == Bound (initially Pending)
+
+  - name: Wait for RabbitMQ volume claim to bind
+    kubernetes.core.k8s_info:
+      kind: PersistentVolumeClaim
+      name: rabbitmq-data
+      namespace: "{{ infra_namespace }}"
+    register: rabbitmq_pvc_result
+    until: >-
+      rabbitmq_pvc_result.resources|length > 0
+      and rabbitmq_pvc_result.resources[0].status is defined
+      and rabbitmq_pvc_result.resources[0].status.phase is defined
+      and rabbitmq_pvc_result.resources[0].status.phase == 'Bound'
+    delay: 5
+    retries: "{{ (bind_timeout|int / 5)|int }}"
+    when: wait_for_bind|bool
+
+  - name: RabbitMQ
+    k8s:
+      definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+      wait: yes
+      wait_timeout: "{{ wait_timeout }}"
+    loop:
+    - configmap-rabbitmq-conf
+    - service-rabbitmq
+    - statefulset-rabbitmq
+
+  - name: Wait for RabbitMQ to become Ready ({{ wait_timeout }} seconds)
+    kubernetes.core.k8s_info:
+      kind: Pod
+      name: rabbitmq-0
+      namespace: "{{ infra_namespace }}"
+    register: rabbitmq_result
+    until: >-
+      rabbitmq_result.resources|length == 1
+      and rabbitmq_result.resources[0].status is defined
+      and rabbitmq_result.resources[0].status.containerStatuses is defined
+      and rabbitmq_result.resources[0].status.containerStatuses|length == 1
+      and rabbitmq_result.resources[0].status.containerStatuses[0].ready
+    delay: 30
+    retries: "{{ (wait_timeout|int / 30)|int }}"
+
+  when: rabbitmq_state|string == 'present'

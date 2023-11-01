@@ -1,0 +1,10 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: rabbitmq-config
+  namespace: {{ infra_namespace }}
+data:
+  rabbitmq.conf: |
+    management.tcp.port = 15672
+    management.tcp.ip = 0.0.0.0

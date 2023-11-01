@@ -8,8 +8,9 @@ infra_state: present
 
 # Database (postgres) ---------------------------------------------------------
 
-# There is no 'state' variable here.
-# The database is _always_ deployed.
+# Deploy (or un-deploy)?
+# One of 'present' or 'absent'.
+pg_state: present
 
 # Skip PostgreSQL init config?
 # Set to 'no' if you intend to initialise or restore the users and databases yourself.
@@ -87,6 +88,32 @@ kc_cert_issuer: production
 # The password to assign to the admin user of our Keycloak server.
 kc_admin: admin
 kc_admin_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters') }}"
+
+# RabbitMQ --------------------------------------------------------------------
+
+# Deploy (or un-deploy)?
+# One of 'present' or 'absent'.
+#
+# During the infrastructure deployment stage keycloak database credentials
+# and a database will be setup in the infrastructure database regardless -
+# the Keycloak DB is (at the moment) part of the core database installation.
+rabbitmq_state: present
+
+# The hostname of the server that will host Keycloak,
+# devoid of the protocol (i.e. 'https://' assumed so just 'example.com').
+# If not set (blank) no ingress is created.
+rabbitmq_hostname: ""
+rabbitmq_hostname_path: ""
+# Kubernetes certificate issuer.
+# One of 'staging' or 'production' (rate-limited)
+rabbitmq_cert_issuer: production
+
+# The password to assign to the admin user of our Keycloak server.
+rabbitmq_user: admin
+rabbitmq_user_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters') }}"
+
+rabbitmq_vol_storageclass: " "
+rabbitmq_vol_size_g: 1
 
 # AWX -------------------------------------------------------------------------
 

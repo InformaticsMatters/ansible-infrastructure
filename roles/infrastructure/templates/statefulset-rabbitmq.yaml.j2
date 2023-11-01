@@ -1,0 +1,116 @@
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: rabbitmq
+  namespace: {{ infra_namespace }}
+spec:
+  selector:
+    matchLabels:
+      name: rabbitmq
+  template:
+    metadata:
+      name: rabbitmq
+      labels:
+        name: rabbitmq
+    spec:
+      serviceAccountName: {{ infra_namespace_service_account }}
+
+      # We must have a 'core' node
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: informaticsmatters.com/purpose-core
+                operator: Exists
+
+      securityContext:
+        fsGroup: 999
+        runAsUser: 999
+        runAsGroup: 999
+
+  {% if all_image_preset_pullsecret_name|string|length > 0 %}
+      imagePullSecrets:
+      - name: {{ all_image_preset_pullsecret_name }}
+  {% endif %}
+
+      containers:
+      - name: rabbitmq
+        image: {{ rabbitmq_registry }}{{ rabbitmq_image }}:{{ rabbitmq_version }}
+        imagePullPolicy: IfNotPresent
+        terminationMessagePolicy: FallbackToLogsOnError
+        env:
+        - name: RABBITMQ_NODENAME
+          value: rabbit@localhost
+        - name: RABBITMQ_DEFAULT_USER
+          valueFrom:
+            secretKeyRef:
+              name: im-rabbitmq
+              key: user
+        - name: RABBITMQ_DEFAULT_PASS
+          valueFrom:
+            secretKeyRef:
+              name: im-rabbitmq
+              key: password
+        - name: RABBITMQ_ERLANG_COOKIE
+          valueFrom:
+            secretKeyRef:
+              name: im-rabbitmq
+              key: erlang_cookie
+        ports:
+        - name: empd
+          containerPort: 4369
+        - name: ampq
+          containerPort: 5672
+        - name: http
+          containerPort: 15672
+        - name: erlang
+          containerPort: 25672
+        readinessProbe:
+          exec:
+            command:
+            - rabbitmq-diagnostics
+            - -q
+            - check_running
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 5
+        livenessProbe:
+          exec:
+            command:
+            - rabbitmq-diagnostics
+            - -q
+            - check_port_connectivity
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 5
+        volumeMounts:
+        - name: rabbitmq-config
+          mountPath: /etc/rabbitmq/rabbitmq.config
+          subPath: rabbitmq.config
+        - name: rabbitmq-data
+          mountPath: /var/lib/rabbitmq/mnesia
+        resources:
+          requests:
+            cpu: {{ rabbitmq_cpu_request }}
+            memory: {{ rabbitmq_mem_request }}
+{% if rabbitmq_cpu_limit or rabbitmq_mem_limit %}
+          limits:
+{% if rabbitmq_cpu_limit %}
+            cpu: {{ rabbitmq_cpu_limit }}
+{% endif %}
+{% if rabbitmq_mem_limit %}
+            memory: {{ rabbitmq_mem_limit }}
+{% endif %}
+{% endif %}
+
+      volumes:
+      - name: rabbitmq-config
+        configMap:
+          name: rabbitmq-config
+      - name: rabbitmq-data
+        persistentVolumeClaim:
+          claimName: rabbitmq-data
