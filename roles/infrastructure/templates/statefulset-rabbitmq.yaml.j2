@@ -53,11 +53,6 @@ spec:
             secretKeyRef:
               name: im-rabbitmq
               key: password
-        - name: RABBITMQ_ERLANG_COOKIE
-          valueFrom:
-            secretKeyRef:
-              name: im-rabbitmq
-              key: erlang_cookie
         ports:
         - name: empd
           containerPort: 4369

@@ -685,4 +685,11 @@
     delay: 30
     retries: "{{ (wait_timeout|int / 30)|int }}"
 
+  - name: Install RabbitMQ Ingress
+    k8s:
+      definition: "{{ lookup('template', 'ingress-rabbitmq.yaml.j2') }}"
+      wait: yes
+      wait_timeout: "{{ wait_timeout }}"
+    when: rabbitmq_hostname|string|length > 0
+
   when: rabbitmq_state|string == 'present'
