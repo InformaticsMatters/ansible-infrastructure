@@ -24,21 +24,5 @@ data:
         CREATE DATABASE {{ ax_database_fact }};
         GRANT ALL PRIVILEGES ON DATABASE {{ ax_database_fact }} TO {{ ax_user_fact }};
 {% endif%}
-{% if as_user_fact is defined %}
-        -- Configure a user and database for the Squonk2 Account Server
-        CREATE USER {{ as_user_fact }};
-        ALTER USER {{ as_user_fact }} WITH PASSWORD '{{ as_user_password_fact }}';
-        CREATE DATABASE {{ as_database_fact }};
-        GRANT ALL PRIVILEGES ON DATABASE {{ as_database_fact }} TO {{ as_user_fact }};
-{% endif %}
-{% if dm_user_fact is defined %}
-        -- Configure a user and database for the Squonk2 Data Manager
-        -- This user needs to be a SUPERUSER (as they rely on the RDKit cartridge)
-        CREATE USER {{ dm_user_fact }};
-        ALTER USER {{ dm_user_fact }} WITH PASSWORD '{{ dm_user_password_fact }}';
-        ALTER USER {{ dm_user_fact }} WITH SUPERUSER;
-        CREATE DATABASE {{ dm_database_fact }};
-        GRANT ALL PRIVILEGES ON DATABASE {{ dm_database_fact }} TO {{ dm_user_fact }};
-{% endif %}
     EOSQL
 {% endif %}
