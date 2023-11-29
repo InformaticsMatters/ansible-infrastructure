@@ -114,7 +114,7 @@ kc_mem_limit: 1Gi
 
 # The RabbitMQ image, version and image registry
 rabbitmq_image: rabbitmq
-rabbitmq_version: 3.12-management-alpine
+rabbitmq_version: 3.12.9-management-alpine
 rabbitmq_registry: ""
 
 rabbitmq_erlang_cookie: "{{ lookup('password', '/dev/null length=80 chars=ascii_letters') }}"
