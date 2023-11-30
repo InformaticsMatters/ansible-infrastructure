@@ -1,0 +1,23 @@
+---
+
+# A set of parameters for local deployment (Rancher Desktop and the like).
+# Here we assume you have setup /etc/hosts so that the following hostnames
+# resolve to the IP address of the host running the cluster:
+#
+#  - rabbitmq
+
+cm_state: absent
+ic_state: absent
+efs_state: absent
+cinder_state: absent
+ax_state: absent
+kc_state: absent
+
+pg_state: present
+pg_bu_state: absent
+pg_image: informaticsmatters/rdkit-cartridge-debian
+pg_version: Release_2022_09_5
+pg_vol_size_g: 1
+
+rabbitmq_state: present
+rabbitmq_hostname: rabbitmq
