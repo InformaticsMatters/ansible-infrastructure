@@ -6,6 +6,12 @@
 # the namespace, database, PSPs etc.
 infra_state: present
 
+# If set, use this kubernetes config, rather than K8S credentials.
+# You would set this if executing the playbooks locally, i.e. not from
+# and AWX server, where K8S_AUTH_HOST, K8S_AUTH_API_KEY environment
+# variables are set and used.
+k8s_kubeconfig: ''
+
 # Database (postgres) ---------------------------------------------------------
 
 # Deploy (or un-deploy)?

@@ -6,6 +6,8 @@
 #
 #  - rabbitmq
 
+k8s_kubeconfig: "{{ lookup('env', 'KUBECONFIG') }}"
+
 cm_state: absent
 ic_state: absent
 efs_state: absent
