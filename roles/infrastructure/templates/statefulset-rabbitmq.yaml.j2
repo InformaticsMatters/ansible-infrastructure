@@ -68,18 +68,18 @@ spec:
             - rabbitmq-diagnostics
             - -q
             - check_running
-          initialDelaySeconds: 30
-          periodSeconds: 30
+          initialDelaySeconds: 60
+          periodSeconds: 20
           timeoutSeconds: 10
-          failureThreshold: 5
+          failureThreshold: 10
         livenessProbe:
           exec:
             command:
             - rabbitmq-diagnostics
             - -q
             - check_port_connectivity
-          initialDelaySeconds: 60
-          periodSeconds: 30
+          initialDelaySeconds: 90
+          periodSeconds: 20
           timeoutSeconds: 10
           failureThreshold: 5
         volumeMounts:
