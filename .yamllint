@@ -38,8 +38,12 @@ ignore: |
   roles/infrastructure/templates/cronjob-postgres-backup-hourly.yaml.j2
   roles/infrastructure/templates/cronjob-postgres-backup-daily.yaml.j2
   roles/infrastructure/templates/cronjob-postgres-backup-weekly.yaml.j2
+  roles/infrastructure/templates/pvc-postgress.yaml.j2
+  roles/infrastructure/templates/pvc-postgress-backup.yaml.j2
+  roles/infrastructure/templates/pvc-rabbitmq.yaml.j2
   roles/infrastructure/templates/serviceaccount-im-infra.yaml.j2
   roles/infrastructure/templates/statefulset-keycloak.yaml.j2
   roles/infrastructure/templates/statefulset-postgres.yaml.j2
+  roles/infrastructure/templates/statefulset-rabbitmq.yaml.j2
   roles/infrastructure/templates/ingress-keycloak.yaml.j2
   provisioning/ingress-controller/ingress-nginx-2.9.1.yaml
