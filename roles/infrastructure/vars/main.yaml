@@ -17,6 +17,9 @@ cert_issuer_set:
 - staging
 - production
 
+# What's the IngressController Class?
+ingress_class: nginx
+
 # Postgres --------------------------------------------------------------------
 
 # The infrastructure database version.

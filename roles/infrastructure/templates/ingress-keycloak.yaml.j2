@@ -6,7 +6,8 @@ metadata:
   namespace: {{ infra_namespace }}
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-nginx-{{ kc_cert_issuer|lower }}"
-    kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/ingress.class: "{{ ingress_class }}"
+{% if ingress_class == 'nginx' %}
 {#
     # Proxy buffering - required while developing authentication for
     # the Mini-Apps Data Tier. Without this, authentication with the
@@ -20,6 +21,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-buffers-number: '4'
     nginx.ingress.kubernetes.io/proxy-buffer-size: '128k'
     nginx.ingress.kubernetes.io/proxy-busy-buffer-size: '256k'
+{% endif %}
 spec:
   tls:
   - hosts:
