@@ -18,8 +18,10 @@ kc_state: absent
 pg_state: present
 pg_bu_state: absent
 pg_image: informaticsmatters/rdkit-cartridge-debian
-pg_version: Release_2022_09_5
+pg_version: Release_2023_03_3
 pg_vol_size_g: 1
+pg_cpu_request: 100m
+pg_mem_request: 250Mi
 
 rabbitmq_state: present
 rabbitmq_hostname: rabbitmq

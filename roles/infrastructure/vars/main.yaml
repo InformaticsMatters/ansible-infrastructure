@@ -32,10 +32,12 @@ pg_user_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letter
 pg_database: postgres
 
 # CPU and Memory requests and limits
+# 1GB memory request/limit is more than enough,
+# with shared buffers about 40% of that
 pg_cpu_request: 100m
 pg_cpu_limit: 1000m
 pg_mem_request: 1Gi
-pg_mem_limit: 2Gi
+pg_mem_limit: 1Gi
 
 # Backup ----------------------------------------------------------------------
 
