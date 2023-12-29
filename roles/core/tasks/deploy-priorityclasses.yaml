@@ -4,6 +4,6 @@
 # PriorityClass definitions.
 
 - name: Install PriorityClasses
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'pc-im.yaml.j2') }}"
     wait: yes

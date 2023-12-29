@@ -1,6 +1,6 @@
 ---
 
-- include_tasks: deploy.yaml
+- ansible.builtin.include_tasks: deploy.yaml
   when: core_state|string == 'present'
-- include_tasks: undeploy.yaml
+- ansible.builtin.include_tasks: undeploy.yaml
   when: core_state|string == 'absent'

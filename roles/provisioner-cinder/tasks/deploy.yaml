@@ -1,17 +1,17 @@
 ---
 
 - name: Check cloud config
-  assert:
+  ansible.builtin.assert:
     that:
     - cinder_cloud_config|string|length > 0
     - cinder_cloud_config|string != 'SetMe'
 
 - name: Debug
-  debug:
+  ansible.builtin.debug:
     msg: Hello
 
 - name: Create cinder objects (templates)
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
@@ -20,7 +20,7 @@
   - csi-secret-cinderplugin
 
 - name: Create cinder objects (files)
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('file', '{{ item }}.yaml') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
@@ -33,7 +33,7 @@
   - cinder-csi-nodeplugin
 
 - name: Create StorageClass
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'storageclass.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"

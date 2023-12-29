@@ -3,7 +3,7 @@
 # This set of tasks, used by `site_undeploy-priorityclasses.yaml`.
 
 - name: Remove PriorityClasses
-  k8s:
+  kubernetes.core.k8s:
     state: absent
     definition: "{{ lookup('template', 'pc-im.yaml.j2') }}"
     wait: yes

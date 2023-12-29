@@ -2,5 +2,5 @@
 
 - hosts: localhost
   tasks:
-  - include_role:
+  - ansible.builtin.include_role:
       name: infrastructure

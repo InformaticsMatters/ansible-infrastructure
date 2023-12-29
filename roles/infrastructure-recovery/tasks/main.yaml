@@ -5,14 +5,14 @@
 # do not run during the recovery process.
 
 - name: Remove any existing recovery Job
-  k8s:
+  kubernetes.core.k8s:
     state: absent
     definition: "{{ lookup('template', 'job-postgres-recovery.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ recovery_timeout }}"
 
 - name: Launch new recovery Job
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'job-postgres-recovery.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ recovery_timeout }}"
@@ -32,12 +32,12 @@
     register: result
     until: result.resources[0].status.completionTime is defined
     delay: 20
-    retries: "{{ (recovery_timeout|int / 20)|int }}"
+    retries: "{{ (recovery_timeout | int / 20) | int }}"
 
   - name: Assert success
-    assert:
+    ansible.builtin.assert:
       that:
       - result.resources[0].status.succeeded is defined
       - result.resources[0].status.succeeded == 1
 
-  when: recovery_wait_for_success|bool
+  when: recovery_wait_for_success | bool

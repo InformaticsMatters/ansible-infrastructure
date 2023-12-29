@@ -3,7 +3,7 @@
 # Check we're able to continue...
 
 - name: Pre-flight checks
-  assert:
+  ansible.builtin.assert:
     that:
     - aws_access_key|string|length > 0
     - awx_secret_key|string|length > 0
@@ -11,7 +11,7 @@
 
 # Go...
 
-- include_tasks: deploy.yaml
+- ansible.builtin.include_tasks: deploy.yaml
   when: efs_state|string == 'present'
-- include_tasks: undeploy.yaml
+- ansible.builtin.include_tasks: undeploy.yaml
   when: efs_state|string == 'absent'

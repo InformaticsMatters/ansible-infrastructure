@@ -4,7 +4,7 @@
 
 # Expose ansible version
 - name: Display Ansible
-  debug:
+  ansible.builtin.debug:
     var: ansible_version.full
 
 # Basic pre-playbook prerequisites.
@@ -19,7 +19,7 @@
 # Install required Ansible Galaxy modules
 
 - name: Install Ansible Galaxy modules
-  command: ansible-galaxy install -r infrastructure-realm-requirements.yaml
+  ansible.builtin.command: ansible-galaxy install -r infrastructure-realm-requirements.yaml
   register: ag_result
   changed_when: "'downloading role' in ag_result.stdout"
 
@@ -34,6 +34,6 @@
 # from the 'login.yaml' play.
 
 - name: Set initial authentication facts
-  set_fact:
+  ansible.builtin.set_fact:
     k8s_auth_host: "{{ lookup('env', 'K8S_AUTH_HOST') }}"
     k8s_auth_api_key: "{{ lookup('env', 'K8S_AUTH_API_KEY') }}"

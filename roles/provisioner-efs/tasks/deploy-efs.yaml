@@ -17,17 +17,17 @@
   register: ec2_result
 
 - name: Check EC2 result
-  assert:
+  ansible.builtin.assert:
     that: ec2_result.instances|length == 1
 
 - name: Set EC2 facts
-  set_fact:
+  ansible.builtin.set_fact:
     cluster_vpc_id: "{{ ec2_result.instances[0].vpc_id }}"
     cluster_security_group: "{{ ec2_result.instances[0].security_groups[0].group_id }}"
     cluster_subnet_id: "{{ ec2_result.instances[0].subnet_id }}"
 
 - name: Display EC2 facts
-  debug:
+  ansible.builtin.debug:
     msg: vpc_id={{ cluster_vpc_id }} security_group={{ cluster_security_group }} subnet_id={{ cluster_subnet_id }}
 
 # Now get the VPC subnets,
@@ -40,11 +40,11 @@
   register: vpc_subnet_info
 
 - name: Set VPC subnet fact
-  set_fact:
-    vpc_subnet_ids: "{{ vpc_subnet_info.subnets|map(attribute='id')|list }}"
+  ansible.builtin.set_fact:
+    vpc_subnet_ids: "{{ vpc_subnet_info.subnets | map(attribute='id') | list }}"
 
 - name: Dislay VPC subnets
-  debug:
+  ansible.builtin.debug:
     var: vpc_subnet_ids
 
 # As EFS is essentially an NFS mechanism the security group
@@ -57,9 +57,9 @@
   register: sg_result
 
 - name: Get Security Group content ({{ cluster_security_group }})
-  set_fact:
-    sg_name: "{{ sg_result|json_query(n_query)|first }}"
-    sg_description: "{{ sg_result|json_query(d_query)|first }}"
+  ansible.builtin.set_fact:
+    sg_name: "{{ sg_result | json_query(n_query) | first }}"
+    sg_description: "{{ sg_result | json_query(d_query) | first }}"
   vars:
     n_query: "security_groups[?group_id=='{{ cluster_security_group }}'].group_name"
     d_query: "security_groups[?group_id=='{{ cluster_security_group }}'].description"
@@ -88,14 +88,14 @@
 # we can create an EFS 'target' (for each subnet in the VPC).
 
 - name: Create EFS targets
-  set_fact:
+  ansible.builtin.set_fact:
     efs_targets: >-
-      {{ efs_targets|default([])
+      {{ efs_targets | default([])
       + [{'subnet_id': item, 'security_groups': [cluster_security_group]}] }}
   loop: "{{ vpc_subnet_ids }}"
 
 - name: Display EFS targets
-  debug:
+  ansible.builtin.debug:
     var: efs_targets
 
 - name: Create EFS ({{ cluster_region }}/{{ efs_backing_volume_name }})

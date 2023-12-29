@@ -3,13 +3,13 @@
 # Deleting the namespace deletes a lot of stuff for us...
 
 - name: Deleting namespace '{{ nfs_namespace }}'
-  k8s:
+  kubernetes.core.k8s:
     state: absent
     definition: "{{ lookup('template', 'namespace.yaml.j2') }}"
     wait: yes
 
 - name: Delete NFS objects
-  k8s:
+  kubernetes.core.k8s:
     state: absent
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes

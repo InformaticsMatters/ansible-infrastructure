@@ -1,11 +1,11 @@
 ---
 
-- include_tasks: prep.yaml
+- ansible.builtin.include_tasks: prep.yaml
 
 # If it looks like we're deploying to OpenShift
 # we need to use the k8s authentication module to login
 # and obtain an API key.
-- include_tasks: login.yaml
+- ansible.builtin.include_tasks: login.yaml
   when: okd_master_hostname is defined
 
 # A kubernetes (or OpenShift) host and an API key must be set.
@@ -15,7 +15,7 @@
 # Either way the ansible variables 'k8s_auth_host' and
 # 'k8s_auth_api_key' will have been set.
 - name: Assert authentication
-  assert:
+  ansible.builtin.assert:
     that:
     - k8s_auth_host|length > 0
     - k8s_auth_api_key|length > 0
@@ -24,9 +24,9 @@
 
 - block:
 
-  - include_tasks: deploy.yaml
+  - ansible.builtin.include_tasks: deploy.yaml
     when: ir_state|string == 'present'
-  - include_tasks: undeploy.yaml
+  - ansible.builtin.include_tasks: undeploy.yaml
     when: ir_state|string == 'absent'
 
   module_defaults:
@@ -36,5 +36,5 @@
 
 # If it looks like we're deploying to OpenShift
 # we now need to logout...
-- include_tasks: logout.yaml
+- ansible.builtin.include_tasks: logout.yaml
   when: okd_master_hostname is defined

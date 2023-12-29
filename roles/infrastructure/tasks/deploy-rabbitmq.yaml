@@ -6,23 +6,24 @@
 # Namespace and basic material ------------------------------------------------
 
 - name: Get namespace ({{ infra_namespace }})
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: Namespace
     api_version: v1
     name: "{{ infra_namespace }}"
   register: n_result
 
 - name: Assert namespace exists
-  assert:
-    that: n_result.resources|length == 1
+  ansible.builtin.assert:
+    that: n_result.resources | length == 1
 
 # Secrets (RabbitMQ) ----------------------------------------------------------
 
 - name: Create RabbitMQ Secret
+  when: rabbitmq_state|string == 'present'
   block:
 
   - name: Check RabbitMQ secrets
-    k8s_info:
+    kubernetes.core.k8s_info:
       kind: Secret
       api_version: v1
       namespace: "{{ infra_namespace }}"
@@ -30,26 +31,24 @@
     register: rmq_s_result
 
   - name: Set RabbitMQ secret facts
-    set_fact:
+    ansible.builtin.set_fact:
       rabbitmq_user_fact: "{{ rabbitmq_user }}"
       rabbitmq_user_password_fact: "{{ rabbitmq_user_password }}"
       rabbitmq_erlang_cookie_fact: "{{ rabbitmq_erlang_cookie }}"
-    when: rmq_s_result.resources|length == 0
+    when: rmq_s_result.resources | length == 0
 
   - name: Set RabbitMQ secret facts (pre-deployed secrets)
-    set_fact:
-      rabbitmq_user_fact: "{{ rmq_s_result.resources[0].user|b64decode }}"
-      rabbitmq_user_password_fact: "{{ rmq_s_result.resources[0].data.password|b64decode }}"
-      rabbitmq_database_fact: "{{ rmq_s_result.resources[0].erlang_cookie|b64decode }}"
-    when: rmq_s_result.resources|length == 1
+    ansible.builtin.set_fact:
+      rabbitmq_user_fact: "{{ rmq_s_result.resources[0].user | b64decode }}"
+      rabbitmq_user_password_fact: "{{ rmq_s_result.resources[0].data.password | b64decode }}"
+      rabbitmq_database_fact: "{{ rmq_s_result.resources[0].erlang_cookie | b64decode }}"
+    when: rmq_s_result.resources | length == 1
 
   - name: Write RabbitMQ secrets
-    k8s:
+    kubernetes.core.k8s:
       definition: "{{ lookup('template', 'secret-rabbitmq.yaml.j2') }}"
       wait: yes
-    when: rmq_s_result.resources|length == 0
-
-  when: rabbitmq_state|string == 'present'
+    when: rmq_s_result.resources | length == 0
 
 # RabbitMQ --------------------------------------------------------------------
 
@@ -57,7 +56,7 @@
   block:
 
   - name: RabbitMQ assertions
-    assert:
+    ansible.builtin.assert:
       that:
       - kc_cert_issuer in cert_issuer_set
 
@@ -69,13 +68,13 @@
     when: rabbitmq_vol_storageclass != " "
 
   - name: Assert {{ pg_vol_storageclass }} StorageClass
-    assert:
-      that: sc_result.resources|length == 1
+    ansible.builtin.assert:
+      that: sc_result.resources | length == 1
       fail_msg: The {{ rabbitmq_vol_storageclass }} StorageClass must be available on the cluster
     when: rabbitmq_vol_storageclass != " "
 
   - name: Create RabbitMQ volume claim ({{ rabbitmq_vol_storageclass }})
-    k8s:
+    kubernetes.core.k8s:
       definition: "{{ lookup('template', 'pvc-rabbitmq.yaml.j2') }}"
       wait: yes
       wait_timeout: "{{ wait_timeout }}"
@@ -90,16 +89,16 @@
       namespace: "{{ infra_namespace }}"
     register: rabbitmq_pvc_result
     until: >-
-      rabbitmq_pvc_result.resources|length > 0
+      rabbitmq_pvc_result.resources | length > 0
       and rabbitmq_pvc_result.resources[0].status is defined
       and rabbitmq_pvc_result.resources[0].status.phase is defined
       and rabbitmq_pvc_result.resources[0].status.phase == 'Bound'
     delay: 5
-    retries: "{{ (bind_timeout|int / 5)|int }}"
-    when: wait_for_bind|bool
+    retries: "{{ (bind_timeout | int / 5) | int }}"
+    when: wait_for_bind | bool
 
   - name: RabbitMQ
-    k8s:
+    kubernetes.core.k8s:
       definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
       wait: yes
       wait_timeout: "{{ wait_timeout }}"
@@ -115,19 +114,19 @@
       namespace: "{{ infra_namespace }}"
     register: rabbitmq_result
     until: >-
-      rabbitmq_result.resources|length == 1
+      rabbitmq_result.resources | length == 1
       and rabbitmq_result.resources[0].status is defined
       and rabbitmq_result.resources[0].status.containerStatuses is defined
-      and rabbitmq_result.resources[0].status.containerStatuses|length == 1
+      and rabbitmq_result.resources[0].status.containerStatuses | length == 1
       and rabbitmq_result.resources[0].status.containerStatuses[0].ready
     delay: 30
-    retries: "{{ (wait_timeout|int / 30)|int }}"
+    retries: "{{ (wait_timeout | int / 30) | int }}"
 
   - name: Install RabbitMQ Ingress
-    k8s:
+    kubernetes.core.k8s:
       definition: "{{ lookup('template', 'ingress-rabbitmq.yaml.j2') }}"
       wait: yes
       wait_timeout: "{{ wait_timeout }}"
-    when: rabbitmq_hostname|string|length > 0
+    when: rabbitmq_hostname | string | length > 0
 
-  when: rabbitmq_state|string == 'present'
+  when: rabbitmq_state | string == 'present'

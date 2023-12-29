@@ -3,7 +3,7 @@
 # Deleting the namespace deletes a lot of stuff for us...
 
 - name: Deleting namespace '{{ efs_namespace }}'
-  k8s:
+  kubernetes.core.k8s:
     state: absent
     definition: "{{ lookup('template', 'namespace.yaml.j2') }}"
     wait: yes
@@ -17,15 +17,15 @@
   register: cluster_result
 
 - name: Check node result
-  assert:
+  ansible.builtin.assert:
     that: cluster_result.resources|length > 0
 
 - name: Get cluster Region (from first node)
-  set_fact:
+  ansible.builtin.set_fact:
     cluster_region: "{{ cluster_result.resources[0].metadata.labels['failure-domain.beta.kubernetes.io/region'] }}"
 
 - name: Delete EFS objects
-  k8s:
+  kubernetes.core.k8s:
     state: absent
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes

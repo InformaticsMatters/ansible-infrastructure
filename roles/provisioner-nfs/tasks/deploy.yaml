@@ -1,7 +1,7 @@
 ---
 
 - name: Pre-flight checks
-  assert:
+  ansible.builtin.assert:
     that:
     - nfs_server_address|string|length > 0
     - nfs_server_address|string != 'SetMe'
@@ -9,13 +9,13 @@
     - nfs_dynamic_export|string != 'SetMe'
 
 - name: Display key NFS facts
-  debug:
+  ansible.builtin.debug:
     msg: server_address={{ nfs_server_address }} dynamic_export={{ nfs_dynamic_export }}
 
 # Install an NFS provisioner and create a StorageClass
 
 - name: Deploy namespace
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
@@ -23,7 +23,7 @@
   - namespace
 
 - name: Create DockerHub image pull secret
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'secret-dh-imagepull.yaml.j2') }}"
     wait: yes
   vars:
@@ -32,7 +32,7 @@
   when: infra_dockerhub_pullsecret|string|length > 0
 
 - name: Deploy
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"

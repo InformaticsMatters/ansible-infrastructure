@@ -8,4 +8,3 @@
   - {role: provisioner-cinder, cinder_state: absent}
   - {role: core, core_state: absent}
   - {role: informaticsmatters.cert_manager, cm_state: absent}
-  - {role: ingress-controller, ic_state: absent}

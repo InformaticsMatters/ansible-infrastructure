@@ -1,10 +1,10 @@
 ---
 
 - name: Pre-flight check
-  assert:
+  ansible.builtin.assert:
     that:
-    - ir_realm|string != 'SetMe'
-    - ir_realm|string is match('[-a-z]')
+    - ir_realm | string != 'SetMe'
+    - ir_realm | string is match('[-a-z]')
 
 # Get (or set) the Realm Manager's secrets.
 # The infrastructure namespace must exist...
@@ -16,8 +16,8 @@
   register: n_result
 
 - name: Check namespace
-  assert:
-    that: n_result.resources|length == 1
+  ansible.builtin.assert:
+    that: n_result.resources | length == 1
 
 - name: Get realm manager secrets (manager-{{ ir_realm }})
   kubernetes.core.k8s_info:
@@ -26,43 +26,41 @@
     namespace: "{{ ir_namespace }}"
   register: krm_s_result
 
-- block:
+- when: krm_s_result.resources | length > 0
+  block:
 
   # Extract Realm manager details from pre-deployed secrets...
 
   - name: Set Keycloak realm manager facts (from secrets)
-    set_fact:
-      ir_realm_manager_fact: "{{ krm_s_result.resources[0].data.username|b64decode }}"
-      ir_realm_manager_password_fact: "{{ krm_s_result.resources[0].data.password|b64decode }}"
+    ansible.builtin.set_fact:
+      ir_realm_manager_fact: "{{ krm_s_result.resources[0].data.username | b64decode }}"
+      ir_realm_manager_password_fact: "{{ krm_s_result.resources[0].data.password | b64decode }}"
 
-  when: krm_s_result.resources|length > 0
-
-- block:
+- when: krm_s_result.resources | length == 0
+  block:
 
   # No pre-deployed secrets
   # Set facts from variables and deploy.
 
   - name: Set realm manager facts (from variables)
-    set_fact:
+    ansible.builtin.set_fact:
       ir_realm_manager_fact: "{{ ir_realm_manager }}"
       ir_realm_manager_password_fact: "{{ ir_realm_manager_password }}"
 
   - name: Deploy realm manager secret
-    k8s:
+    kubernetes.core.k8s:
       definition: "{{ lookup('template', 'secret.yaml.j2') }}"
       wait: yes
-
-  when: krm_s_result.resources|length == 0
 
 # Create the Realm and a set of Roles
 
 - name: Create realm ({{ ir_realm }})
-  include_role:
+  ansible.builtin.include_role:
     name: informaticsmatters.infrastructure_user
   vars:
     iu_action: create
     iu_type: realm
-    iu_hostname: "{{ keycloak_server_url|urlsplit('hostname') }}{{ keycloak_server_url_path }}"
+    iu_hostname: "{{ keycloak_server_url | urlsplit('hostname') }}{{ keycloak_server_url_path }}"
     iu_namespace: "{{ ir_namespace }}"
     iu_realm: "{{ ir_realm }}"
     iu_realm_manager: "{{ ir_realm_manager_fact }}"
@@ -71,12 +69,12 @@
     iu_admin_password: "{{ keycloak_admin_password }}"
 
 - name: Create realm roles
-  include_role:
+  ansible.builtin.include_role:
     name: informaticsmatters.infrastructure_user
   vars:
     iu_action: create
     iu_type: role
-    iu_hostname: "{{ keycloak_server_url|urlsplit('hostname') }}{{ keycloak_server_url_path }}"
+    iu_hostname: "{{ keycloak_server_url | urlsplit('hostname') }}{{ keycloak_server_url_path }}"
     iu_realm: "{{ ir_realm }}"
     iu_realm_manager: "{{ ir_realm_manager_fact }}"
     iu_realm_manager_password: "{{ ir_realm_manager_password_fact }}"

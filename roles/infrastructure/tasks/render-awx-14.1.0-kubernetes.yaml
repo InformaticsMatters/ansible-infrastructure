@@ -12,121 +12,120 @@
 # Manipulate the AWX clone's inventory file...
 
 - name: Set inventory kubernetes_context
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ inventory_file }}"
     regexp: "^kubernetes_context="
     line: kubernetes_context={{ ax_kubernetes_context }}
 
 - name: Set inventory kubernetes_namespace
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ inventory_file }}"
     regexp: "^kubernetes_namespace="
     line: kubernetes_namespace={{ infra_namespace }}
 
 - name: Set inventory admin_user
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ inventory_file }}"
     regexp: "^admin_user="
     line: admin_user={{ ax_admin_fact }}
 
 - name: Set inventory admin_password
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ inventory_file }}"
     regexp: "^admin_password="
     line: admin_password={{ ax_admin_password_fact }}
 
 - name: Set inventory pg_hostname
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ inventory_file }}"
     regexp: "^pg_hostname="
     line: pg_hostname=database
 
 - name: Set inventory pg_username
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ inventory_file }}"
     regexp: "^pg_username="
     line: pg_username={{ ax_user_fact }}
 
 - name: Set inventory pg_password
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ inventory_file }}"
     regexp: "^pg_password="
     line: pg_password={{ ax_user_password_fact }}
 
 - name: Set inventory pg_database
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ inventory_file }}"
     regexp: "^pg_database="
     line: pg_database={{ ax_database_fact }}
 
 - name: Configure AWX ingress
+  when:
+  - ax_hostname is defined
+  - ax_hostname|string|length > 0
+  - ax_hostname|string != 'SetMe'
   block:
 
   - name: Set inventory kubernetes_ingress_hostname
-    lineinfile:
+    ansible.builtin.lineinfile:
       path: "{{ inventory_file }}"
       regexp: "^kubernetes_ingress_hostname="
       line: kubernetes_ingress_hostname={{ ax_hostname }}
 
   - name: Set inventory kubernetes_ingress_tls_secret
-    lineinfile:
+    ansible.builtin.lineinfile:
       path: "{{ inventory_file }}"
       regexp: "^kubernetes_ingress_tls_secret="
       line: kubernetes_ingress_tls_secret=im-awx-tls
 
   - name: Set inventory kubernetes_ingress_annotations (nginx)
-    lineinfile:
+    ansible.builtin.lineinfile:
       path: "{{ inventory_file }}"
       regexp: "^kubernetes_ingress_annotations="
       line: kubernetes_ingress_annotations={ {{ antn_target }}, {{ antn_class }}, {{ antn_issuer }} }
     vars:
       antn_target: "'ingress.kubernetes.io/rewrite-target': '/'"
       antn_class: "'kubernetes.io/ingress.class': 'nginx'"
-      antn_issuer: "'cert-manager.io/cluster-issuer': 'letsencrypt-nginx-{{ ax_cert_issuer|lower }}'"
-
-  when:
-  - ax_hostname is defined
-  - ax_hostname|string|length > 0
-  - ax_hostname|string != 'SetMe'
+      antn_issuer: "'cert-manager.io/cluster-issuer': 'letsencrypt-nginx-{{ ax_cert_issuer | lower }}'"
 
 - name: Set task cpu request
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ inventory_file }}"
     regexp: "^task_cpu_request="
     line: task_cpu_request={{ ax_task_cpu_request }}
 
 - name: Set redis cpu request
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ inventory_file }}"
     regexp: "^redis_cpu_request="
     line: redis_cpu_request={{ ax_redis_cpu_request }}
 
 - name: Set web cpu request
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ inventory_file }}"
     regexp: "^web_cpu_request="
     line: web_cpu_request={{ ax_web_cpu_request }}
 
 - name: Set task cpu limit
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ inventory_file }}"
     regexp: "^task_cpu_limit="
     line: task_cpu_limit={{ ax_task_cpu_limit }}
 
 - name: Set redis cpu limit
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ inventory_file }}"
     regexp: "^redis_cpu_limit="
     line: redis_cpu_limit={{ ax_redis_cpu_limit }}
 
 - name: Set web cpu limit
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ inventory_file }}"
     regexp: "^web_cpu_limit="
     line: web_cpu_limit={{ ax_web_cpu_limit }}
 
 - name: Remove inventory create_preload_data
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ inventory_file }}"
     regexp: "^create_preload_data="
     line: create_preload_data=False

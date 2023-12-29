@@ -7,18 +7,18 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.11.*"
-ansible = "9.0.1"
-kubernetes = "23.6.0"
-jmespath = "1.0.1"
+ansible = "^9.0.0"
+kubernetes = "^23.6.0"
+jmespath = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
-ansible-lint = "6.*"
-pre-commit = "3.5.*"
-yamllint = "1.*"
+ansible-lint = { version = "^6.22.0", markers = "platform_system != 'Windows'" }
+pre-commit = "^3.5.0"
+yamllint = "^1.33.0"
 
 [tool.poetry.group.doc.dependencies]
-sphinx = "5.*"
-sphinx_rtd_theme = "1.*"
+sphinx = "^7.2.0"
+sphinx_rtd_theme = "^2.0.0"
 
 [build-system]
 requires = ["poetry-core"]

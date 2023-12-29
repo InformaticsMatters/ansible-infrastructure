@@ -25,11 +25,11 @@
 #        }
 #      ]
 - name: Get list of devices mounted
-  set_fact:
-    mounted_devices: "{{ ansible_mounts|json_query('[*].device')|flatten }}"
+  ansible.builtin.set_fact:
+    mounted_devices: "{{ ansible_mounts | json_query('[*].device') | flatten }}"
 
 - name: Display mounts
-  debug:
+  ansible.builtin.debug:
     var: mounted_devices
 
 - name: Create NFS volume mount paths

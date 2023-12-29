@@ -1,6 +1,6 @@
 ---
 - hosts: control
   tasks:
-  - include_role:
+  - ansible.builtin.include_role:
       name: core
       tasks_from: undeploy-priorityclasses.yaml

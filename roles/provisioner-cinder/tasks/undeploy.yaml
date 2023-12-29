@@ -1,7 +1,7 @@
 ---
 
 - name: Create cinder objects (files)
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('file', '{{ item }}.yaml') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
@@ -14,7 +14,7 @@
   - cinder-csi-nodeplugin
 
 - name: Delete Cinder objects (templates)
-  k8s:
+  kubernetes.core.k8s:
     state: absent
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes
