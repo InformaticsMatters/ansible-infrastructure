@@ -9,7 +9,6 @@
 # Cert-Manager installation ---------------------------------------------------
 # For dynamic (let's-encrypt) certificate generation.
 
-cm_state: present
 cm_letsencrypt_email: SetMe (if present)
 
 # EFS installation ------------------------------------------------------------

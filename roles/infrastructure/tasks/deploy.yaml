@@ -49,7 +49,6 @@
   kubernetes.core.k8s:
     definition: "{{ lookup('template', 'rolebinding-default-sa.yaml.j2') }}"
     wait: yes
-  when: cm_state | string == 'present'
 
 # Secrets (optional S3 secrets) -----------------------------------------------
 

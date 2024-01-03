@@ -10,7 +10,6 @@ k8s_kubeconfig: "{{ lookup('env', 'KUBECONFIG') }}"
 
 ingress_class: "{{ lookup('env', 'IM_DEV_INGRESS_CLASS') | default('nginx', True)}}"
 
-cm_state: absent
 ic_state: absent
 efs_state: absent
 cinder_state: absent
