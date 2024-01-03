@@ -194,24 +194,18 @@
     register: kc_s_result
 
   - name: Set Keycloak secret facts
-    ansible.builtin.set_fact:
-      kc_user_fact: "{{ kc_user }}"
-      kc_user_password_fact: "{{ kc_user_password }}"
-      kc_database_fact: "{{ kc_database }}"
+    set_fact:
+      kc_db_password_fact: "{{ kc_db_password }}"
       kc_hostname_fact: "{{ kc_hostname }}"
-      kc_admin_fact: "{{ kc_admin }}"
       kc_admin_password_fact: "{{ kc_admin_password }}"
     when: kc_s_result.resources | length == 0
 
   - name: Set Keycloak secret facts (pre-deployed secrets)
-    ansible.builtin.set_fact:
-      kc_user_fact: "{{ kc_s_result.resources[0].data.database_user | b64decode }}"
-      kc_user_password_fact: "{{ kc_s_result.resources[0].data.database_user_password | b64decode }}"
-      kc_database_fact: "{{ kc_s_result.resources[0].data.database_name | b64decode }}"
-      kc_hostname_fact: "{{ kc_s_result.resources[0].data.keycloak_hostname | b64decode }}"
-      kc_admin_fact: "{{ kc_s_result.resources[0].data.keycloak_admin_user | b64decode }}"
-      kc_admin_password_fact: "{{ kc_s_result.resources[0].data.keycloak_admin_user_password | b64decode }}"
-    when: kc_s_result.resources | length == 1
+    set_fact:
+      kc_db_password_fact: "{{ kc_s_result.resources[0].data.database_user_password|b64decode }}"
+      kc_hostname_fact: "{{ kc_s_result.resources[0].data.keycloak_hostname|b64decode }}"
+      kc_admin_password_fact: "{{ kc_s_result.resources[0].data.keycloak_admin_user_password|b64decode }}"
+    when: kc_s_result.resources|length == 1
 
   - name: Write Keycloak secrets
     kubernetes.core.k8s:
@@ -221,7 +215,7 @@
 
   - name: Display Keycloak database password
     ansible.builtin.debug:
-      var: kc_user_password_fact
+      var: kc_db_password_fact
 
   - name: Display Keycloak admin password
     ansible.builtin.debug:

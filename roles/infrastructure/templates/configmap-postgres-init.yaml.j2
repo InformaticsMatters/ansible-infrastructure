@@ -10,14 +10,14 @@ data:
     set -e
 {% if pg_create_users_and_databases %}
     psql -v ON_ERROR_STOP=1 --username "{{ pg_user_fact }}" --dbname "{{ pg_database_fact }}" <<-EOSQL
-{% if kc_user_fact is defined %}
-    -- Configure a user and database for Keycloak
-        CREATE USER {{ kc_user_fact }};
-        ALTER USER {{ kc_user_fact }} WITH PASSWORD '{{ kc_user_password_fact }}';
-        CREATE DATABASE {{ kc_database_fact }};
-        GRANT ALL PRIVILEGES ON DATABASE {{ kc_database_fact }} TO {{ kc_user_fact }};
+{% if kc_db_password_fact is defined %}
+        -- Configure a user and database for Keycloak
+        CREATE USER keycloak;
+        ALTER USER keycloak WITH PASSWORD '{{ kc_db_password_fact }}';
+        CREATE DATABASE keycloak;
+        GRANT ALL PRIVILEGES ON DATABASE keycloak TO keycloak;
 {% endif%}
-{% if ax_user_fact is defined %}
+{% if ax_userax_user_password_fact_fact is defined %}
         -- Configure a user and database for AWX
         CREATE USER {{ ax_user_fact }};
         ALTER USER {{ ax_user_fact }} WITH PASSWORD '{{ ax_user_password_fact }}';

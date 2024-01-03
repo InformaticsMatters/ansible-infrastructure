@@ -100,14 +100,12 @@ ax_database: awx
 # Keycloak --------------------------------------------------------------------
 
 # The Keycloak image version and image registry
-kc_version: '10.0.2'
+kc_version: '23.0.3'
+kc_image: informaticsmatters/keycloak
 kc_image_registry: docker.io
 
 # Keycloak database credentials.
-# This is _not_ the keycloak console admin user.
-kc_user: keycloak
-kc_user_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_letters') }}"
-kc_database: keycloak
+kc_db_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_letters') }}"
 
 # CPU and Memory requests and limits
 kc_cpu_request: 250m

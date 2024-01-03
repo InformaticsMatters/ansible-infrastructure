@@ -35,7 +35,7 @@ spec:
 
       containers:
       - name: keycloak
-        image: {{ kc_image_registry }}/jboss/keycloak:{{ kc_version }}
+        image: {{ kc_image_registry }}/{{ kc_image }}:{{ kc_version }}
         imagePullPolicy: IfNotPresent
         terminationMessagePolicy: FallbackToLogsOnError
         ports:
@@ -72,19 +72,7 @@ spec:
             path: /auth/
             port: http
         env:
-        - name: KEYCLOAK_USER
-          value: {{ kc_admin_fact }}
-        - name: KEYCLOAK_PASSWORD
+        - name: KEYCLOAK_ADMIN_PASSWORD
           value: {{ kc_admin_password_fact }}
-        - name: DB_VENDOR
-          value: postgres
-        - name: DB_ADDR
-          value: database
-        - name: DB_DATABASE
-          value: {{ kc_database_fact }}
-        - name: DB_USER
-          value: {{ kc_user_fact }}
-        - name: DB_PASSWORD
-          value: {{ kc_user_password_fact }}
-        - name: PROXY_ADDRESS_FORWARDING
-          value: 'true'
+        - name: KC_DB_PASSWORD
+          value: {{ kc_db_password_fact }}

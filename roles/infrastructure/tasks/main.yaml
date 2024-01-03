@@ -3,18 +3,31 @@
 - name: Prep
   include_tasks: prep.yaml
 
-# A kubernetes (or OpenShift) host and an API key must be set.
-# We will either have authenticated against an OpenShift server
-# or the AWX kubernetes credentials will have injected suitable
-# values for the K8S_AUTH_HOST and K8S_AUTH_API_KEY environment variables.
-# Either way the ansible variables 'k8s_auth_host' and
-# 'k8s_auth_api_key' will have been set.
-- name: Assert authentication
+- name: Display k8s_auth_host
+  ansible.builtin.debug:
+    var: k8s_auth_host
+
+- name: Display k8s_auth_api_key
+  ansible.builtin.debug:
+    var: k8s_auth_api_key
+
+- name: Display k8s_kubeconfig
+  ansible.builtin.debug:
+    var: k8s_kubeconfig
+
+- name: Assert authentication (no KUBECONFIG)
   ansible.builtin.assert:
     that:
     - k8s_auth_host|length > 0
     - k8s_auth_api_key|length > 0
   when: k8s_kubeconfig|string|length == 0
+
+- name: Assert authentication (KUBECONFIG)
+  ansible.builtin.assert:
+    that:
+    - k8s_auth_host|length == 0
+    - k8s_auth_api_key|length == 0
+  when: k8s_kubeconfig|string|length > 0
 
 # Go...
 
