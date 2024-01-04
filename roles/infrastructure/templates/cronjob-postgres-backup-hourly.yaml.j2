@@ -82,6 +82,8 @@ spec:
 {% if pg_bu_volume_is_s3 %}
             - name: BACKUP_VOLUME_IS_S3
               value: 'yes'
+            - name: BACKUP_VOLUME_S3_URL
+              value: '{{ pg_bu_volume_s3_url }}'
 {% endif %}
 {% if pg_bu_s3_bucket_name %}
             - name: AWS_BUCKET_NAME
