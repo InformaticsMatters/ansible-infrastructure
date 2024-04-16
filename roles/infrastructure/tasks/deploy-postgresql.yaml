@@ -1,0 +1,50 @@
+---
+
+# An emergency set of tasks to redeploy the PostgreSQL StatefulSet
+# Use this if you've accidentally deleted the PostgreSQL StatefulSet
+
+- name: Prep
+  include_tasks: prep.yaml
+
+# Namespace and basic material ------------------------------------------------
+
+- name: Get namespace ({{ infra_namespace }})
+  kubernetes.core.k8s_info:
+    kind: Namespace
+    api_version: v1
+    name: "{{ infra_namespace }}"
+  register: n_result
+
+- name: Assert namespace exists
+  ansible.builtin.assert:
+    that: n_result.resources | length == 1
+
+# Database (postgres) ---------------------------------------------------------
+
+- name: Postgres
+  block:
+
+  - name: Postgres
+    kubernetes.core.k8s:
+      definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+      wait: yes
+      wait_timeout: "{{ wait_timeout }}"
+    loop:
+    - statefulset-postgres
+
+  - name: Wait for postgres to become Ready
+    kubernetes.core.k8s_info:
+      kind: Pod
+      name: database-0
+      namespace: "{{ infra_namespace }}"
+    register: database_result
+    until: >-
+      database_result.resources | length == 1
+      and database_result.resources[0].status is defined
+      and database_result.resources[0].status.containerStatuses is defined
+      and database_result.resources[0].status.containerStatuses|length == 1
+      and database_result.resources[0].status.containerStatuses[0].ready
+    delay: 30
+    retries: "{{ (wait_timeout | int / 30) | int }}"
+
+  when: pg_state | string == 'present'

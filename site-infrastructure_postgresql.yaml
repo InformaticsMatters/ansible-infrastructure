@@ -1,0 +1,6 @@
+---
+- hosts: control
+  tasks:
+  - ansible.builtin.include_role:
+      name: infrastructure
+      tasks_from: deploy-postgresql.yaml
