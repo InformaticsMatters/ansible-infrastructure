@@ -137,4 +137,4 @@ spec:
           name: postgres-conf
       - name: postgres-pvc
         persistentVolumeClaim:
-          claimName: pg
+          claimName: {{ pg_volume_name }}

@@ -22,6 +22,7 @@ pg_state: present
 # Set to 'no' if you intend to initialise or restore the users and databases yourself.
 pg_create_users_and_databases: yes
 
+pg_volume_name: pg
 # The database volume size (Gi).
 pg_vol_size_g: 50
 # The StorageClass of the postgres persistent volume.

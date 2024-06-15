@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: pg
+  name: {{ pg_volume_name }}
   namespace: {{ infra_namespace }}
 spec:
   accessModes:
