@@ -65,5 +65,5 @@ spec:
       volumes:
       - name: backup-data
         persistentVolumeClaim:
-          claimName: pg-bu-pvc
+          claimName: {{ recovery_claim_name }}
       restartPolicy: Never

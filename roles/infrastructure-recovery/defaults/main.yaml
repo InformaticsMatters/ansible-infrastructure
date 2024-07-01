@@ -15,6 +15,7 @@
 # For details refer to: -
 # https://github.com/InformaticsMatters/bandr/blob/master/sql-recovery/recovery.py
 recovery_from_backup: none
+recovery_claim_name: pg-bu
 
 # Set the following to 'no' to avoid waiting until the
 # recovery job is complete.
