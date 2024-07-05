@@ -1,19 +1,5 @@
 ---
 
-- name: Sanity check (S3 backup)
-  ansible.builtin.assert:
-    that:
-    - pg_bu_s3_bucket_name | string | length > 0
-    - pg_bu_s3_access_key_id | string | length > 0
-    - pg_bu_s3_secret_access_key | string | length > 0
-  when: pg_bu_volume_is_s3 | bool
-
-- name: Sanity check (backup order)
-  ansible.builtin.assert:
-    that:
-    - pg_bu_daily_history | int > 0
-  when: pg_bu_weekly_history | int > 0
-
 # Namespace and basic material ------------------------------------------------
 
 - name: Create namespace ({{ infra_namespace }})
@@ -295,65 +281,8 @@
 # Database (backups) ----------------------------------------------------------
 
 - name: Database backup
+  include_tasks: deploy.yaml
   when: pg_bu_state | string == 'present'
-  block:
-
-  - name: Get {{ pg_bu_vol_storageclass }} StorageClass
-    kubernetes.core.k8s_info:
-      kind: StorageClass
-      name: "{{ pg_bu_vol_storageclass }}"
-    register: sc_result
-    when:
-    - not pg_bu_volume_is_s3 | bool
-    - pg_bu_vol_storageclass != " "
-
-  - name: Assert {{ pg_bu_vol_storageclass }} StorageClass
-    ansible.builtin.assert:
-      that: sc_result.resources | length == 1
-      fail_msg: The {{ pg_bu_vol_storageclass }} StorageClass must be available on the cluster
-    when:
-    - not pg_bu_volume_is_s3 | bool
-    - pg_bu_vol_storageclass != " "
-
-  - name: Create postgres backup volume claim ({{ pg_bu_vol_storageclass }})
-    kubernetes.core.k8s:
-      definition: "{{ lookup('template', 'pvc-postgres-backup.yaml.j2') }}"
-      wait: yes
-      wait_timeout: "{{ wait_timeout }}"
-    when: not pg_bu_volume_is_s3 | bool
-
-  - name: Wait for postgres backup volume claim to bind
-    kubernetes.core.k8s_info:
-      kind: PersistentVolumeClaim
-      name: pg-bu
-      namespace: "{{ infra_namespace }}"
-    register: pg_bu_pvc_result
-    until: pg_bu_pvc_result.resources[0].status.phase == 'Bound'
-    delay: 5
-    retries: "{{ (bind_timeout | int / 5) | int }}"
-    when:
-    - not pg_bu_volume_is_s3 | bool
-    - wait_for_bind | bool
-
-  - name: Deploy backup (hourly)
-    kubernetes.core.k8s:
-      definition: "{{ lookup('template', 'cronjob-postgres-backup-hourly.yaml.j2') }}"
-      wait: yes
-      wait_timeout: "{{ wait_timeout }}"
-
-  - name: Deploy backup (daily)
-    kubernetes.core.k8s:
-      definition: "{{ lookup('template', 'cronjob-postgres-backup-daily.yaml.j2') }}"
-      wait: yes
-      wait_timeout: "{{ wait_timeout }}"
-    when: pg_bu_daily_history | int > 0
-
-  - name: Deploy backup (weekly)
-    kubernetes.core.k8s:
-      definition: "{{ lookup('template', 'cronjob-postgres-backup-weekly.yaml.j2') }}"
-      wait: yes
-      wait_timeout: "{{ wait_timeout }}"
-    when: pg_bu_weekly_history | int > 0
 
 # AWX -------------------------------------------------------------------------
 

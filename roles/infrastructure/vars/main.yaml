@@ -49,7 +49,7 @@ pg_mem_limit: 1Gi
 pg_bu_hourly_schedule: '7 3 * * *'
 pg_bu_hourly_history: 24
 # The backup container image tag.
-pg_bu_image_tag: 'stable'
+pg_bu_image_tag: '13.3'
 # The registry
 pg_bu_image_registry: docker.io
 
