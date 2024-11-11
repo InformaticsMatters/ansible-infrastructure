@@ -9,3 +9,6 @@ core_deploy_priority_classes: no
 # If deploying (or un-deploying) priority classes
 # do we also include the default?
 core_include_default_priority_class: yes
+
+core_deploy_cluster_issuer: yes
+core_cluster_issuer_letsencrypt_email: SetMe

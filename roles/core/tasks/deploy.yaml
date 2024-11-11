@@ -12,3 +12,12 @@
     definition: "{{ lookup('file', 'pc-im.yaml') }}"
     wait: yes
   when: core_deploy_priority_classes|bool
+
+- name: Install CertManager ClusterIssuer for Let's Encrypt
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    wait: yes
+  loop:
+  - clusterissuer-production
+  - clusterissuer-staging
+  when: core_deploy_cluster_issuer|bool

@@ -1,5 +1,12 @@
 ---
 
+- name: Check cluster issuer email
+  ansible.builtin.assert:
+    that:
+    - core_cluster_issuer_letsencrypt_email | string | length > 0
+    - core_cluster_issuer_letsencrypt_email | string != 'SetMe'
+  when: core_deploy_cluster_issuer | bool
+
 - ansible.builtin.include_tasks: deploy.yaml
   when: core_state|string == 'present'
 - ansible.builtin.include_tasks: undeploy.yaml
