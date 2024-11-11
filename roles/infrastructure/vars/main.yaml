@@ -25,7 +25,7 @@ ingress_class: nginx
 # The infrastructure database version.
 # For AWX the minimum version is 9.6+
 pg_image: informaticsmatters/rdkit-cartridge-debian
-pg_version: Release_2023_03_3
+pg_version: Release_2024_03_3
 # The image registry for the PostgreSQL container image
 pg_image_registry: docker.io
 
