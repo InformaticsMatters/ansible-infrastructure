@@ -10,16 +10,15 @@
   ansible.builtin.debug:
     msg: Hello
 
-- name: Create cinder objects (templates)
+- name: Create cinder plugin object (templates)
   kubernetes.core.k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
   loop:
-  - im-role-psp
   - csi-secret-cinderplugin
 
-- name: Create cinder objects (files)
+- name: Create other cinder objects (files)
   kubernetes.core.k8s:
     definition: "{{ lookup('file', '{{ item }}.yaml') }}"
     wait: yes
@@ -32,7 +31,7 @@
   - cinder-csi-nodeplugin-rbac
   - cinder-csi-nodeplugin
 
-- name: Create StorageClass
+- name: Create StorageClasses
   kubernetes.core.k8s:
     definition: "{{ lookup('template', 'storageclass.yaml.j2') }}"
     wait: yes
