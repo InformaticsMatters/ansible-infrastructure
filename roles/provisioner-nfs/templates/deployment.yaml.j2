@@ -50,7 +50,7 @@ spec:
             memory: {{ nfs_mem_request }}
         env:
         - name: PROVISIONER_NAME
-          value: {{ nfs_provisioner_name }}
+          value: k8s-sigs.io/nfs-subdir-external-provisioner
         - name: NFS_SERVER
           value: {{ nfs_server_address }}
         - name: NFS_PATH

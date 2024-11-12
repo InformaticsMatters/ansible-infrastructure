@@ -5,10 +5,6 @@ metadata:
   name: leader-locking-nfs-client-provisioner
   namespace: {{ nfs_namespace }}
 rules:
-- apiGroups: ['']
-  resources: ['endpoints']
-  verbs: ['get', 'list', 'watch', 'create', 'update', 'patch']
-- apiGroups: ['policy']
-  resources: ['podsecuritypolicies']
-  verbs: ['use']
-  resourceNames: ['im-core-unrestricted']
+- apiGroups: [""]
+  resources: ["endpoints"]
+  verbs: ["get", "list", "watch", "create", "update", "patch"]
