@@ -6,7 +6,6 @@ metadata:
   namespace: {{ infra_namespace }}
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-nginx-{{ kc_cert_issuer|lower }}"
-    kubernetes.io/ingress.class: "{{ ingress_class }}"
 {% if ingress_class == 'nginx' %}
 {#
     # Proxy buffering - required while developing authentication for
@@ -23,6 +22,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-busy-buffer-size: '256k'
 {% endif %}
 spec:
+  ingressClassName: {{ ingress_class }}
   tls:
   - hosts:
     -  {{ kc_hostname }}

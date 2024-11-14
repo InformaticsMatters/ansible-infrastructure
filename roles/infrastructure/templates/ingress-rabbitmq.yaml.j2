@@ -6,8 +6,8 @@ metadata:
   namespace: {{ infra_namespace }}
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-nginx-{{ rabbitmq_cert_issuer|lower }}"
-    kubernetes.io/ingress.class: "{{ ingress_class }}"
 spec:
+  ingressClassName: {{ ingress_class }}
   tls:
   - hosts:
     - {{ rabbitmq_hostname }}
