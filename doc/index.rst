@@ -19,9 +19,3 @@ and :doc:`getting-started`.
     creating-the-infrastructure
     deleting-the-infrastructure
     related-material
-
-..  toctree::
-    :maxdepth: 1
-    :caption: Advanced Material:
-
-    advanced/awx

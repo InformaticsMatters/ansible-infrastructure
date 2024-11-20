@@ -23,7 +23,7 @@ ingress_class: nginx
 # Postgres --------------------------------------------------------------------
 
 # The infrastructure database version.
-# For AWX the minimum version is 9.6+
+# For AWX the minimum version is 15+
 pg_image: informaticsmatters/rdkit-cartridge-debian
 pg_version: Release_2024_03_3
 # The image registry for the PostgreSQL container image
@@ -49,7 +49,7 @@ pg_mem_limit: 1Gi
 pg_bu_hourly_schedule: '7 3 * * *'
 pg_bu_hourly_history: 24
 # The backup container image tag.
-pg_bu_image_tag: '13.3'
+pg_bu_image_tag: '15.0'
 # The registry
 pg_bu_image_registry: docker.io
 
@@ -62,40 +62,6 @@ pg_bu_daily_history: 0
 # ...and weekly history (0 implies no backup)
 # If you use weekly you must also use daily.
 pg_bu_weekly_history: 0
-
-# AWX -------------------------------------------------------------------------
-
-# The AWX server version.
-# A tag for the AWX github repo (See https://github.com/ansible/awx).
-#
-# NOTE: You MUST ensure that a play exists to render the AWX playbook that
-#       will be downloaded for the version you define here. The play is should
-#       be located in 'infrastructure/tasks'  and MUST be called
-#       'render-awx-{{ ax_version }}-{{ ax_platform }}.yaml'
-ax_version: '15.0.0'
-
-# The directory (on the client) where the AWX repo
-# (including the built-in installation playbook)
-# will be cloned. AWX will be adjusted and installed from here.
-ax_clone_dir: /tmp
-
-# The AWX platform.
-# Typically 'kubernetes' or 'openshift' where supported.
-# A deploy-{{ ax-platform }}-awx-{{ ax_version }}.yaml file must exist
-ax_platform: kubernetes
-# The AWX CPU requests and limits.
-ax_redis_cpu_request: 100
-ax_redis_cpu_limit: 250
-ax_task_cpu_request: 500
-ax_task_cpu_limit: 1500
-ax_web_cpu_request: 100
-ax_web_cpu_limit: 250
-
-# AWX database credentials.
-# This is _not_ the AWX console admin user.
-ax_user: awx
-ax_user_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_letters,digits') }}"
-ax_database: awx
 
 # Keycloak --------------------------------------------------------------------
 

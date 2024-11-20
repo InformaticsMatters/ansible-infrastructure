@@ -53,16 +53,3 @@ pg_bu_state: absent
 
 kc_state: absent
 kc_hostname: SetMe (if present)
-
-# AWX installation
-# ---
-
-# the Ansible AWX server (normally required) and dependent on the
-# PostgreSQL database (above)
-
-ax_state: present
-
-ax_hostname: SetMe
-
-ax_admin: admin
-ax_admin_password: SetMe
