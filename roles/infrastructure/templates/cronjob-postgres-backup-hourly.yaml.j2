@@ -17,18 +17,6 @@ spec:
         spec:
           serviceAccountName: {{ infra_namespace_service_account }}
 
-          # A 'preferred' (not guaranteed)
-          # node selection affinity...
-          affinity:
-            nodeAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                nodeSelectorTerms:
-                - matchExpressions:
-                  - key: informaticsmatters.com/purpose
-                    operator: In
-                    values:
-                    - core
-
 {% if all_image_preset_pullsecret_name|string|length > 0 %}
           imagePullSecrets:
           - name: {{ all_image_preset_pullsecret_name }}
