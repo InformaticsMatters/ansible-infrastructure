@@ -3,10 +3,6 @@
 # Allow volume expansion?
 cinder_allow_volume_expansion: no
 
-
-# The PSP to apply to the StatefulSet and DaemonSet
-cinder_psp: im-core-unrestricted
-
 # General timeout, generally used within the k8s module,
 # for wait duration
 wait_timeout: 600

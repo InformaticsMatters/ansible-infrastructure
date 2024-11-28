@@ -22,20 +22,6 @@
   loop:
   - serviceaccount-im-infra
 
-- name: Create PSP
-  kubernetes.core.k8s:
-    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
-    wait: yes
-  loop:
-  - role-im-psp-unrestricted
-  - rolebinding-im-infra-sa
-  when: k8s_use_psp | bool
-
-- name: Relax {{ infra_namespace }} 'default' service account (for cert-manager)
-  kubernetes.core.k8s:
-    definition: "{{ lookup('template', 'rolebinding-default-sa.yaml.j2') }}"
-    wait: yes
-
 # Secrets (optional S3 secrets) -----------------------------------------------
 
 - when: pg_bu_s3_bucket_name | string | length > 0
@@ -234,7 +220,7 @@
 # Database (backups) ----------------------------------------------------------
 
 - name: Database backup
-  include_tasks: deploy.yaml
+  include_tasks: deploy-backup.yaml
   when: pg_bu_state | string == 'present'
 
 # Keycloak --------------------------------------------------------------------

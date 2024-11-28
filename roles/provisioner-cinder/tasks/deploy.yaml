@@ -21,10 +21,7 @@
 - name: Create other cinder objects (files)
   kubernetes.core.k8s:
     definition: "{{ lookup('file', '{{ item }}.yaml') }}"
-    wait: yes
-    wait_timeout: "{{ wait_timeout }}"
   loop:
-  - im-rolebinding-sa-psp
   - csi-cinder-driver
   - cinder-csi-controllerplugin-rbac
   - cinder-csi-controllerplugin

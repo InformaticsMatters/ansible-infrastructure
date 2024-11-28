@@ -1,15 +1,8 @@
 ---
 
-- name: Install PodSecurityPolicies
-  kubernetes.core.k8s:
-    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
-    wait: yes
-  loop:
-  - psp-im-core-unrestricted
-
 - name: Install PriorityClasses
   kubernetes.core.k8s:
-    definition: "{{ lookup('file', 'pc-im.yaml') }}"
+    definition: "{{ lookup('template', 'pc-im.yaml.j2') }}"
     wait: yes
   when: core_deploy_priority_classes|bool
 
