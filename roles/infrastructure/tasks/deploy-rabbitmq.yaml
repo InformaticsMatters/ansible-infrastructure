@@ -39,9 +39,9 @@
 
   - name: Set RabbitMQ secret facts (pre-deployed secrets)
     ansible.builtin.set_fact:
-      rabbitmq_user_fact: "{{ rmq_s_result.resources[0].user | b64decode }}"
+      rabbitmq_user_fact: "{{ rmq_s_result.resources[0].data.user | b64decode }}"
       rabbitmq_user_password_fact: "{{ rmq_s_result.resources[0].data.password | b64decode }}"
-      rabbitmq_database_fact: "{{ rmq_s_result.resources[0].erlang_cookie | b64decode }}"
+      rabbitmq_erlang_cookie_fact: "{{ rmq_s_result.resources[0].data.erlang_cookie | b64decode }}"
     when: rmq_s_result.resources | length == 1
 
   - name: Write RabbitMQ secrets
