@@ -10,13 +10,11 @@
   ansible.builtin.debug:
     msg: Hello
 
-- name: Create cinder plugin object (templates)
+- name: Create cinder cloud-config Secret
   kubernetes.core.k8s:
-    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    definition: "{{ lookup('template', 'csi-secret-cinderplugin.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
-  loop:
-  - csi-secret-cinderplugin
 
 - name: Create other cinder objects (files)
   kubernetes.core.k8s:
