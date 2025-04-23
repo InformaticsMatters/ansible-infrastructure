@@ -26,9 +26,9 @@ spec:
                 operator: Exists
 
       securityContext:
-        fsGroup: 999
-        runAsUser: 999
-        runAsGroup: 999
+        fsGroup: 100
+        runAsUser: 100
+        runAsGroup: 100
 
   {% if all_image_preset_pullsecret_name|string|length > 0 %}
       imagePullSecrets:
@@ -83,11 +83,14 @@ spec:
           timeoutSeconds: 10
           failureThreshold: 5
         volumeMounts:
-        - name: rabbitmq-config
-          mountPath: /etc/rabbitmq/rabbitmq.config
+        - mountPath: /etc/rabbitmq/rabbitmq.config
           subPath: rabbitmq.config
-        - name: rabbitmq-data
-          mountPath: /var/lib/rabbitmq/mnesia
+          name: rabbitmq-config
+        - mountPath: /etc/rabbitmq/enabled_plugins
+          subPath: enabled_plugins
+          name: rabbitmq-plugins
+        - mountPath: /var/lib/rabbitmq/mnesia
+          name: rabbitmq-data
         resources:
           requests:
             cpu: {{ rabbitmq_cpu_request }}
@@ -106,6 +109,9 @@ spec:
       - name: rabbitmq-config
         configMap:
           name: rabbitmq-config
+      - name: rabbitmq-plugins
+        configMap:
+          name: rabbitmq-plugins
       - name: rabbitmq-data
         persistentVolumeClaim:
           claimName: rabbitmq-data

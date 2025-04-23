@@ -104,6 +104,7 @@
       wait_timeout: "{{ wait_timeout }}"
     loop:
     - configmap-rabbitmq-conf
+    - configmap-rabbitmq-plugins
     - service-rabbitmq
     - statefulset-rabbitmq
 
