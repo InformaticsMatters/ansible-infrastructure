@@ -35,6 +35,16 @@ spec:
       - name: {{ all_image_preset_pullsecret_name }}
   {% endif %}
 
+      # See https://stackoverflow.com/questions/68179365
+      #
+      # for a discussion of trying to overcome RabbitMQ's problems with a node name
+      # that  is not 'localhost'. The hostname is the pod name
+      # (rabbitmq-0 for the first stateful set) so we set it explicitly,
+      # and then hostAliases to add entries to the /etc/hosts file so we can
+      # resolve the node name we are going to give the Pod.
+      #
+      # We have to set RABBITMQ_NODENAME
+      # and we also appear to have to set RABBITMQ_USE_LONGNAME
       hostname: rabbit
       hostAliases:
       - ip: "127.0.0.1"
