@@ -35,6 +35,13 @@ spec:
       - name: {{ all_image_preset_pullsecret_name }}
   {% endif %}
 
+      hostname: rabbit
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - rabbit
+        - rabbit.{{ infra_namespace }}.svc.cluster.local
+
       containers:
       - name: rabbitmq
         image: {{ rabbitmq_registry }}{{ rabbitmq_image }}:{{ rabbitmq_version }}
@@ -42,7 +49,9 @@ spec:
         terminationMessagePolicy: FallbackToLogsOnError
         env:
         - name: RABBITMQ_NODENAME
-          value: rabbit@localhost
+          value: 'rabbit@rabbit.{{ infra_namespace }}.svc.cluster.local'
+        - name: RABBITMQ_USE_LONGNAME
+          value: 'true'
         - name: RABBITMQ_DEFAULT_USER
           valueFrom:
             secretKeyRef:
@@ -56,6 +65,8 @@ spec:
         ports:
         - name: empd
           containerPort: 4369
+        - name: stream
+          containerPort: 5552
         - name: ampq
           containerPort: 5672
         - name: http
