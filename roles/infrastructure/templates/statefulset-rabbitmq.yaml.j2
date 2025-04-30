@@ -49,8 +49,8 @@ spec:
       hostAliases:
       - ip: "127.0.0.1"
         hostnames:
-        - rabbit
-        - rabbit.{{ infra_namespace }}.svc.cluster.local
+        - rabbitmq
+        - rabbitmq.{{ infra_namespace }}.svc.cluster.local
 
       containers:
       - name: rabbitmq
@@ -59,7 +59,7 @@ spec:
         terminationMessagePolicy: FallbackToLogsOnError
         env:
         - name: RABBITMQ_NODENAME
-          value: 'rabbit@rabbit.{{ infra_namespace }}.svc.cluster.local'
+          value: 'rabbit@rabbitmq.{{ infra_namespace }}.svc.cluster.local'
         - name: RABBITMQ_USE_LONGNAME
           value: 'true'
         - name: RABBITMQ_DEFAULT_USER
@@ -104,14 +104,16 @@ spec:
           timeoutSeconds: 10
           failureThreshold: 5
         volumeMounts:
-        - mountPath: /etc/rabbitmq/rabbitmq.config
-          subPath: rabbitmq.config
-          name: rabbitmq-config
+        - mountPath: /etc/rabbitmq/rabbitmq.conf
+          subPath: rabbitmq.conf
+          name: rabbitmq-conf
         - mountPath: /etc/rabbitmq/enabled_plugins
           subPath: enabled_plugins
           name: rabbitmq-plugins
         - mountPath: /var/lib/rabbitmq/mnesia
           name: rabbitmq-data
+        - mountPath: /var/log/rabbitmq
+          name: rabbitmq-log
         resources:
           requests:
             cpu: {{ rabbitmq_cpu_request }}
@@ -127,12 +129,15 @@ spec:
 {% endif %}
 
       volumes:
-      - name: rabbitmq-config
+      - name: rabbitmq-conf
         configMap:
-          name: rabbitmq-config
+          name: rabbitmq-conf
       - name: rabbitmq-plugins
         configMap:
           name: rabbitmq-plugins
       - name: rabbitmq-data
         persistentVolumeClaim:
           claimName: rabbitmq-data
+      - name: rabbitmq-log
+        persistentVolumeClaim:
+          claimName: rabbitmq-log

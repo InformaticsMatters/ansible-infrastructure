@@ -73,11 +73,14 @@
       fail_msg: The {{ rabbitmq_vol_storageclass }} StorageClass must be available on the cluster
     when: rabbitmq_vol_storageclass != " "
 
-  - name: Create RabbitMQ volume claim ({{ rabbitmq_vol_storageclass }})
+  - name: Create RabbitMQ volume claims
     kubernetes.core.k8s:
-      definition: "{{ lookup('template', 'pvc-rabbitmq.yaml.j2') }}"
+      definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
       wait: yes
       wait_timeout: "{{ wait_timeout }}"
+    loop:
+    - pvc-rabbitmq-data
+    - pvc-rabbitmq-log
 
   # Best practice ... wait for the PVC to bind.
   # e.g. wait until resources[0].status.phase == Bound (initially Pending)
