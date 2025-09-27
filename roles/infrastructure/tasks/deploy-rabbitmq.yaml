@@ -75,12 +75,12 @@
 
   - name: Create RabbitMQ volume claims
     kubernetes.core.k8s:
-      definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+      definition: "{{ lookup('template', item) }}"
       wait: yes
       wait_timeout: "{{ wait_timeout }}"
     loop:
-    - pvc-rabbitmq-data
-    - pvc-rabbitmq-log
+    - pvc-rabbitmq-data.yaml.j2
+    - pvc-rabbitmq-log.yaml.j2
 
   # Best practice ... wait for the PVC to bind.
   # e.g. wait until resources[0].status.phase == Bound (initially Pending)
@@ -102,14 +102,14 @@
 
   - name: RabbitMQ
     kubernetes.core.k8s:
-      definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+      definition: "{{ lookup('template', item) }}"
       wait: yes
       wait_timeout: "{{ wait_timeout }}"
     loop:
-    - configmap-rabbitmq-conf
-    - configmap-rabbitmq-plugins
-    - service-rabbitmq
-    - statefulset-rabbitmq
+    - configmap-rabbitmq-conf.yaml.j2
+    - configmap-rabbitmq-plugins.yaml.j2
+    - service-rabbitmq.yaml.j2
+    - statefulset-rabbitmq.yaml.j2
 
   - name: Wait for RabbitMQ to become Ready ({{ wait_timeout }} seconds)
     kubernetes.core.k8s_info:

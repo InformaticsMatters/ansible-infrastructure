@@ -8,7 +8,7 @@ repos:
 
 # Conventional Commit message checker (commitizen)
 - repo: https://github.com/commitizen-tools/commitizen
-  rev: v3.12.0
+  rev: v4.9.1
   hooks:
   - id: commitizen
     stages:
@@ -19,7 +19,7 @@ repos:
 
 # Standard pre-commit rules
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.5.0
+  rev: v6.0.0
   hooks:
   - id: check-case-conflict
   - id: check-docstring-first
@@ -36,7 +36,7 @@ repos:
     - --markdown-linebreak-ext=md
 
 - repo: https://github.com/adrienverge/yamllint
-  rev: v1.33.0
+  rev: v1.37.1
   hooks:
   - id: yamllint
 
@@ -51,6 +51,6 @@ repos:
 #    - ansible-core>=2.16.0
 
 - repo: https://github.com/IamTheFij/ansible-pre-commit
-  rev: v1.0.0
+  rev: v1.0.1
   hooks:
   - id: encryption-check

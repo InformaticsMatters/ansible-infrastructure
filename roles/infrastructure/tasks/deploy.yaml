@@ -17,10 +17,10 @@
 
 - name: Create SA
   kubernetes.core.k8s:
-    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    definition: "{{ lookup('template', item) }}"
     wait: yes
   loop:
-  - serviceaccount-im-infra
+  - serviceaccount-im-infra.yaml.j2
 
 # Secrets (optional S3 secrets) -----------------------------------------------
 
@@ -191,14 +191,14 @@
 
   - name: Postgres
     kubernetes.core.k8s:
-      definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+      definition: "{{ lookup('template', item) }}"
       wait: yes
       wait_timeout: "{{ wait_timeout }}"
     loop:
-    - configmap-postgres-conf
-    - configmap-postgres-init
-    - service-postgres
-    - statefulset-postgres
+    - configmap-postgres-conf.yaml.j2
+    - configmap-postgres-init.yaml.j2
+    - service-postgres.yaml.j2
+    - statefulset-postgres.yaml.j2
 
   - name: Wait for postgres to become Ready
     kubernetes.core.k8s_info:

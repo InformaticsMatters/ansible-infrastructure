@@ -4,7 +4,6 @@ Getting Started
 
 Prerequisites
 =============
-
 Before starting a basic understanding or experience with the following will
 be beneficial: -
 
@@ -13,8 +12,23 @@ be beneficial: -
 *   `Ansible Galaxy`_
 *   `Ansible Vault`_
 
-Working environment
-===================
+Working environment (VSCode)
+============================
+If you are familiar with VisualStudio Code the easiest way to get started is to use
+our built-in **development container**. It provides you with a pre-configured set of
+tools, including ``kubectl`` and ``pre-commit`` pre-configured.
+
+You will need to have two directories in your HOME directory: ``.kube`` (the default
+location for kubeconfig files) and ``k8-config``, our own directory where we tend to
+store all our installation config files, each in a separate kubeconfig file.
+
+..  warning::
+    Make sure you have these directories before you start your devcontainer,
+    otherwise the container build will fail.
+
+Working environment (DIY)
+=========================
+If you do not use VisualStudio the following instuctions should help you get started.
 
 Ideally you'll start from a Poetry environment::
 
@@ -35,7 +49,6 @@ And can then check the current diction fo the repository with::
 
 Cluster (Kubernetes) pre-requisites
 ===================================
-
 Your Kubernetes cluster will need: -
 
 1.  A **StorageClass** for the infrastructure database (postgres).
@@ -62,17 +75,16 @@ Your Kubernetes cluster will need: -
 
 Cluster credentials
 ===================
-
 You will also need a copy of your **kubeconfig** file and will need to set the
 ``KUBECONFIG`` environment variable to point to your copy. You can safely place
 the config in the root of a clone of this repository as the file
 ``kubeconfig`` as this is part of the project ignore set::
 
-    $ export KUBECONFIG=./kubeconfig
+    $ export KUBECONFIG=~/k8s-config/my-config
 
 Plays run from within AWX benefit from the automatic injection of Kubernetes
 variables. Once installed our AWX will inject the following environment
-cat variables: -
+variables: -
 
 -   ``K8S_AUTH_HOST``
 -   ``K8S_AUTH_API_KEY``
@@ -99,7 +111,6 @@ configuring via the environment for some of the Roles to properly function::
 
     export AWS_ACCESS_KEY_ID=xxxxxxxxxxxx
     export AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxx
-
 
 The permissions of the AWS user will depend on what you intend to deploy.
 Typically these will be something like: -
