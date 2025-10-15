@@ -14,6 +14,9 @@ spec:
       labels:
         name: rabbitmq
     spec:
+{% if infra_priority_class %}
+      priorityClassName: {{ infra_priority_class }}
+{% endif %}
       serviceAccountName: {{ infra_namespace_service_account }}
 
       # We must have a 'core' node

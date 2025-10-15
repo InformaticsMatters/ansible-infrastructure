@@ -5,6 +5,8 @@
 # If we un-deploy the entire infrastructure deployment is removed -
 # the namespace, database, PSPs etc.
 infra_state: present
+# The priority class applied to DB, keycloak and RabbitMQ (if set)
+infra_priority_class: ''
 
 # If set, use this kubernetes config, rather than K8S credentials.
 # You would set this if executing the playbooks locally, i.e. not from

@@ -16,6 +16,9 @@ spec:
       labels:
         app: database
     spec:
+{% if infra_priority_class %}
+      priorityClassName: {{ infra_priority_class }}
+{% endif %}
       serviceAccountName: {{ infra_namespace_service_account }}
 
       # A 'preferred' (not guaranteed)

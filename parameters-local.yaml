@@ -4,9 +4,13 @@
 # Here we assume you have setup /etc/hosts so that the following hostnames
 # resolve to the IP address of the host running the cluster:
 #
+#  - keycloak
 #  - rabbitmq
 
 k8s_kubeconfig: "{{ lookup('env', 'KUBECONFIG') }}"
+
+core_deploy_cluster_issuer: no
+infra_priority_class: im-application-critical
 
 ingress_class: "{{ lookup('env', 'IM_DEV_INGRESS_CLASS') | default('nginx', True)}}"
 
