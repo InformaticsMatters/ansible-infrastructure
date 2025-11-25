@@ -30,3 +30,5 @@ pg_mem_request: 250Mi
 
 rabbitmq_state: present
 rabbitmq_hostname: rabbitmq
+rabbitmq_cpu_request: 1
+rabbitmq_cpu_limit: 1
