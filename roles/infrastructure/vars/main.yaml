@@ -81,13 +81,6 @@ kc_mem_limit: 1Gi
 
 # RabbitMQ --------------------------------------------------------------------
 
-# The RabbitMQ image, version and image registry
-rabbitmq_image: rabbitmq
-rabbitmq_version: 3.12.14-management-alpine
-rabbitmq_registry: ""
-
-rabbitmq_erlang_cookie: "{{ lookup('password', '/dev/null length=80 chars=ascii_letters') }}"
-
 # CPU and Memory requests and limits
 rabbitmq_cpu_request: 4
 rabbitmq_cpu_limit: 4

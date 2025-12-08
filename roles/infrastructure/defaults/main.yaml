@@ -122,7 +122,7 @@ rabbitmq_cert_issuer: production
 rabbitmq_user: admin
 rabbitmq_user_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters') }}"
 
+rabbitmq_replicas: 1
+
 rabbitmq_vol_storageclass: " "
 rabbitmq_vol_size_g: 1
-rabbitmq_log_vol_storageclass: " "
-rabbitmq_log_vol_size_g: 1

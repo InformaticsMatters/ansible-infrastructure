@@ -1,0 +1,25 @@
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: {{ infra_namespace }}
+  namespace: {{ infra_namespace }}
+spec:
+  replicas: {{ rabbitmq_replicas }}
+  rabbitmq:
+    additionalPlugins:
+    - rabbitmq_management
+    - rabbitmq_peer_discovery_k8s
+    - rabbitmq_prometheus
+    - rabbitmq_stream
+    - rabbitmq_stream_management
+  resources:
+    requests:
+      cpu: {{ rabbitmq_cpu_request }}
+      memory: {{ rabbitmq_mem_request }}
+    limits:
+      cpu: {{ rabbitmq_cpu_limit }}
+      memory: {{ rabbitmq_mem_limit }}
+  persistence:
+    storageClassName: {{ rabbitmq_vol_storageclass }}
+    storage: {{ rabbitmq_vol_size_g }}Gi

@@ -16,40 +16,6 @@
   ansible.builtin.assert:
     that: n_result.resources | length == 1
 
-# Secrets (RabbitMQ) ----------------------------------------------------------
-
-- name: Create RabbitMQ Secret
-  when: rabbitmq_state|string == 'present'
-  block:
-
-  - name: Check RabbitMQ secrets
-    kubernetes.core.k8s_info:
-      kind: Secret
-      api_version: v1
-      namespace: "{{ infra_namespace }}"
-      name: im-rabbitmq
-    register: rmq_s_result
-
-  - name: Set RabbitMQ secret facts
-    ansible.builtin.set_fact:
-      rabbitmq_user_fact: "{{ rabbitmq_user }}"
-      rabbitmq_user_password_fact: "{{ rabbitmq_user_password }}"
-      rabbitmq_erlang_cookie_fact: "{{ rabbitmq_erlang_cookie }}"
-    when: rmq_s_result.resources | length == 0
-
-  - name: Set RabbitMQ secret facts (pre-deployed secrets)
-    ansible.builtin.set_fact:
-      rabbitmq_user_fact: "{{ rmq_s_result.resources[0].data.user | b64decode }}"
-      rabbitmq_user_password_fact: "{{ rmq_s_result.resources[0].data.password | b64decode }}"
-      rabbitmq_erlang_cookie_fact: "{{ rmq_s_result.resources[0].data.erlang_cookie | b64decode }}"
-    when: rmq_s_result.resources | length == 1
-
-  - name: Write RabbitMQ secrets
-    kubernetes.core.k8s:
-      definition: "{{ lookup('template', 'secret-rabbitmq.yaml.j2') }}"
-      wait: yes
-    when: rmq_s_result.resources | length == 0
-
 # RabbitMQ --------------------------------------------------------------------
 
 - name: Deploy RabbitMQ
@@ -60,68 +26,25 @@
       that:
       - kc_cert_issuer in cert_issuer_set
 
-  - name: Get {{ rabbitmq_vol_storageclass }} StorageClass
-    kubernetes.core.k8s_info:
-      kind: StorageClass
-      name: "{{ rabbitmq_vol_storageclass }}"
-    register: sc_result
-    when: rabbitmq_vol_storageclass != " "
-
-  - name: Assert {{ pg_vol_storageclass }} StorageClass
-    ansible.builtin.assert:
-      that: sc_result.resources | length == 1
-      fail_msg: The {{ rabbitmq_vol_storageclass }} StorageClass must be available on the cluster
-    when: rabbitmq_vol_storageclass != " "
-
-  - name: Create RabbitMQ volume claims
-    kubernetes.core.k8s:
-      definition: "{{ lookup('template', item) }}"
-      wait: yes
-      wait_timeout: "{{ wait_timeout }}"
-    loop:
-    - pvc-rabbitmq-data.yaml.j2
-    - pvc-rabbitmq-log.yaml.j2
-
-  # Best practice ... wait for the PVC to bind.
-  # e.g. wait until resources[0].status.phase == Bound (initially Pending)
-
-  - name: Wait for RabbitMQ volume claim to bind
-    kubernetes.core.k8s_info:
-      kind: PersistentVolumeClaim
-      name: rabbitmq-data
-      namespace: "{{ infra_namespace }}"
-    register: rabbitmq_pvc_result
-    until: >-
-      rabbitmq_pvc_result.resources | length > 0
-      and rabbitmq_pvc_result.resources[0].status is defined
-      and rabbitmq_pvc_result.resources[0].status.phase is defined
-      and rabbitmq_pvc_result.resources[0].status.phase == 'Bound'
-    delay: 5
-    retries: "{{ (bind_timeout | int / 5) | int }}"
-    when: wait_for_bind | bool
-
   - name: RabbitMQ
     kubernetes.core.k8s:
       definition: "{{ lookup('template', item) }}"
       wait: yes
       wait_timeout: "{{ wait_timeout }}"
     loop:
-    - configmap-rabbitmq-conf.yaml.j2
-    - configmap-rabbitmq-plugins.yaml.j2
-    - service-rabbitmq.yaml.j2
-    - statefulset-rabbitmq.yaml.j2
+    - rabbitmqcluster.yaml.j2
 
   - name: Wait for RabbitMQ to become Ready ({{ wait_timeout }} seconds)
     kubernetes.core.k8s_info:
       kind: Pod
-      name: rabbitmq-0
+      name: "{{ infra_namespace }}-server-0"
       namespace: "{{ infra_namespace }}"
     register: rabbitmq_result
     until: >-
       rabbitmq_result.resources | length == 1
       and rabbitmq_result.resources[0].status is defined
       and rabbitmq_result.resources[0].status.containerStatuses is defined
-      and rabbitmq_result.resources[0].status.containerStatuses | length == 1
+      and rabbitmq_result.resources[0].status.containerStatuses | length > 0
       and rabbitmq_result.resources[0].status.containerStatuses[0].ready
     delay: 30
     retries: "{{ (wait_timeout | int / 30) | int }}"
