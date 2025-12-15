@@ -37,11 +37,11 @@
   - name: Wait for RabbitMQ to become Ready ({{ wait_timeout }} seconds)
     kubernetes.core.k8s_info:
       kind: Pod
-      name: "{{ infra_namespace }}-server-0"
+      name: rabbit-server-0
       namespace: "{{ infra_namespace }}"
     register: rabbitmq_result
     until: >-
-      rabbitmq_result.resources | length == 1
+      rabbitmq_result.resources | length > 0
       and rabbitmq_result.resources[0].status is defined
       and rabbitmq_result.resources[0].status.containerStatuses is defined
       and rabbitmq_result.resources[0].status.containerStatuses | length > 0
