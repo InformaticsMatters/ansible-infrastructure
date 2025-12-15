@@ -2,9 +2,12 @@
 apiVersion: rabbitmq.com/v1beta1
 kind: RabbitmqCluster
 metadata:
-  name: {{ infra_namespace }}
+  # The instance name can be called pretty-much anything...
+  # except rabbitmq!?
+  name: rabbit
   namespace: {{ infra_namespace }}
 spec:
+  image: rabbitmq:{{ rabbitmq_version }}-management
   replicas: {{ rabbitmq_replicas }}
   rabbitmq:
     additionalPlugins:
@@ -14,12 +17,31 @@ spec:
     - rabbitmq_stream
     - rabbitmq_stream_management
   resources:
+{% if rabbitmq_cpu_request or rabbitmq_mem_request %}
     requests:
+{% if rabbitmq_cpu_request %}
       cpu: {{ rabbitmq_cpu_request }}
+{% endif %}
+{% if rabbitmq_mem_request %}
       memory: {{ rabbitmq_mem_request }}
+{% endif %}
+{% endif %}
+{% if rabbitmq_cpu_limit or rabbitmq_mem_limit %}
     limits:
+{% if rabbitmq_cpu_limit %}
       cpu: {{ rabbitmq_cpu_limit }}
+{% endif %}
+{% if rabbitmq_mem_limit %}
       memory: {{ rabbitmq_mem_limit }}
+{% endif %}
+{% endif %}
   persistence:
     storageClassName: {{ rabbitmq_vol_storageclass }}
     storage: {{ rabbitmq_vol_size_g }}Gi
+  override:
+    statefulSet:
+      spec:
+        template:
+          spec:
+            containers: []
+            priorityClassName: im-application-high
