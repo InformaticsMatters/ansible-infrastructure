@@ -109,6 +109,10 @@ kc_admin_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_lette
 # the Keycloak DB is (at the moment) part of the core database installation.
 rabbitmq_state: present
 
+# The RabbitMQ management server version to deploy,
+# the version will have '-management' automatically applied as a postfix.
+rabbitmq_version: 4.2.1
+
 # The hostname of the server that will host Keycloak,
 # devoid of the protocol (i.e. 'https://' assumed so just 'example.com').
 # If not set (blank) no ingress is created.
@@ -122,7 +126,7 @@ rabbitmq_cert_issuer: production
 rabbitmq_user: admin
 rabbitmq_user_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters') }}"
 
+rabbitmq_replicas: 2
+
 rabbitmq_vol_storageclass: " "
 rabbitmq_vol_size_g: 1
-rabbitmq_log_vol_storageclass: " "
-rabbitmq_log_vol_size_g: 1

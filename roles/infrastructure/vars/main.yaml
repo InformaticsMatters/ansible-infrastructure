@@ -74,22 +74,15 @@ kc_image_registry: docker.io
 kc_db_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_letters') }}"
 
 # CPU and Memory requests and limits
-kc_cpu_request: 250m
+kc_cpu_request: 100m
 kc_cpu_limit: 2
-kc_mem_request: 1Gi
+kc_mem_request: 500Mi
 kc_mem_limit: 1Gi
 
 # RabbitMQ --------------------------------------------------------------------
 
-# The RabbitMQ image, version and image registry
-rabbitmq_image: rabbitmq
-rabbitmq_version: 3.12.14-management-alpine
-rabbitmq_registry: ""
-
-rabbitmq_erlang_cookie: "{{ lookup('password', '/dev/null length=80 chars=ascii_letters') }}"
-
 # CPU and Memory requests and limits
-rabbitmq_cpu_request: 4
+rabbitmq_cpu_request: 200m
 rabbitmq_cpu_limit: 4
-rabbitmq_mem_request: 500Mi
+rabbitmq_mem_request: 300Mi
 rabbitmq_mem_limit: 0
