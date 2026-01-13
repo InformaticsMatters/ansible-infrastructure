@@ -236,13 +236,13 @@
 
   - name: Keycloak
     kubernetes.core.k8s:
-      definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+      definition: "{{ lookup('template', item) }}"
       wait: yes
       wait_timeout: "{{ wait_timeout }}"
     loop:
-    - service-keycloak
-    - ingress-keycloak
-    - statefulset-keycloak
+    - service-keycloak.yaml.j2
+    - ingress-keycloak.yaml.j2
+    - statefulset-keycloak.yaml.j2
 
   - name: Wait for keycloak to become Ready ({{ wait_timeout }} seconds)
     kubernetes.core.k8s_info:

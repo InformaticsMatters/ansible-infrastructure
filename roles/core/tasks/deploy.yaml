@@ -8,9 +8,9 @@
 
 - name: Install CertManager ClusterIssuer for Let's Encrypt
   kubernetes.core.k8s:
-    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    definition: "{{ lookup('template', item) }}"
     wait: yes
   loop:
-  - clusterissuer-production
-  - clusterissuer-staging
+  - clusterissuer-production.yaml.j2
+  - clusterissuer-staging.yaml.j2
   when: core_deploy_cluster_issuer|bool

@@ -3,15 +3,15 @@
 - name: Remove PodSecurityPolicies
   kubernetes.core.k8s:
     state: absent
-    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    definition: "{{ lookup('template', item) }}"
     wait: yes
   loop:
-  - psp-im-core-unrestricted
+  - psp-im-core-unrestricted.yaml.j2
 
 - name: Remove PriorityClasses
   kubernetes.core.k8s:
     state: absent
-    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    definition: "{{ lookup('template', item) }}"
     wait: yes
   loop:
-  - pc-im
+  - pc-im.yaml.j2
