@@ -1,0 +1,32 @@
+---
+
+# A set of parameters for our im-main Scaleway cluster.
+
+k8s_kubeconfig: "{{ lookup('env', 'KUBECONFIG') }}"
+
+core_deploy_cluster_issuer: yes
+core_cluster_issuer_letsencrypt_email: tdudgeon@informaticsmatters.com
+
+infra_priority_class: im-application-critical
+
+ingress_class: nginx
+
+ic_state: absent
+efs_state: absent
+cinder_state: absent
+ax_state: absent
+
+pg_state: present
+pg_bu_state: absent
+pg_image: informaticsmatters/rdkit-cartridge-debian
+pg_version: Release_2024_03_3
+pg_vol_size_g: 1
+pg_cpu_request: 100m
+pg_mem_request: 250Mi
+
+kc_state: present
+kc_hostname: keycloak-scw.informaticsmatters.com
+
+rabbitmq_state: present
+rabbitmq_hostname: rabbitmq-scw.informaticsmatters.com
+rabbitmq_version: "4.2.2"
