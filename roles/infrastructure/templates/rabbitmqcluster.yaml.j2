@@ -36,7 +36,9 @@ spec:
 {% endif %}
 {% endif %}
   persistence:
+{% if rabbitmq_vol_storageclass != ' ' %}
     storageClassName: {{ rabbitmq_vol_storageclass }}
+{% endif %}
     storage: {{ rabbitmq_vol_size_g }}Gi
   override:
     statefulSet:
