@@ -78,3 +78,10 @@
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
   when: pg_bu_weekly_history | int > 0
+
+- name: Deploy backup (monthly)
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'cronjob-postgres-backup-monthly.yaml.j2') }}"
+    wait: yes
+    wait_timeout: "{{ wait_timeout }}"
+  when: pg_bu_monthly_history | int > 0

@@ -3,6 +3,15 @@
 - name: Prep
   include_tasks: prep.yaml
 
+# Include sensitive (Ansible Vault) variables based on the installation name.
+# We include 'sensitive-local.vault' variables if the installation name is 'local'.
+# The user will need to provide the vault password.
+
+- name: Include sensitive (vault) variables ({{ infra_installation_name }})
+  ansible.builtin.include_vars:
+    file: sensitive-{{ infra_installation_name }}.vault
+  when: infra_installation_name | length > 0
+
 - name: Display k8s_auth_host
   ansible.builtin.debug:
     var: k8s_auth_host

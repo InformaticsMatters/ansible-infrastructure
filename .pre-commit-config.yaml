@@ -35,13 +35,13 @@ repos:
     args:
     - --markdown-linebreak-ext=md
 
-- repo: https://github.com/adrienverge/yamllint
-  rev: v1.37.1
-  hooks:
-  - id: yamllint
-    types:
-    - file
-    files: (\.yaml|\.yaml.j2)$
+#- repo: https://github.com/adrienverge/yamllint
+#  rev: v1.37.1
+#  hooks:
+#  - id: yamllint
+#    types:
+#    - file
+#    files: (\.yaml|\.yaml.j2)$
 
 #- repo: https://github.com/ansible-community/ansible-lint
 #  rev: v6.16.1

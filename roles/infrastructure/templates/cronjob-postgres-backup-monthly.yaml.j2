@@ -2,10 +2,10 @@
 kind: CronJob
 apiVersion: batch/v1
 metadata:
-  name: postgres-backup-daily
+  name: postgres-backup-monthly
   namespace: {{ infra_namespace }}
 spec:
-  schedule: '{{ pg_bu_daily_schedule }}'
+  schedule: '{{ pg_bu_monthly_schedule }}'
   startingDeadlineSeconds: 180
   concurrencyPolicy: Forbid
   jobTemplate:
@@ -13,7 +13,7 @@ spec:
       template:
         metadata:
           labels:
-            name: postgres-backup-hourly
+            name: postgres-backup-monthly
         spec:
           serviceAccountName: {{ infra_namespace_service_account }}
 
@@ -24,7 +24,7 @@ spec:
 
           containers:
           - image: {{ pg_bu_image_registry }}/informaticsmatters/sql-backup:{{ pg_bu_image_tag }}
-            name: postgres-backup-daily
+            name: postgres-backup-weekly
 {% if pg_bu_image_tag in ['latest', 'stable'] %}
             imagePullPolicy: Always
 {% else %}
@@ -52,11 +52,11 @@ spec:
                 memory: 128Mi
             env:
             - name: BACKUP_TYPE
-              value: daily
+              value: monthly
             - name: BACKUP_COUNT
-              value: '{{ pg_bu_daily_history }}'
+              value: '{{ pg_bu_monthly_history }}'
             - name: BACKUP_PRIOR_TYPE
-              value: hourly
+              value: daily
 {% if pg_bu_volume_is_s3 %}
             - name: BACKUP_VOLUME_IS_S3
               value: 'yes'

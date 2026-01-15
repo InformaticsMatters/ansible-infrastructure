@@ -42,27 +42,6 @@ pg_cpu_limit: 1000m
 pg_mem_request: 1Gi
 pg_mem_limit: 1Gi
 
-# Backup ----------------------------------------------------------------------
-
-# Backups run as a CronJob.
-# Set the schedule (and the number of hourly backups to keep) here.
-pg_bu_hourly_schedule: '7 3 * * *'
-pg_bu_hourly_history: 24
-# The backup container image tag.
-pg_bu_image_tag: '15.0'
-# The registry
-pg_bu_image_registry: docker.io
-
-# Daily and weekly schedules
-# (only of use if the corresponding history is set)
-pg_bu_daily_schedule: '7 2 * * *'
-pg_bu_weekly_schedule: '7 1 * * 0'
-# ...and daily history (0 implies no backup)
-pg_bu_daily_history: 0
-# ...and weekly history (0 implies no backup)
-# If you use weekly you must also use daily.
-pg_bu_weekly_history: 0
-
 # Keycloak --------------------------------------------------------------------
 
 # The Keycloak image version and image registry

@@ -6,13 +6,20 @@
 # the namespace, database, PSPs etc.
 infra_state: present
 # The priority class applied to DB, keycloak and RabbitMQ (if set)
-infra_priority_class: ''
+infra_priority_class: ""
+
+# The (optional) 'installation' name. This is used to uniquely identify the Infrastructure for a
+# specific customer. It is used by the playbook to load customer-specific variables,
+# which are encoded in sensitive ('.vault') files that are located in the
+# role's 'vars' directory. To load the variables the user will also need to provide
+# the playbook with the vault password.
+infra_installation_name: ""
 
 # If set, use this kubernetes config, rather than K8S credentials.
 # You would set this if executing the playbooks locally, i.e. not from
 # and AWX server, where K8S_AUTH_HOST, K8S_AUTH_API_KEY environment
 # variables are set and used.
-k8s_kubeconfig: ''
+k8s_kubeconfig: ""
 
 # Database (postgres) ---------------------------------------------------------
 
@@ -71,6 +78,33 @@ pg_bu_volume_is_s3: no
 # The S3 URL (used by s3fs in the backup and recovery containers)
 pg_bu_volume_s3_url: "https://s3.{{ pg_bu_s3_default_region }}.amazonaws.com"
 
+# Do we use rclone to copy the backups (to an S3 bucket)?
+pg_bu_use_rclone: no
+
+# The backup container image tag.
+pg_bu_image_tag: "15.0"
+# The registry
+pg_bu_image_registry: docker.io
+
+# Backups run as a CronJob.
+# Set the schedule (and the number of hourly backups to keep) here.
+
+# Daily, weekly, and monthly schedules
+# (only used if the corresponding history is 1 or more)
+pg_bu_hourly_schedule: '1 * * * *'
+pg_bu_daily_schedule: "31 3 * * *"
+pg_bu_weekly_schedule: "41 3 * * 0"
+pg_bu_monthly_schedule: "51 3 1 * *"
+
+pg_bu_hourly_history: 0
+# ...and daily history (0 implies no backup)
+# If you use daily you must also use hourly.
+pg_bu_daily_history: 0
+# If you use weekly you must also use daily.
+pg_bu_weekly_history: 0
+# If you use monthly you must also use weekly.
+pg_bu_monthly_history: 0
+
 # Keycloak --------------------------------------------------------------------
 
 # Deploy (or un-deploy)?
@@ -91,7 +125,7 @@ kc_hostname: SetMe
 # See: -
 # https://stackoverflow.com/questions/44624844/
 #     configure-reverse-proxy-for-keycloak-docker-with-custom-base-url/54311713#54311713.
-kc_hostname_path: ''
+kc_hostname_path: ""
 # Kubernetes certificate issuer.
 # One of 'staging' or 'production' (rate-limited)
 kc_cert_issuer: production

@@ -18,13 +18,5 @@ data:
         GRANT ALL PRIVILEGES ON DATABASE keycloak TO keycloak;
         ALTER DATABASE keycloak OWNER TO keycloak;
 {% endif%}
-{% if ax_userax_user_password_fact_fact is defined %}
-        -- Configure a user and database for AWX
-        CREATE USER {{ ax_user_fact }};
-        ALTER USER {{ ax_user_fact }} WITH PASSWORD '{{ ax_user_password_fact }}';
-        CREATE DATABASE {{ ax_database_fact }};
-        GRANT ALL PRIVILEGES ON DATABASE {{ ax_database_fact }} TO {{ ax_user_fact }};
-        ALTER DATABASE {{ ax_database_fact }} OWNER TO {{ ax_user_fact }};
-{% endif%}
     EOSQL
 {% endif %}

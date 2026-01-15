@@ -14,7 +14,6 @@ infra_priority_class: im-application-critical
 
 ingress_class: "{{ lookup('env', 'IM_DEV_INGRESS_CLASS') | default('nginx', True)}}"
 
-ic_state: absent
 efs_state: absent
 cinder_state: absent
 ax_state: absent
