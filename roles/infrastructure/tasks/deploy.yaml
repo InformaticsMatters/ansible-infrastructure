@@ -263,4 +263,4 @@
 
 - name: Deploy RabbitMQ
   include_tasks: deploy-rabbitmq.yaml
-  when: rabbitmq_state|string == 'present'
+  when: rabbitmq_state | string == 'present'
