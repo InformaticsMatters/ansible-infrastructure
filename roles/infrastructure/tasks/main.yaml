@@ -27,17 +27,17 @@
 - name: Assert authentication (no KUBECONFIG)
   ansible.builtin.assert:
     that:
-    - k8s_auth_host|length > 0
-    - k8s_auth_api_key|length > 0
+    - k8s_auth_host | length > 0
+    - k8s_auth_api_key | length > 0
     msg: "Define KUBECONFIG or set 'k8s_auth_host' and 'k8s_auth_api_key'"
-  when: k8s_kubeconfig|string|length == 0
+  when: k8s_kubeconfig | string | length == 0
 
 - name: Assert authentication (KUBECONFIG)
   ansible.builtin.assert:
     that:
-    - k8s_auth_host|length == 0
-    - k8s_auth_api_key|length == 0
-  when: k8s_kubeconfig|string|length > 0
+    - k8s_auth_host | length == 0
+    - k8s_auth_api_key | length == 0
+  when: k8s_kubeconfig | string | length > 0
 
 # Go...
 
@@ -46,24 +46,26 @@
     group/k8s:
       host: "{{ k8s_auth_host }}"
       api_key: "{{ k8s_auth_api_key }}"
-  when: k8s_kubeconfig|string|length == 0
+  when: k8s_kubeconfig | string | length == 0
   block:
 
   - name: Deploy
     include_tasks: deploy.yaml
-    when: infra_state|string == 'present'
+    when: infra_state | string == 'present'
   - name: Undeploy
     include_tasks: undeploy.yaml
-    when: infra_state|string == 'absent'
+    when: infra_state | string == 'absent'
 
 - name: Deploy (with KUBECONFIG)
   module_defaults:
     group/k8s:
       kubeconfig: "{{ k8s_kubeconfig }}"
-  when: k8s_kubeconfig|string|length > 0
+  when: k8s_kubeconfig | string | length > 0
   block:
 
-  - ansible.builtin.include_tasks: deploy.yaml
-    when: infra_state|string == 'present'
-  - ansible.builtin.include_tasks: undeploy.yaml
-    when: infra_state|string == 'absent'
+  - name: Deploy
+    ansible.builtin.include_tasks: deploy.yaml
+    when: infra_state | string == 'present'
+  - name: Undeploy
+    ansible.builtin.include_tasks: undeploy.yaml
+    when: infra_state | string == 'absent'

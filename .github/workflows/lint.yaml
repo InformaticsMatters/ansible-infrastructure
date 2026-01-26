@@ -45,10 +45,6 @@ jobs:
         source .venv/bin/activate
         yamllint .
         find . -type f -name '*.yaml.j2' -exec yamllint {} +
-    - name: Install ansible dependencies
-      run: |
-        source .venv/bin/activate
-        ansible-galaxy install -r requirements.yaml
     - name: Build docs with Sphinx
       run: |
         source .venv/bin/activate

@@ -8,6 +8,6 @@
   when: core_deploy_cluster_issuer | bool
 
 - ansible.builtin.include_tasks: deploy.yaml
-  when: core_state|string == 'present'
+  when: core_state | string == 'present'
 - ansible.builtin.include_tasks: undeploy.yaml
-  when: core_state|string == 'absent'
+  when: core_state | string == 'absent'
