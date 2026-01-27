@@ -29,7 +29,7 @@ pg_cpu_request: 100m
 pg_mem_request: 250Mi
 
 pg_bu_state: present
-pg_bu_image_tag: "15.8"
+pg_bu_image_tag: "15.15"
 # 4 backups a day (at 6-hourly intervals)
 pg_bu_hourly_schedule: "1 5,11,17,23 * * *"
 pg_bu_hourly_history: 4
