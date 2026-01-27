@@ -82,7 +82,7 @@ pg_bu_volume_s3_url: "https://s3.{{ pg_bu_s3_default_region }}.amazonaws.com"
 pg_bu_use_rclone: no
 
 # The backup container image tag.
-pg_bu_image_tag: "15.0"
+pg_bu_image_tag: "15.15"
 # The registry
 pg_bu_image_registry: docker.io
 
