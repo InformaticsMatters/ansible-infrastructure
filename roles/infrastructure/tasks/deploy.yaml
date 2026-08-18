@@ -189,6 +189,48 @@
     retries: "{{ (bind_timeout | int / 5) | int }}"
     when: wait_for_bind | bool
 
+  # The Velero dump volume.
+  # Only created if Velero backup and recovery support is enabled,
+  # and it must exist before the StatefulSet (which mounts it) is deployed.
+
+  - name: Velero dump volume
+    when: pg_velero_state | string == 'present'
+    block:
+
+    - name: Get {{ pg_velero_vol_storageclass }} StorageClass (Velero)
+      kubernetes.core.k8s_info:
+        kind: StorageClass
+        name: "{{ pg_velero_vol_storageclass }}"
+      register: velero_sc_result
+      when: pg_velero_vol_storageclass != " "
+
+    - name: Assert {{ pg_velero_vol_storageclass }} StorageClass (Velero)
+      ansible.builtin.assert:
+        that: velero_sc_result.resources | length == 1
+        fail_msg: The {{ pg_velero_vol_storageclass }} StorageClass must be available on the cluster
+      when: pg_velero_vol_storageclass != " "
+
+    - name: Create postgres Velero volume claim ({{ pg_velero_vol_storageclass }})
+      kubernetes.core.k8s:
+        definition: "{{ lookup('template', 'pvc-postgres-velero.yaml.j2') }}"
+        wait: yes
+        wait_timeout: "{{ wait_timeout }}"
+
+    - name: Wait for postgres Velero volume claim to bind
+      kubernetes.core.k8s_info:
+        kind: PersistentVolumeClaim
+        name: "{{ pg_velero_volume_name }}"
+        namespace: "{{ infra_namespace }}"
+      register: pg_velero_pvc_result
+      until: >-
+        pg_velero_pvc_result.resources | length > 0
+        and pg_velero_pvc_result.resources[0].status is defined
+        and pg_velero_pvc_result.resources[0].status.phase is defined
+        and pg_velero_pvc_result.resources[0].status.phase == 'Bound'
+      delay: 5
+      retries: "{{ (bind_timeout | int / 5) | int }}"
+      when: wait_for_bind | bool
+
   - name: Postgres
     kubernetes.core.k8s:
       definition: "{{ lookup('template', item) }}"

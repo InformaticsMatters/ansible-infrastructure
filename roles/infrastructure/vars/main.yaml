@@ -42,6 +42,13 @@ pg_cpu_limit: 1000m
 pg_mem_request: 1Gi
 pg_mem_limit: 1Gi
 
+# The name of the database Pod's Velero dump volume, where it is mounted,
+# and the file the 'pg_dumpall' is written to. The Velero backup and restore
+# hooks (annotations on the database Pod) read and write this file.
+pg_velero_pod_volume_name: postgres-velero
+pg_velero_mount_path: /velero
+pg_velero_dump_file: "{{ pg_velero_mount_path }}/dumpall.sql"
+
 # Keycloak --------------------------------------------------------------------
 
 # The Keycloak image version and image registry

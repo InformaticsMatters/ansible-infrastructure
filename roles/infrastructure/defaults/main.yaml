@@ -105,6 +105,32 @@ pg_bu_weekly_history: 0
 # If you use monthly you must also use weekly.
 pg_bu_monthly_history: 0
 
+# Database (Velero backup and recovery) ---------------------------------------
+
+# Deploy Velero backup and recovery support?
+# One of 'present' or 'absent'.
+#
+# When 'present' a dedicated volume is created for a 'pg_dumpall' file and
+# Velero backup and restore hook annotations are added to the database Pod.
+# Velero backs up the dump (not the database's binary files, which may not
+# restore to a viable database) and, on restore, replays it into the
+# recovered database.
+#
+# Velero is expected to be installed on the cluster.
+# It is not deployed by this repository.
+pg_velero_state: absent
+# The name of the volume claim used for the 'pg_dumpall' file.
+pg_velero_volume_name: pg-velero
+# The Velero dump volume size (Gi).
+pg_velero_vol_size_g: 10
+# The Velero dump volume StorageClass.
+# A blank class implies the cluster default.
+pg_velero_vol_storageclass: " "
+# How long Velero is given to run the pre-backup ('pg_dumpall') hook
+# and the post-restore ('psql') hook. Increase these for large databases.
+pg_velero_backup_timeout: 30m
+pg_velero_restore_timeout: 30m
+
 # Keycloak --------------------------------------------------------------------
 
 # Deploy (or un-deploy)?

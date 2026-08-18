@@ -1,0 +1,15 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ pg_velero_volume_name }}
+  namespace: {{ infra_namespace }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+{% if pg_velero_vol_storageclass != ' ' %}
+  storageClassName: '{{ pg_velero_vol_storageclass }}'
+{% endif %}
+  resources:
+    requests:
+      storage: '{{ pg_velero_vol_size_g }}Gi'
