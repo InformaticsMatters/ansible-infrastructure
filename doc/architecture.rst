@@ -148,7 +148,9 @@ The ``backup.velero.io/backup-volumes`` annotation therefore hands Velero the
 dump volume, and the hooks keep that volume's dump up to date: -
 
 *   The **pre-backup** hook removes any existing dump and then writes a new
-    one with ``pg_dumpall``
+    one with ``pg_dumpall --clean --if-exists``, so that replaying it drops
+    and re-creates each role and database rather than failing against
+    whatever the recovered database already holds
 *   The **post-restore** hook waits for the recovered database, replays the
     dump into it with ``psql``, and then removes the dump (the next backup
     writes a new one)

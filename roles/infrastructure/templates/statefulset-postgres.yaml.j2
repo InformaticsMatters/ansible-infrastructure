@@ -26,8 +26,15 @@ spec:
       annotations:
         backup.velero.io/backup-volumes: {{ pg_velero_pod_volume_name }}
         # Before the backup - replace any existing dump with a fresh one.
+        #
+        # The dump is written with '--clean --if-exists' so that it drops and
+        # re-creates each role and database as it is replayed. Without this a
+        # recovered database that is not empty (Velero may also restore the
+        # data volume, from a CSI snapshot) keeps its stale content - every
+        # statement in the dump fails with 'already exists' and the restore
+        # hook still 'succeeds'.
         pre.hook.backup.velero.io/container: database
-        pre.hook.backup.velero.io/command: '["/bin/bash", "-c", "rm -f {{ pg_velero_dump_file }} && PGPASSWORD=\"$POSTGRES_PASSWORD\" pg_dumpall --host=127.0.0.1 --username=\"$POSTGRES_USER\" --file={{ pg_velero_dump_file }}"]'
+        pre.hook.backup.velero.io/command: '["/bin/bash", "-c", "rm -f {{ pg_velero_dump_file }} && PGPASSWORD=\"$POSTGRES_PASSWORD\" pg_dumpall --host=127.0.0.1 --username=\"$POSTGRES_USER\" --clean --if-exists --file={{ pg_velero_dump_file }}"]'
         pre.hook.backup.velero.io/on-error: Fail
         pre.hook.backup.velero.io/timeout: {{ pg_velero_backup_timeout }}
         # After the restore - wait for the database, replay the dump and then
