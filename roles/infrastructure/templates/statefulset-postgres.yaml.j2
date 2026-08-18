@@ -15,6 +15,29 @@ spec:
       name: database
       labels:
         app: database
+{% if pg_velero_state | string == 'present' %}
+      # Velero backup and recovery hooks.
+      #
+      # Backing up the database's binary files does not guarantee a viable
+      # database so, instead, we back up a 'pg_dumpall' file written to a
+      # dedicated volume ('{{ pg_velero_pod_volume_name }}'), which is the
+      # only volume we hand to Velero. On restore the dump is replayed into
+      # the recovered database.
+      annotations:
+        backup.velero.io/backup-volumes: {{ pg_velero_pod_volume_name }}
+        # Before the backup - replace any existing dump with a fresh one.
+        pre.hook.backup.velero.io/container: database
+        pre.hook.backup.velero.io/command: '["/bin/bash", "-c", "rm -f {{ pg_velero_dump_file }} && PGPASSWORD=\"$POSTGRES_PASSWORD\" pg_dumpall --host=127.0.0.1 --username=\"$POSTGRES_USER\" --file={{ pg_velero_dump_file }}"]'
+        pre.hook.backup.velero.io/on-error: Fail
+        pre.hook.backup.velero.io/timeout: {{ pg_velero_backup_timeout }}
+        # After the restore - wait for the database, replay the dump and then
+        # remove it (the next backup writes a new one).
+        post.hook.restore.velero.io/container: database
+        post.hook.restore.velero.io/command: '["/bin/bash", "-c", "until pg_isready --host=127.0.0.1 --port=5432 --username=\"$POSTGRES_USER\" --quiet; do sleep 5; done; PGPASSWORD=\"$POSTGRES_PASSWORD\" psql --host=127.0.0.1 --username=\"$POSTGRES_USER\" --file={{ pg_velero_dump_file }} && rm -f {{ pg_velero_dump_file }}"]'
+        post.hook.restore.velero.io/on-error: Fail
+        post.hook.restore.velero.io/exec-timeout: {{ pg_velero_restore_timeout }}
+        post.hook.restore.velero.io/wait-timeout: {{ pg_velero_restore_timeout }}
+{% endif %}
     spec:
 {% if infra_priority_class %}
       priorityClassName: {{ infra_priority_class }}
@@ -99,6 +122,11 @@ spec:
         # Persistent volume for data
         - mountPath: /var/lib/postgresql/data
           name: postgres-pvc
+{% if pg_velero_state | string == 'present' %}
+        # Persistent volume for the Velero 'pg_dumpall' file
+        - mountPath: {{ pg_velero_mount_path }}
+          name: {{ pg_velero_pod_volume_name }}
+{% endif %}
         env:
         # PGDATA - the location of persisted database files.
         # Normally a sub-directory of '/var/lib/postgresql/data'.
@@ -141,3 +169,8 @@ spec:
       - name: postgres-pvc
         persistentVolumeClaim:
           claimName: {{ pg_volume_name }}
+{% if pg_velero_state | string == 'present' %}
+      - name: {{ pg_velero_pod_volume_name }}
+        persistentVolumeClaim:
+          claimName: {{ pg_velero_volume_name }}
+{% endif %}

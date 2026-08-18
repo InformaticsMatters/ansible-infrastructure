@@ -128,6 +128,34 @@ backup at 7 minutes past each hour, keeping the last 24 backups.
 For more details refer to the documentation in ``backup.py`` in our
 `Backup and Recovery`_ repository.
 
+PostgreSQL Velero Backups
+=========================
+
+Optionally, and in addition to the backup strategy above, the database can be
+prepared for backup and recovery with `Velero`_. Set ``pg_velero_state`` to
+``present`` and the ``infrastructure`` Role will: -
+
+*   Create a **Persistent Volume Claim** (``pg-velero`` by default) for a
+    ``pg_dumpall`` file, mounted at ``/velero`` in the database container
+*   Annotate the database **Pod** with Velero *backup* and *restore* hooks
+
+Velero is expected to be installed on the cluster - it is not deployed by
+this repository.
+
+We back up a database dump rather than the database's binary files because
+a copy of the binary files does not necessarily restore to a viable database.
+The ``backup.velero.io/backup-volumes`` annotation therefore hands Velero the
+dump volume, and the hooks keep that volume's dump up to date: -
+
+*   The **pre-backup** hook removes any existing dump and then writes a new
+    one with ``pg_dumpall``
+*   The **post-restore** hook waits for the recovered database, replays the
+    dump into it with ``psql``, and then removes the dump (the next backup
+    writes a new one)
+
+The ``pg_velero_backup_timeout`` and ``pg_velero_restore_timeout`` variables
+limit how long Velero gives each hook - increase them for large databases.
+
 Keycloak
 ========
 
@@ -173,3 +201,4 @@ For more details refer to the documentation in ``recovery.py`` in our
 .. _Kubernetes Cert Manager: https://github.com/jetstack/cert-manager
 .. _Rancher: https://rancher.com
 .. _RKE: https://rancher.com/docs/rke/latest/en/
+.. _Velero: https://velero.io

@@ -41,6 +41,7 @@ ignore: |
   roles/infrastructure/templates/cronjob-postgres-backup-monthly.yaml.j2
   roles/infrastructure/templates/pvc-postgres.yaml.j2
   roles/infrastructure/templates/pvc-postgres-backup.yaml.j2
+  roles/infrastructure/templates/pvc-postgres-velero.yaml.j2
   roles/infrastructure/templates/serviceaccount-im-infra.yaml.j2
   roles/infrastructure/templates/statefulset-keycloak.yaml.j2
   roles/infrastructure/templates/statefulset-postgres.yaml.j2
