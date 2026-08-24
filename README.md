@@ -31,6 +31,12 @@ as a basis of the templates was **openstack-cinder-csi-1.1.2**.
 The NFS provisioner is formed from Helm templates
 taken from the [nfs-subdir-external-provisioner] repository.
 
+## RabbitMQ Cluster Operator
+The installation relies on the services provided by the official
+[RabbitMQ Cluster Operator]. See the operator's **Installation** instructions
+for details of how to install the operator in your cluster. Once done we can then
+use the `site-infrastructure_rabbitmq.yaml` playbook.
+
 ## Building the Documentation
 The source of the documentation can be found in the project's
 `doc` directory. To build the HTML version of the documentation install
@@ -50,3 +56,4 @@ The resultant index page will be called `doc/build/index.html`.
 [primer]: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#lists-and-quote-like-blocks
 [cloud-provider-openstack]: https://github.com/kubernetes/cloud-provider-openstack
 [nfs-subdir-external-provisioner]: https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner
+[rabbitmq cluster operator]: https://www.rabbitmq.com/kubernetes/operator/install-operator
